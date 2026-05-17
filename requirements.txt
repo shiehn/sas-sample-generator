@@ -1,0 +1,11 @@
+torch
+torchaudio
+diffusers
+transformers
+accelerate
+safetensors
+soundfile
+numpy
+pandas
+tqdm
+huggingface_hub

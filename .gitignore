@@ -1,0 +1,14 @@
+.venv/
+__pycache__/
+*.pyc
+outputs/raw/
+outputs/processed/
+outputs/rejected/
+outputs/manifests/
+*.zip
+.DS_Store
+.claude/
+.env
+.env.*
+*.token
+*.secret
