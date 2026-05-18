@@ -1,0 +1,47 @@
+# 909-style — classic techno/house
+tight 909-style kick drum one shot, hard click transient, short punchy body, dry, no hi hats, no snare, no cymbals, no loop
+punchy 909 kick drum one shot, sharp transient, controlled low end, clean studio sample, no melody, no loop
+classic 909 kick one shot, hard attack, short decay, dry, no percussion loop, no vocals
+
+# 808-style — deep sub bass
+deep 808-style kick drum one shot, long sub bass decay, smooth sine low end, clean transient, dry, no melody, no loop
+warm 808 kick drum one shot, saturated low end, medium decay, dry, no hi hats, no snare, no melody
+booming 808 kick one shot, rounded sub tail, soft transient, mono-compatible, dry, no loop
+
+# Deep techno
+deep techno kick drum one shot, warm saturated low end, short click transient, mono-compatible, dry, no percussion loop
+dark techno kick drum one shot, dense low body, tight transient, clean studio sample, no hi hats, no snare
+big room techno kick one shot, punchy attack, controlled body, dry, no melody, no loop
+
+# Distorted / industrial
+distorted industrial techno kick drum one shot, aggressive transient, saturated low mid body, mono-compatible, dry, no cymbals, no snare, no loop
+crushed industrial kick one shot, heavy distortion, short body, dry, no hi hats, no melody, no loop
+hard techno kick one shot, overdriven transient, dense saturation, dry, no vocals, no loop
+
+# Lo-fi
+warm lo-fi kick drum one shot, soft transient, dusty sampler texture, short decay, dry, no hi hats, no snare, no melody
+vintage lo-fi kick one shot, tape-saturated body, gentle attack, dry, no loop
+muffled lo-fi kick one shot, dark tone, short decay, dry, no cymbals, no melody
+
+# Acoustic-electronic hybrid
+hybrid acoustic kick drum one shot, real drum attack with electronic body, dry, no hi hats, no snare, no loop
+processed acoustic kick one shot, tight transient, warm round body, dry, no melody, no loop
+layered acoustic-electronic kick one shot, natural attack, synthesized sub, dry, no cymbals, no loop
+
+# Clicky / very short
+short clicky kick drum one shot, sharp pointy transient, minimal body, dry, no hi hats, no snare, no melody, no loop
+tiny clicky kick one shot, ultra short decay, bright attack, dry, no vocals, no loop
+percussive click kick one shot, bright transient, no sub, dry, no loop
+
+# Disco / house
+disco kick drum one shot, warm round body, four-on-the-floor flavor, dry, no hi hats, no snare, no cymbals, no melody, no loop
+classic house kick one shot, punchy attack, balanced body, dry, no percussion loop, no vocals
+deep house kick one shot, warm low end, smooth transient, dry, no melody, no loop
+
+# Trap-style
+trap-style kick drum one shot, deep sub bass, hard transient click, dry, no hi hats, no snare, no cymbals, no loop
+modern trap kick one shot, layered click and sub, mono-compatible, dry, no melody, no loop
+
+# Minimal / clean
+minimal kick drum one shot, pure round low end, clean transient, dry, no hi hats, no snare, no cymbals, no melody, no loop
+clean studio kick one shot, balanced attack and body, neutral character, dry, no percussion loop

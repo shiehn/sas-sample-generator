@@ -208,46 +208,77 @@ Or use the RunPod web terminal.
 On the pod:
 
 ```bash
-mkdir -p /workspace/stable-audio-oneshots
-cd /workspace/stable-audio-oneshots
+mkdir -p /workspace/sas-sample-generator
+cd /workspace/sas-sample-generator
 ```
 
-Copy your local project to the pod. From your Mac:
+Either copy your local project to the pod (from your Mac):
 
 ```bash
-scp -P YOUR_RUNPOD_PORT -r ./stable-audio-oneshots root@YOUR_RUNPOD_HOST:/workspace/
+scp -P YOUR_RUNPOD_PORT -r ./sas-sample-generator root@YOUR_RUNPOD_HOST:/workspace/
 ```
+
+Or `git clone` the repo directly on the pod — that's faster if it's pushed to GitHub.
+
+---
+
+## 7.4 Persistent volume layout (resume-after-kill)
+
+When you terminate a pod, the pod's local disk is wiped. To survive that, RunPod
+mounts a **Network Volume** at `/workspace` (you set this up in §7.1). Anything
+that should outlive a pod termination MUST live under `/workspace`.
+
+Recommended layout on the volume:
+
+```text
+/workspace/
+  sas-sample-generator/       # git checkout of this repo
+  .venv/                      # python env (reused across pods)
+  .cache/huggingface/         # model weights (reused across pods)
+  outputs/
+    raw/                      # generated WAVs
+    processed/
+    rejected/
+    manifests/
+  .bash_env                   # env vars that point HF + outputs at the volume
+```
+
+Without this layout, every fresh pod re-runs `pip install` (~5 min) and
+re-downloads Stable Audio Open weights from Hugging Face (~3–5 GB, another
+~2 min). With this layout, a new pod is ready in ~30 seconds because the venv
+and the model cache are already on the volume.
+
+`scripts/setup.sh` (in this repo) sets all of this up. It is idempotent —
+safe to re-run on every pod boot.
+
+```bash
+cd /workspace/sas-sample-generator
+./scripts/setup.sh
+source /workspace/.venv/bin/activate
+huggingface-cli login    # one time per volume
+```
+
+After this, `outputs/` for batch_generate.py is `/workspace/outputs` (set by
+`SAS_OUTPUTS_DIR` in `.bash_env`). The `--skip-existing` flag in
+`batch_generate.py` then lets a re-run continue where a killed run left off.
 
 ---
 
 ## 8. Python environment setup on the pod
 
-From the pod:
+The recommended path is `scripts/setup.sh` (see §7.4) — it creates the venv on
+the persistent volume, installs the CUDA-matching PyTorch wheel, installs
+`requirements.txt`, and verifies CUDA. Everything below is what the script does
+manually, kept for reference / debugging:
 
 ```bash
-cd /workspace/stable-audio-oneshots
-
-python -m venv .venv
-source .venv/bin/activate
-
+cd /workspace/sas-sample-generator
+python -m venv /workspace/.venv
+source /workspace/.venv/bin/activate
 python -m pip install --upgrade pip wheel setuptools
-```
-
-Install PyTorch with CUDA. The exact CUDA wheel may depend on the RunPod template. A common option is:
-
-```bash
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu124
-```
-
-Then install the rest:
-
-```bash
 pip install -r requirements.txt
-```
 
-Check CUDA:
-
-```bash
 python - <<'PY'
 import torch
 print("CUDA available:", torch.cuda.is_available())
@@ -255,7 +286,7 @@ print("Device:", torch.cuda.get_device_name(0) if torch.cuda.is_available() else
 PY
 ```
 
-Expected result:
+Expected output:
 
 ```text
 CUDA available: True
@@ -729,11 +760,36 @@ Create final ZIP:
 zip -r stable_audio_kicks_1000.zip outputs/processed outputs/manifests outputs/raw/_metadata
 ```
 
-Download to your Mac:
+### 14.1 Get the data off the pod
+
+For small runs (< 5 GB), `scp` the zip directly to your Mac:
 
 ```bash
-scp -P YOUR_RUNPOD_PORT root@YOUR_RUNPOD_HOST:/workspace/stable-audio-oneshots/stable_audio_kicks_1000.zip .
+scp -P YOUR_RUNPOD_PORT root@YOUR_RUNPOD_HOST:/workspace/sas-sample-generator/stable_audio_kicks_1000.zip .
 ```
+
+For larger / repeated runs, push to a cheap object store (Backblaze B2 ≈
+$6/TB/month, Cloudflare R2 ≈ $15/TB/month with zero egress). One-time pod setup:
+
+```bash
+apt-get install -y rclone
+rclone config           # create a remote named "samples" pointing at B2/R2
+```
+
+Then use `scripts/sync.sh`:
+
+```bash
+./scripts/sync.sh push              # push entire outputs/ tree
+./scripts/sync.sh push outputs/processed   # push just the curated set
+./scripts/sync.sh ls                # see what's on the remote
+```
+
+On your Mac, install rclone (`brew install rclone`), configure the same remote,
+then `./scripts/sync.sh pull` to fetch.
+
+The advantage of the object-store path: data durability is decoupled from
+"is the pod running?" — you can terminate the pod, sleep on it, spin up a new
+pod next week, and `sync.sh pull` to pick up where you left off.
 
 Then stop the pod.
 
@@ -965,6 +1021,31 @@ Use this as your default workflow:
 ```
 
 This gives you cloud GPU power only when you need it, without buying hardware or paying for a permanently reserved instance.
+
+---
+
+## 23. When to switch to the custom Docker image
+
+This repo includes a `Dockerfile`. It's optional. Decision rule:
+
+| Situation | Use |
+|-----------|-----|
+| Iterating on prompts, < 1 pod boot per day | Stock RunPod template + `scripts/setup.sh` |
+| Spinning up pods frequently and tired of waiting 5 min for `pip install` | Custom image |
+| Sharing the setup with a teammate / running on a different cloud | Custom image |
+
+Build and push once, then deploy:
+
+```bash
+docker build -t YOUR_DOCKERHUB_USER/sas-sample-generator:latest .
+docker push YOUR_DOCKERHUB_USER/sas-sample-generator:latest
+```
+
+In RunPod, pick "Deploy a custom image" and paste the tag. The image deliberately
+does NOT bake in the Stable Audio Open weights — those still download into the
+persistent volume's HF cache on first run, same as the stock-template flow. That
+keeps the image small (~6 GB instead of ~10 GB) and avoids re-pushing on every
+weight update.
 
 ---
 

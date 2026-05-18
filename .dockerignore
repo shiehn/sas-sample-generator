@@ -1,0 +1,14 @@
+.git
+.gitignore
+.claude
+.venv
+__pycache__
+*.pyc
+outputs
+*.zip
+.env
+.env.*
+*.token
+*.secret
+LICENSE
+stable_audio_open_batch_oneshot_guide.md
