@@ -1,0 +1,152 @@
+# =========================================================================
+# Kick drum one-shots. ~100 prompts.
+# Bias: EDM (~55%), Hip-Hop (~30%), Other (~15%).
+# =========================================================================
+
+# --- 909-style (classic techno / house) ---
+tight 909-style kick drum one shot, hard click transient, short punchy body, dry, no hi hats, no snare, no cymbals, no loop
+punchy 909 kick drum one shot, sharp transient, controlled low end, clean studio sample, no melody, no loop
+classic 909 kick one shot, hard attack, short decay, dry, no percussion loop, no vocals
+bright 909 kick one shot, sharp click attack, tight body, dry, no hi hats, no snare, no loop
+processed 909 kick one shot, slight saturation, controlled punch, mono-compatible, dry, no melody
+
+# --- 808-style (deep sub bass) ---
+deep 808-style kick drum one shot, long sub bass decay, smooth sine low end, clean transient, dry, no melody, no loop
+warm 808 kick drum one shot, saturated low end, medium decay, dry, no hi hats, no snare, no melody
+booming 808 kick one shot, rounded sub tail, soft transient, mono-compatible, dry, no loop
+distorted 808 kick one shot, gritty sub bass, long decay, dirty character, dry, no melody, no loop
+pitched 808 kick one shot, tuned sub, long sustain, smooth low end, dry, no loop
+clean 808 kick one shot, pure sine wave sub, soft attack, long tail, dry, no melody
+
+# --- Deep techno ---
+deep techno kick drum one shot, warm saturated low end, short click transient, mono-compatible, dry, no percussion loop
+dark techno kick drum one shot, dense low body, tight transient, clean studio sample, no hi hats, no snare
+big room techno kick one shot, punchy attack, controlled body, dry, no melody, no loop
+dub techno kick one shot, deep warm low end, soft transient, mono-compatible, dry, no loop
+analog techno kick one shot, vintage saturation, tight punch, warm body, dry, no melody
+
+# --- Industrial / distorted ---
+distorted industrial techno kick drum one shot, aggressive transient, saturated low mid body, mono-compatible, dry, no cymbals, no snare, no loop
+crushed industrial kick one shot, heavy distortion, short body, dry, no hi hats, no melody, no loop
+hard techno kick one shot, overdriven transient, dense saturation, dry, no vocals, no loop
+grimy industrial kick one shot, gritty distortion, aggressive mid range, dry, no loop
+schranz kick one shot, brutal distortion, hard punch, mono, dry, no melody
+
+# --- Tech-house ---
+tech house kick one shot, tight rounded body, controlled transient, dry, no hi hats, no snare, no loop
+minimal tech house kick one shot, clean low end, punchy attack, dry, no melody, no loop
+funky tech house kick one shot, warm bouncy body, tight click, dry, no vocals, no loop
+groovy tech house kick one shot, rounded low end, short punchy decay, dry, no melody
+
+# --- Deep house ---
+deep house kick one shot, warm low end, smooth transient, dry, no melody, no loop
+classic deep house kick one shot, soft round body, gentle attack, mono-compatible, dry
+soulful deep house kick one shot, warm analog body, controlled punch, dry, no hi hats
+afro house kick one shot, deep rounded body, soft transient, organic warmth, dry, no melody
+
+# --- Big-room / festival ---
+big room festival kick one shot, hard punchy transient, controlled body, mono-compatible, dry, no melody, no loop
+EDM festival kick one shot, sharp attack, tight short body, club ready, dry, no hi hats, no loop
+peak time kick one shot, hard transient, rounded mid body, mastered tone, dry, no melody
+mainstage kick one shot, punchy attack, controlled low end, festival ready, dry, no loop
+
+# --- Trance ---
+classic trance kick one shot, hard transient, short punchy body, dry, no hi hats, no snare, no loop
+uplifting trance kick one shot, sharp click attack, tight body, mainroom ready, dry, no melody
+psytrance kick one shot, hard punchy transient, tight short body, dry, no loop, no vocals
+hard trance kick one shot, overdriven attack, controlled punch, mono, dry, no melody
+progressive trance kick one shot, smooth attack, rounded mid body, dry, no hi hats
+
+# --- Drum and bass ---
+drum and bass kick one shot, tight punchy transient, short controlled body, dry, no snare, no hi hats, no loop
+jungle kick one shot, processed sampler tone, sharp click, short decay, dry, no loop
+neurofunk kick one shot, aggressive transient, processed mid body, dry, no melody
+liquid dnb kick one shot, soft warm low end, smooth attack, dry, no melody, no loop
+amen-style kick one shot, vintage sampler grit, tight punchy attack, dry, no loop
+
+# --- Dubstep ---
+dubstep kick one shot, hard punchy transient, controlled sub body, dry, no melody, no snare, no loop
+brostep kick one shot, sharp aggressive attack, processed mid body, dry, no melody
+deep dubstep kick one shot, warm rolling sub, soft attack, dry, no loop, no melody
+riddim kick one shot, hard transient, short controlled body, mono, dry, no melody
+
+# --- Electro / electroclash ---
+electro kick one shot, vintage analog character, punchy attack, tight body, dry, no melody, no loop
+modern electro kick one shot, processed transient, controlled low end, dry, no snare, no loop
+electroclash kick one shot, hard sharp attack, dirty saturation, mono, dry, no melody
+breakbeat electro kick one shot, punchy sampler character, tight body, dry, no loop
+
+# --- Future bass / future house ---
+future bass kick one shot, smooth attack, rounded body, modern character, dry, no melody, no loop
+future house kick one shot, tight punch, warm low end, club ready, dry, no melody
+moombahton kick one shot, deep round body, soft transient, dry, no hi hats, no loop
+
+# --- Trap (Hip-Hop) ---
+trap-style kick drum one shot, deep sub bass, hard transient click, dry, no hi hats, no snare, no cymbals, no loop
+modern trap kick one shot, layered click and sub, mono-compatible, dry, no melody, no loop
+hard trap kick one shot, distorted sub bass, sharp click attack, dry, no melody, no loop
+slow trap kick one shot, deep rolling sub, soft transient, dry, no melody, no loop
+atlanta trap kick one shot, punchy 808 sub, sharp click layer, dry, no hi hats, no loop
+modern hip hop kick one shot, layered click and warm sub, controlled punch, dry, no melody
+
+# --- Drill (Hip-Hop) ---
+drill kick one shot, dark sliding sub, sharp click transient, modern hip hop, dry, no melody, no loop
+uk drill kick one shot, deep pitched sub bass, tight click attack, dry, no hi hats, no loop
+dark drill kick one shot, distorted sub, sharp percussive click, dry, no melody, no loop
+ny drill kick one shot, punchy sub, sharp transient, modern sampler character, dry, no loop
+
+# --- Boom-bap (Hip-Hop) ---
+boom bap kick one shot, dusty sampler texture, tight punchy body, vintage character, dry, no hi hats, no snare, no loop
+classic boom bap kick one shot, soft warm thump, vintage tape character, dry, no melody
+90s hip hop kick one shot, dusty sampled punch, tight short body, dry, no loop
+golden era kick one shot, warm sampler tone, soft transient, mono-compatible, dry, no melody
+east coast kick one shot, tight thumpy body, dusty character, dry, no hi hats, no loop
+
+# --- Lo-fi Hip-Hop ---
+warm lo-fi kick drum one shot, soft transient, dusty sampler texture, short decay, dry, no hi hats, no snare, no melody
+vintage lo-fi kick one shot, tape-saturated body, gentle attack, dry, no loop
+muffled lo-fi kick one shot, dark tone, short decay, dry, no cymbals, no melody
+lofi hip hop kick one shot, soft thumpy body, vinyl crackle character, dry, no melody
+
+# --- West-coast (g-funk) ---
+west coast kick one shot, warm rounded body, soft transient, classic hip hop, dry, no hi hats, no loop
+g funk kick one shot, deep round low end, smooth attack, vintage character, dry, no melody
+90s west coast kick one shot, warm thumpy body, dry sampler tone, mono, dry, no loop
+
+# --- Acoustic / studio ---
+acoustic kick drum one shot, real bass drum hit, natural decay, dry, no cymbals, no snare, no loop
+studio recorded kick one shot, close mic acoustic tone, tight punchy body, dry, no melody
+hybrid acoustic kick drum one shot, real drum attack with electronic body, dry, no hi hats, no snare, no loop
+processed acoustic kick one shot, tight transient, warm round body, dry, no melody, no loop
+
+# --- Rock ---
+rock kick drum one shot, beater attack, full bodied thump, dry studio sample, no hi hats, no snare, no loop
+heavy rock kick one shot, aggressive transient, tight controlled body, dry, no loop
+indie rock kick one shot, natural ambient body, soft transient, dry, no melody
+
+# --- Jazz / world ---
+jazz kick one shot, soft brushy attack, warm small bass drum, dry, no hi hats, no snare, no loop
+brushed kick one shot, soft warm attack, vintage character, dry, no melody, no loop
+afro percussion kick one shot, organic wooden body, soft transient, dry, no loop
+
+# --- Clicky / minimal ---
+short clicky kick drum one shot, sharp pointy transient, minimal body, dry, no hi hats, no snare, no melody, no loop
+tiny clicky kick one shot, ultra short decay, bright attack, dry, no vocals, no loop
+percussive click kick one shot, bright transient, no sub, dry, no loop
+minimal kick drum one shot, pure round low end, clean transient, dry, no hi hats, no snare, no cymbals, no melody, no loop
+
+# --- Clean / studio ---
+clean studio kick one shot, balanced attack and body, neutral character, dry, no percussion loop
+disco kick drum one shot, warm round body, four-on-the-floor flavor, dry, no hi hats, no snare, no cymbals, no melody, no loop
+classic house kick one shot, punchy attack, balanced body, dry, no percussion loop, no vocals
+
+# --- More variants ---
+hardstyle kick one shot, aggressive distorted attack, saturated body, mono, dry, no loop
+gabber kick one shot, brutal overdriven punch, hard transient, dry, no melody
+phonk kick one shot, dark muffled thump, lo-fi sampler character, dry, no loop
+amapiano kick one shot, soft warm body, modern dance character, dry, no melody
+afrobeats kick one shot, organic warm punch, latin-style attack, dry, no loop
+moombahton kick one shot, deep round body, organic latin character, dry, no melody
+chopped and screwed kick one shot, slowed warm body, dusty character, dry, no loop
+plug kick one shot, modern processed punch, layered character, dry, no melody
+snare-rim layer kick one shot, hybrid kick and click attack, dry, no loop

@@ -1,0 +1,145 @@
+# =========================================================================
+# Tambourine one-shots — single hits, jingles, bright metallic accents.
+# Bias: ~45% EDM/Pop, ~25% Hip-Hop, ~30% Acoustic/Latin/Other.
+# =========================================================================
+
+# --- Acoustic tambourine ---
+acoustic tambourine one shot, single hit with bright jingles, dry, no loop
+classic tambourine one shot, sharp shake hit, bright metallic jingles, dry, no melody
+small tambourine one shot, tight bright jingles, short controlled decay, dry, no loop
+large tambourine one shot, full warm jingles, medium decay, dry, no melody
+hand tambourine one shot, natural sharp shake, bright tone, dry, no loop
+headless tambourine one shot, pure jingle hit, no drumhead, dry, no melody
+single jingle tambourine one shot, isolated bright accent, very short decay, dry, no loop
+
+# --- Studio recorded ---
+studio tambourine one shot, close mic acoustic hit, bright controlled jingles, dry, no melody
+processed tambourine one shot, compressed bright shake, controlled tone, dry, no loop
+overdubbed tambourine one shot, full layered jingles, controlled decay, dry, no melody
+
+# --- Latin / world ---
+latin tambourine one shot, classic salsa-style hit, bright jingles, dry, no loop
+brazilian pandeiro one shot, tight bright tambourine hit, samba character, dry, no melody
+afro percussion tambourine one shot, organic shake hit, warm jingles, dry, no loop
+cuban tambourine one shot, sharp latin hit, bright jingles, dry, no melody
+mediterranean tambourine one shot, traditional folk shake, bright tone, dry, no loop
+
+# --- Pop / contemporary ---
+pop tambourine one shot, polished bright shake, mastered tone, dry, no loop
+modern pop tambourine one shot, processed bright jingles, controlled tone, dry, no melody
+country tambourine one shot, warm natural shake, gentle decay, dry, no loop
+folk tambourine one shot, organic acoustic shake, bright tone, dry, no melody
+
+# --- House / dance ---
+house tambourine one shot, bright sustained jingles, controlled decay, dry, no loop
+deep house tambourine one shot, soft warm shake, smooth tone, dry, no melody
+tech house tambourine one shot, processed bright jingles, controlled tone, dry, no loop
+classic house tambourine one shot, bright shake hit, club ready, dry, no melody
+afro house tambourine one shot, organic bright jingles, controlled decay, dry, no loop
+disco tambourine one shot, bright shake hit, vintage character, dry, no melody
+funk tambourine one shot, sharp bright shake, tight tone, vintage, dry, no loop
+
+# --- Techno ---
+techno tambourine one shot, dark processed jingles, controlled tone, dry, no loop
+minimal techno tambourine one shot, clean electronic shake, controlled tone, dry, no melody
+hard techno tambourine one shot, aggressive bright shake, saturated, dry, no loop
+dub techno tambourine one shot, warm processed jingles, soft tone, dry, no melody
+
+# --- Trance ---
+trance tambourine one shot, sharp bright shake, electronic character, dry, no loop
+uplifting trance tambourine one shot, crisp bright jingles, mainroom ready, dry, no melody
+progressive trance tambourine one shot, smooth bright shake, controlled tone, dry, no loop
+psytrance tambourine one shot, hard processed jingles, tight tone, dry, no melody
+
+# --- Big-room / festival ---
+big room tambourine one shot, sharp festival shake, mainstage ready, dry, no loop
+EDM festival tambourine one shot, processed bright jingles, controlled tone, dry, no melody
+
+# --- Drum and bass ---
+drum and bass tambourine one shot, processed sharp shake, controlled tone, dry, no loop
+jungle tambourine one shot, vintage break shake, sampler tone, dry, no melody
+liquid dnb tambourine one shot, soft warm jingles, smooth tone, dry, no loop
+
+# --- Dubstep / bass music ---
+dubstep tambourine one shot, processed dark shake, sharp attack, dry, no loop
+brostep tambourine one shot, sharp aggressive jingles, controlled tone, dry, no melody
+
+# --- Trap / Hip-Hop ---
+trap tambourine one shot, sharp bright shake, modern hip hop, controlled tone, dry, no loop
+modern trap tambourine one shot, crisp bright jingles, controlled tone, dry, no melody
+hard trap tambourine one shot, aggressive bright shake, saturated tone, dry, no loop
+atlanta trap tambourine one shot, processed bright jingles, modern character, dry, no melody
+
+# --- Drill ---
+drill tambourine one shot, dark sharp shake, modern sampler tone, dry, no loop
+uk drill tambourine one shot, processed bright jingles, tight tone, dry, no melody
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap tambourine one shot, dusty sampler shake, vintage tone, dry, no loop
+classic 90s hip hop tambourine one shot, warm sampled shake, soft tone, dry, no melody
+golden era tambourine one shot, soft vintage shake, dusty character, dry, no loop
+east coast tambourine one shot, tight processed shake, controlled tone, dry, no melody
+west coast tambourine one shot, warm bright shake, classic hip hop tone, dry, no loop
+g funk tambourine one shot, soft warm shake, vintage character, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop tambourine one shot, soft muffled shake, vinyl character, dry, no loop
+warm lo-fi tambourine one shot, dusty soft jingles, tape-saturated, dry, no melody
+vintage lo-fi tambourine one shot, muted soft shake, lo-fi sampler tone, dry, no loop
+
+# --- Rock / indie ---
+rock tambourine one shot, sharp bright shake, controlled tone, dry, no loop
+indie rock tambourine one shot, natural acoustic shake, warm tone, dry, no melody
+classic rock tambourine one shot, full bright shake, vintage character, dry, no loop
+
+# --- Jazz ---
+jazz tambourine one shot, soft warm shake, vintage jazz character, dry, no loop
+bebop tambourine one shot, classic acoustic shake, vintage tone, dry, no melody
+
+# --- Pitched / tuned ---
+high pitched tambourine one shot, bright crisp jingles, tight tone, dry, no loop
+low pitched tambourine one shot, dark warm shake, controlled tone, dry, no melody
+tuned tambourine one shot, pitched bright shake, clear tone, dry, no loop
+
+# --- Vintage drum machine ---
+linn drum tambourine one shot, vintage drum machine shake, 80s character, dry, no loop
+roland tr-727 tambourine one shot, classic drum machine shake, electronic tone, dry, no melody
+
+# --- Processed / FX ---
+processed tambourine one shot, heavily compressed shake, controlled tone, dry, no loop
+distorted tambourine one shot, gritty saturated shake, controlled tone, dry, no melody
+filtered tambourine one shot, narrow-band shake, electronic character, dry, no loop
+reversed tambourine one shot, swelling shake building to attack, dry, no melody
+gated tambourine one shot, sharp shake with abrupt cutoff, controlled tone, dry, no loop
+metallic tambourine one shot, bright metallic shake, controlled tone, dry, no melody
+glitchy tambourine one shot, digital processed shake, sharp tone, dry, no loop
+
+# --- More variants ---
+hardstyle tambourine one shot, aggressive bright shake, saturated tone, dry, no loop
+phonk tambourine one shot, dark muffled shake, lo-fi character, dry, no melody
+hyperpop tambourine one shot, pitched bright shake, modern character, dry, no loop
+amapiano tambourine one shot, soft warm shake, modern dance character, dry, no melody
+afrobeats tambourine one shot, organic warm shake, latin character, dry, no loop
+moombahton tambourine one shot, organic latin shake, controlled tone, dry, no melody
+chopped and screwed tambourine one shot, slowed warm shake, dusty character, dry, no loop
+plug tambourine one shot, modern processed shake, layered character, dry, no melody
+memphis rap tambourine one shot, vintage sampler shake, dark tone, dry, no loop
+trap soul tambourine one shot, smooth warm shake, modern character, dry, no melody
+new wave tambourine one shot, processed bright shake, 80s character, dry, no loop
+synthwave tambourine one shot, retro electronic shake, controlled tone, dry, no melody
+saturated tambourine one shot, warm analog saturation, bright shake, dry, no loop
+tube saturated tambourine one shot, warm tube tone, bright shake, dry, no melody
+chorused tambourine one shot, modulated bright shake, controlled tone, dry, no loop
+phased tambourine one shot, swirling bright shake, controlled tone, dry, no melody
+compressed tambourine one shot, heavily pumped shake, sharp transient, dry, no loop
+breakcore tambourine one shot, processed digital shake, sharp attack, dry, no melody
+gabber tambourine one shot, brutal sharp shake, hard tone, dry, no loop
+ska tambourine one shot, sharp bright shake, vintage character, dry, no melody
+gospel tambourine one shot, organic warm shake, soulful character, dry, no loop
+country tambourine one shot, natural warm shake, acoustic character, dry, no melody
+folk tambourine one shot, soft organic shake, gentle attack, dry, no loop
+reggae tambourine one shot, warm organic shake, dub character, dry, no melody
+dub tambourine one shot, processed warm shake, reggae character, dry, no loop
+classical tambourine one shot, traditional orchestra shake, controlled tone, dry, no melody
+half open tambourine one shot, controlled shake with sustain, dry, no loop
+muted tambourine one shot, dampened shake, controlled tone, dry, no melody

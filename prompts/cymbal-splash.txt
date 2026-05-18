@@ -1,0 +1,146 @@
+# =========================================================================
+# Splash cymbal one-shots — short bright accent, quicker than crash.
+# Bias: ~50% EDM, ~25% Hip-Hop, ~25% Acoustic/Other.
+# =========================================================================
+
+# --- Acoustic studio splash ---
+splash cymbal one shot, small bright cymbal, short quick wash, dry, no loop
+6 inch splash one shot, tiny bright cymbal, very short decay, dry, no melody
+8 inch splash one shot, small bright cymbal, short controlled wash, dry, no loop
+10 inch splash one shot, medium bright cymbal, controlled short wash, dry, no melody
+12 inch splash one shot, larger splash, slightly longer wash, dry, no loop
+hand hammered splash one shot, complex bright splash, short wash, dry, no melody
+thin splash one shot, bright quick attack, very short decay, dry, no loop
+heavy splash one shot, dense bright impact, short controlled wash, dry, no melody
+
+# --- China splash ---
+china splash one shot, trashy bright accent, short wash, dry, no loop, no melody
+mini china splash one shot, sharp trashy attack, very short decay, dry, no loop
+small china one shot, bright trashy splash, controlled tone, dry, no melody
+
+# --- Stack / effect splash ---
+cymbal stack one shot, two cymbals stacked, trashy short splash, dry, no loop
+fx splash one shot, custom processed splash, bright short attack, dry, no melody
+trashy splash one shot, dense bright accent, controlled short wash, dry, no loop
+
+# --- 909 / 808 electronic splash ---
+909 splash one shot, sharp electronic splash, short bright tone, dry, no loop
+808 splash one shot, vintage drum machine splash, short wash, dry, no melody
+pitched 909 splash one shot, tuned bright accent, short controlled tone, dry, no loop
+processed 909 splash one shot, saturated bright splash, EDM ready, dry, no melody
+
+# --- House / tech house splash ---
+house splash one shot, bright sustained accent, controlled short wash, dry, no loop
+deep house splash one shot, soft warm splash, smooth short wash, dry, no melody
+tech house splash one shot, processed bright splash, controlled tone, dry, no loop
+afro house splash one shot, organic bright splash, controlled tone, dry, no melody
+
+# --- Techno splash ---
+techno splash one shot, dark processed accent, short controlled wash, dry, no loop
+minimal techno splash one shot, clean electronic splash, controlled tone, dry, no melody
+hard techno splash one shot, aggressive bright accent, saturated wash, dry, no loop
+dub techno splash one shot, warm processed splash, soft short wash, dry, no melody
+
+# --- Trance splash ---
+trance splash one shot, sharp bright accent, electronic character, dry, no loop
+uplifting trance splash one shot, crisp short splash, mainroom ready, dry, no melody
+progressive trance splash one shot, smooth bright accent, controlled tone, dry, no loop
+psytrance splash one shot, hard processed splash, controlled wash, dry, no melody
+
+# --- Big-room / festival ---
+big room splash one shot, sharp festival accent, mainstage ready, dry, no loop
+EDM festival splash one shot, processed bright splash, controlled wash, dry, no melody
+peak time splash one shot, hard transient accent, mastered tone, dry, no loop
+mainstage splash one shot, sharp bright splash, club ready, dry, no melody
+
+# --- Drum and bass ---
+drum and bass splash one shot, processed sharp accent, controlled tone, dry, no loop
+jungle splash one shot, vintage break splash, sampler tone, dry, no melody
+neurofunk splash one shot, processed digital splash, sharp attack, dry, no loop
+liquid dnb splash one shot, soft warm splash, smooth short wash, dry, no melody
+
+# --- Dubstep / bass music ---
+dubstep splash one shot, processed dark accent, sharp attack, dry, no loop
+brostep splash one shot, sharp aggressive splash, controlled tone, dry, no melody
+riddim splash one shot, tight processed splash, controlled short wash, dry, no loop
+
+# --- Trap / Hip-Hop ---
+trap splash one shot, sharp bright accent, modern hip hop, controlled wash, dry, no loop
+modern trap splash one shot, crisp bright splash, controlled tone, dry, no melody
+hard trap splash one shot, aggressive bright accent, saturated wash, dry, no loop
+atlanta trap splash one shot, processed bright splash, modern character, dry, no melody
+
+# --- Drill ---
+drill splash one shot, dark sharp accent, modern sampler tone, dry, no loop
+uk drill splash one shot, processed bright splash, tight tone, dry, no melody
+ny drill splash one shot, sharp crisp accent, modern character, dry, no loop
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap splash one shot, dusty sampler splash, vintage tone, dry, no loop, no melody
+classic 90s hip hop splash one shot, warm sampled splash, soft short wash, dry, no loop
+golden era splash one shot, soft vintage splash, dusty character, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop splash one shot, soft muffled accent, vinyl character, dry, no loop
+warm lo-fi splash one shot, dusty soft splash, tape-saturated, dry, no melody
+vintage lo-fi splash one shot, muted soft splash, lo-fi sampler tone, dry, no loop
+
+# --- Future bass / pop ---
+future bass splash one shot, smooth bright accent, modern character, dry, no loop
+modern pop splash one shot, polished bright splash, controlled wash, dry, no melody
+
+# --- Funk / disco ---
+funk splash one shot, sharp bright accent, vintage character, dry, no loop
+disco splash one shot, bright short splash, vintage character, dry, no melody
+
+# --- Jazz ---
+jazz splash one shot, soft warm accent, vintage jazz character, controlled tone, dry, no loop
+bebop splash one shot, classic small splash, vintage tone, dry, no melody
+
+# --- Rock ---
+rock splash one shot, hard bright accent, controlled wash, dry, no loop
+indie rock splash one shot, soft natural splash, warm tone, dry, no melody
+
+# --- Pitched / tuned ---
+high pitched splash one shot, bright crisp accent, very short decay, dry, no loop
+low pitched splash one shot, dark warm splash, controlled tone, dry, no melody
+tuned splash one shot, pitched bright accent, controlled tone, dry, no loop
+
+# --- Processed / FX ---
+processed splash one shot, heavily compressed accent, sharp transient, dry, no loop
+distorted splash one shot, gritty saturated splash, controlled tone, dry, no melody
+filtered splash one shot, narrow-band accent, electronic character, dry, no loop
+reversed splash one shot, swelling splash building to attack, dry, no melody
+gated splash one shot, sharp splash with abrupt cutoff, controlled tone, dry, no loop
+metallic splash one shot, bright metallic accent, controlled tone, dry, no melody
+glitchy splash one shot, digital processed splash, sharp short tone, dry, no loop
+
+# --- More variants ---
+hardstyle splash one shot, aggressive bright accent, saturated tone, dry, no loop
+gabber splash one shot, brutal sharp splash, hard tone, dry, no melody
+phonk splash one shot, dark muffled accent, lo-fi character, dry, no loop
+breakcore splash one shot, processed digital splash, sharp attack, dry, no melody
+hyperpop splash one shot, pitched bright accent, modern character, dry, no loop
+amapiano splash one shot, soft warm splash, modern dance character, dry, no melody
+afrobeats splash one shot, organic bright splash, latin character, dry, no loop
+moombahton splash one shot, organic latin accent, controlled tone, dry, no melody
+chopped and screwed splash one shot, slowed warm accent, dusty character, dry, no loop
+plug splash one shot, modern processed splash, layered character, dry, no melody
+memphis rap splash one shot, vintage sampler splash, dark tone, dry, no loop
+trap soul splash one shot, smooth warm accent, modern character, dry, no melody
+new wave splash one shot, processed bright accent, 80s character, dry, no loop
+synthwave splash one shot, retro electronic splash, controlled tone, dry, no melody
+dub splash one shot, processed warm accent, reggae character, dry, no loop
+saturated splash one shot, warm analog saturation, controlled splash, dry, no melody
+tube saturated splash one shot, warm tube tone, bright accent, dry, no loop
+chorused splash one shot, modulated bright accent, controlled tone, dry, no melody
+phased splash one shot, swirling bright splash, controlled tone, dry, no loop
+compressed splash one shot, heavily pumped splash, sharp transient, dry, no melody
+chinese splash one shot, trashy bright accent, controlled tone, dry, no loop
+mini china splash one shot, sharp trashy accent, very short decay, dry, no melody
+bell splash one shot, bright bell-like accent, controlled tone, dry, no loop
+sizzle splash one shot, controlled bright splash with slight sizzle, dry, no melody
+maple splash one shot, soft warm accent, balanced attack, dry, no loop
+brass splash one shot, bright metallic accent, controlled tone, dry, no melody
+hammered splash one shot, complex bright accent, controlled attack, dry, no loop
+classical splash one shot, traditional orchestra small cymbal, controlled tone, dry, no loop

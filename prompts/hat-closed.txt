@@ -1,0 +1,145 @@
+# =========================================================================
+# Closed hi-hat one-shots — tight short clicks/chiks.
+# Bias: EDM (~55%), Hip-Hop (~30%), Other (~15%).
+# =========================================================================
+
+# --- 909 closed hat ---
+classic 909 closed hi hat one shot, sharp tight chik, short decay, dry, no loop
+tight 909 closed hat one shot, bright electronic click, controlled tone, dry, no melody
+hard 909 hat one shot, sharp transient, short snappy decay, mono, dry, no loop
+processed 909 hat one shot, saturated click, tight attack, dry, no melody
+pitched 909 hat one shot, tuned bright chik, short controlled tone, dry, no loop
+
+# --- 808 closed hat ---
+classic 808 closed hi hat one shot, sharp electronic click, short bright tone, dry, no loop
+808 hat one shot, vintage drum machine chik, tight controlled attack, dry, no melody
+tuned 808 hat one shot, pitched bright click, short snappy decay, dry, no loop
+warm 808 hat one shot, soft processed click, vintage tone, dry, no melody
+
+# --- Trap closed hat ---
+trap closed hat one shot, sharp tight chik, modern hip hop, dry, no loop, no melody
+modern trap hat one shot, bright crisp click, controlled short tone, dry, no loop
+hard trap hat one shot, sharp aggressive click, tight attack, dry, no melody
+atlanta trap hat one shot, processed bright chik, short controlled tone, dry, no loop
+slow trap hat one shot, soft warm click, modern character, dry, no melody
+pitched trap hat one shot, tuned bright click, short tone, dry, no loop
+
+# --- Drill closed hat ---
+drill closed hat one shot, dark sharp click, modern sampler tone, dry, no loop, no melody
+uk drill hat one shot, processed bright click, tight short tone, dry, no loop
+ny drill hat one shot, sharp crisp chik, controlled attack, dry, no melody
+dark drill hat one shot, processed click, short controlled tone, dry, no loop
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap closed hat one shot, dusty sampler chik, vintage tone, dry, no loop
+classic 90s hip hop hat one shot, warm sampled click, soft attack, dry, no melody
+golden era hat one shot, soft vintage chik, dusty character, dry, no loop
+east coast hat one shot, tight processed click, controlled tone, dry, no melody
+swing hat one shot, soft groovy chik, vintage sampler tone, dry, no loop
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop hat one shot, soft muffled chik, vinyl character, dry, no loop, no melody
+warm lo-fi hat one shot, dusty soft click, tape-saturated, dry, no loop
+vintage lo-fi hat one shot, muted soft click, lo-fi sampler tone, dry, no melody
+dusty lofi hat one shot, soft warm chik, vinyl crackle, dry, no loop
+
+# --- House / tech house ---
+house closed hat one shot, tight bright chik, controlled tone, dry, no loop, no melody
+tech house hat one shot, processed click, short snappy attack, dry, no loop
+deep house hat one shot, soft warm chik, smooth tone, dry, no melody
+classic house hat one shot, bright sharp click, mono, dry, no loop
+afro house hat one shot, organic shaker-like chik, soft attack, dry, no melody
+
+# --- Techno ---
+techno closed hat one shot, dark processed chik, tight short tone, dry, no loop, no melody
+minimal techno hat one shot, clean electronic click, controlled attack, dry, no loop
+hard techno hat one shot, aggressive bright chik, saturated tone, dry, no melody
+dub techno hat one shot, warm processed click, soft attack, dry, no loop
+
+# --- Trance ---
+trance closed hat one shot, sharp bright chik, electronic character, dry, no loop, no melody
+uplifting trance hat one shot, crisp bright click, mainroom ready, dry, no loop
+psytrance hat one shot, hard processed click, tight short attack, dry, no melody
+progressive trance hat one shot, smooth bright click, controlled tone, dry, no loop
+
+# --- Big-room / festival ---
+big room closed hat one shot, sharp festival chik, mainstage ready, dry, no loop, no melody
+EDM festival hat one shot, processed bright click, controlled tone, dry, no loop
+peak time hat one shot, hard transient, controlled tone, mastered, dry, no melody
+mainstage hat one shot, sharp click, club ready, dry, no loop
+
+# --- Drum and bass / jungle ---
+drum and bass closed hat one shot, processed sharp click, tight attack, dry, no loop
+jungle hat one shot, vintage break click, sampler tone, dry, no melody
+neurofunk hat one shot, processed digital chik, sharp attack, dry, no loop
+liquid dnb hat one shot, soft warm click, smooth tone, dry, no melody
+
+# --- Dubstep / bass music ---
+dubstep closed hat one shot, processed dark click, sharp attack, dry, no loop, no melody
+brostep hat one shot, sharp aggressive chik, controlled tone, dry, no loop
+riddim hat one shot, tight processed click, mono, dry, no melody
+deep dubstep hat one shot, soft warm chik, controlled tone, dry, no loop
+
+# --- Future bass / pop ---
+future bass hat one shot, smooth bright click, modern character, dry, no loop, no melody
+future house hat one shot, tight crisp chik, controlled tone, dry, no loop
+modern pop hat one shot, polished click, controlled tone, mastered, dry, no melody
+
+# --- West-coast ---
+west coast hat one shot, warm tight chik, classic hip hop tone, dry, no loop
+g funk hat one shot, soft warm click, vintage character, dry, no melody
+90s west coast hat one shot, dusty sampler chik, tight tone, dry, no loop
+
+# --- Acoustic studio ---
+acoustic closed hi hat one shot, real cymbal chik, tight short decay, dry, no loop
+studio recorded closed hat one shot, close mic acoustic tone, controlled attack, dry, no melody
+new beat closed hat one shot, bright metallic chik, controlled tone, dry, no loop
+sizzly closed hat one shot, slight sizzle on the close, sharp attack, dry, no melody
+
+# --- Rock / pop ---
+rock closed hat one shot, sharp metallic chik, tight controlled tone, dry, no loop
+indie rock hat one shot, natural ambient click, soft attack, dry, no melody
+pop closed hat one shot, polished bright chik, mastered tone, dry, no loop
+
+# --- Vintage drum machine ---
+linn drum closed hat one shot, vintage drum machine click, 80s character, dry, no loop
+roland tr-707 hat one shot, classic drum machine chik, electronic tone, dry, no melody
+oberheim dmx hat one shot, vintage sampler click, warm character, dry, no loop
+
+# --- Processed / experimental ---
+processed closed hat one shot, heavily compressed chik, sharp transient, dry, no loop
+distorted hat one shot, gritty saturated click, controlled attack, dry, no melody
+glitchy hat one shot, digital processed click, sharp short tone, dry, no loop
+metallic hat one shot, bright metallic chik, controlled tone, dry, no melody
+clicky hat one shot, sharp ultra short click, no body, dry, no loop
+
+# --- More variants ---
+hardstyle closed hat one shot, aggressive bright chik, saturated tone, dry, no loop
+gabber closed hat one shot, brutal sharp chik, hard tone, dry, no melody
+phonk closed hat one shot, dark muffled chik, lo-fi sampler character, dry, no loop
+breakcore closed hat one shot, processed digital chik, sharp attack, dry, no melody
+hyperpop closed hat one shot, pitched bright chik, modern character, dry, no loop
+amapiano closed hat one shot, soft warm chik, modern dance character, dry, no melody
+afrobeats closed hat one shot, organic warm chik, latin character, dry, no loop
+moombahton closed hat one shot, deep round chik, organic character, dry, no melody
+chopped and screwed closed hat one shot, slowed warm chik, dusty character, dry, no loop
+plug closed hat one shot, modern processed chik, layered character, dry, no melody
+memphis rap closed hat one shot, vintage sampler chik, dark tone, dry, no loop
+trap soul closed hat one shot, smooth warm chik, modern character, dry, no melody
+new wave closed hat one shot, processed bright chik, 80s character, dry, no loop
+synthwave closed hat one shot, retro electronic chik, controlled tone, dry, no melody
+dub closed hat one shot, processed warm chik, reggae character, dry, no loop
+ska closed hat one shot, sharp bright chik, vintage character, dry, no melody
+gospel closed hat one shot, organic warm chik, soulful character, dry, no loop
+country closed hat one shot, natural warm chik, acoustic character, dry, no melody
+folk closed hat one shot, soft organic chik, gentle attack, dry, no loop
+saturated closed hat one shot, warm analog saturation, controlled chik, dry, no melody
+tube saturated closed hat one shot, warm tube tone, bright chik, dry, no loop
+chorused closed hat one shot, modulated bright chik, controlled tone, dry, no melody
+phased closed hat one shot, swirling bright chik, controlled tone, dry, no loop
+compressed closed hat one shot, heavily pumped chik, sharp transient, dry, no melody
+maple closed hat one shot, soft warm chik, balanced attack, dry, no loop
+brass closed hat one shot, bright metallic chik, controlled tone, dry, no melody
+hand hammered closed hat one shot, complex bright chik, controlled attack, dry, no loop
+ride bell layer closed hat one shot, hybrid ride bell and hi hat, sharp attack, dry, no melody
+foot pedal closed hat one shot, natural acoustic chik, controlled attack, dry, no loop

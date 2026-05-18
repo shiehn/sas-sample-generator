@@ -1,0 +1,147 @@
+# =========================================================================
+# Shaker one-shots — single hits, NOT loops or rhythms. Bright noisy
+# accents from seeds/sand inside a closed container.
+# Bias: ~45% EDM/House, ~25% Hip-Hop, ~30% Latin/Acoustic/Other.
+# =========================================================================
+
+# --- Acoustic shakers ---
+acoustic shaker one shot, single shake hit, bright seed noise, dry, no loop
+egg shaker one shot, plastic egg shake, bright tight noise, dry, no melody
+maraca one shot, classic latin shaker hit, warm wooden seed noise, dry, no loop
+caxixi one shot, brazilian woven shaker, bright accent, dry, no melody
+chocalho one shot, brazilian metal shaker hit, bright noisy accent, dry, no loop
+small shaker one shot, tight bright seed noise, very short decay, dry, no melody
+large shaker one shot, full warm seed noise, medium decay, dry, no loop
+metal shaker one shot, bright metallic seed noise, controlled attack, dry, no melody
+wooden shaker one shot, warm dark seed noise, soft attack, dry, no loop
+seed shaker one shot, organic seed sound, bright tone, dry, no melody
+
+# --- Studio recorded ---
+studio shaker one shot, close mic acoustic shake, bright controlled noise, dry, no loop
+processed shaker one shot, compressed bright shake, controlled tone, dry, no melody
+overdubbed shaker one shot, dense layered shake, controlled decay, dry, no loop
+
+# --- Latin / world ---
+latin shaker one shot, classic salsa shake, bright noisy accent, dry, no loop
+brazilian shaker one shot, samba percussion hit, warm noise, dry, no melody
+afro percussion shaker one shot, organic shake, warm tone, dry, no loop
+cuban shaker one shot, sharp latin shake, bright noise, dry, no melody
+caribbean shaker one shot, tropical shake, bright accent, dry, no loop
+
+# --- House / dance ---
+house shaker one shot, bright noisy accent, controlled decay, dry, no loop
+deep house shaker one shot, soft warm shake, smooth noise, dry, no melody
+tech house shaker one shot, processed bright shake, controlled tone, dry, no loop
+classic house shaker one shot, bright shake accent, club ready, dry, no melody
+afro house shaker one shot, organic bright shake, controlled decay, dry, no loop
+disco shaker one shot, bright shake accent, vintage character, dry, no melody
+funk shaker one shot, sharp bright shake, tight tone, vintage, dry, no loop
+
+# --- Techno ---
+techno shaker one shot, dark processed shake, controlled tone, dry, no loop
+minimal techno shaker one shot, clean electronic shake, controlled tone, dry, no melody
+hard techno shaker one shot, aggressive bright shake, saturated, dry, no loop
+dub techno shaker one shot, warm processed shake, soft tone, dry, no melody
+
+# --- Trance ---
+trance shaker one shot, sharp bright shake, electronic character, dry, no loop
+uplifting trance shaker one shot, crisp bright noise, mainroom ready, dry, no melody
+progressive trance shaker one shot, smooth bright shake, controlled tone, dry, no loop
+psytrance shaker one shot, hard processed shake, tight tone, dry, no melody
+
+# --- Big-room / festival ---
+big room shaker one shot, sharp festival shake, mainstage ready, dry, no loop
+EDM festival shaker one shot, processed bright shake, controlled tone, dry, no melody
+
+# --- Drum and bass ---
+drum and bass shaker one shot, processed sharp shake, controlled tone, dry, no loop
+jungle shaker one shot, vintage break shake, sampler tone, dry, no melody
+liquid dnb shaker one shot, soft warm shake, smooth tone, dry, no loop
+
+# --- Dubstep / bass music ---
+dubstep shaker one shot, processed dark shake, sharp attack, dry, no loop
+brostep shaker one shot, sharp aggressive shake, controlled tone, dry, no melody
+
+# --- Trap / Hip-Hop ---
+trap shaker one shot, sharp bright shake, modern hip hop, controlled tone, dry, no loop
+modern trap shaker one shot, crisp bright shake, controlled tone, dry, no melody
+hard trap shaker one shot, aggressive bright shake, saturated tone, dry, no loop
+atlanta trap shaker one shot, processed bright shake, modern character, dry, no melody
+
+# --- Drill ---
+drill shaker one shot, dark sharp shake, modern sampler tone, dry, no loop
+uk drill shaker one shot, processed bright shake, tight tone, dry, no melody
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap shaker one shot, dusty sampler shake, vintage tone, dry, no loop
+classic 90s hip hop shaker one shot, warm sampled shake, soft tone, dry, no melody
+golden era shaker one shot, soft vintage shake, dusty character, dry, no loop
+east coast shaker one shot, tight processed shake, controlled tone, dry, no melody
+west coast shaker one shot, warm bright shake, classic hip hop tone, dry, no loop
+g funk shaker one shot, soft warm shake, vintage character, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop shaker one shot, soft muffled shake, vinyl character, dry, no loop
+warm lo-fi shaker one shot, dusty soft shake, tape-saturated, dry, no melody
+vintage lo-fi shaker one shot, muted soft shake, lo-fi sampler tone, dry, no loop
+
+# --- Future bass / pop ---
+future bass shaker one shot, smooth bright shake, modern character, dry, no loop
+modern pop shaker one shot, polished shake, controlled tone, mastered, dry, no melody
+
+# --- Rock / indie ---
+rock shaker one shot, sharp bright shake, controlled tone, dry, no loop
+indie rock shaker one shot, natural acoustic shake, warm tone, dry, no melody
+classic rock shaker one shot, full bright shake, vintage character, dry, no loop
+
+# --- Jazz ---
+jazz shaker one shot, soft warm shake, vintage jazz character, dry, no loop
+brushed shaker one shot, soft swept shake, gentle attack, dry, no melody
+
+# --- Pitched / tuned ---
+high pitched shaker one shot, bright crisp shake, tight tone, dry, no loop
+low pitched shaker one shot, dark warm shake, controlled tone, dry, no melody
+tuned shaker one shot, pitched bright shake, clear tone, dry, no loop
+
+# --- Vintage drum machine ---
+linn drum shaker one shot, vintage drum machine shake, 80s character, dry, no loop
+roland tr-727 shaker one shot, classic drum machine shake, electronic tone, dry, no melody
+
+# --- Processed / FX ---
+processed shaker one shot, heavily compressed shake, controlled tone, dry, no loop
+distorted shaker one shot, gritty saturated shake, controlled tone, dry, no melody
+filtered shaker one shot, narrow-band shake, electronic character, dry, no loop
+reversed shaker one shot, swelling shake building to peak, dry, no melody
+gated shaker one shot, sharp shake with abrupt cutoff, controlled tone, dry, no loop
+metallic shaker one shot, bright metallic shake, controlled tone, dry, no melody
+glitchy shaker one shot, digital processed shake, sharp tone, dry, no loop
+
+# --- More variants ---
+hardstyle shaker one shot, aggressive bright shake, saturated tone, dry, no loop
+phonk shaker one shot, dark muffled shake, lo-fi character, dry, no melody
+hyperpop shaker one shot, pitched bright shake, modern character, dry, no loop
+amapiano shaker one shot, soft warm shake, modern dance character, dry, no melody
+afrobeats shaker one shot, organic warm shake, latin character, dry, no loop
+moombahton shaker one shot, organic latin shake, controlled tone, dry, no melody
+chopped and screwed shaker one shot, slowed warm shake, dusty character, dry, no loop
+plug shaker one shot, modern processed shake, layered character, dry, no melody
+memphis rap shaker one shot, vintage sampler shake, dark tone, dry, no loop
+trap soul shaker one shot, smooth warm shake, modern character, dry, no melody
+new wave shaker one shot, processed bright shake, 80s character, dry, no loop
+synthwave shaker one shot, retro electronic shake, controlled tone, dry, no melody
+saturated shaker one shot, warm analog saturation, bright shake, dry, no loop
+tube saturated shaker one shot, warm tube tone, bright shake, dry, no melody
+chorused shaker one shot, modulated bright shake, controlled tone, dry, no loop
+phased shaker one shot, swirling bright shake, controlled tone, dry, no melody
+compressed shaker one shot, heavily pumped shake, sharp transient, dry, no loop
+breakcore shaker one shot, processed digital shake, sharp attack, dry, no melody
+gabber shaker one shot, brutal sharp shake, hard tone, dry, no loop
+ska shaker one shot, sharp bright shake, vintage character, dry, no melody
+gospel shaker one shot, organic warm shake, soulful character, dry, no loop
+country shaker one shot, natural warm shake, acoustic character, dry, no melody
+folk shaker one shot, soft organic shake, gentle attack, dry, no loop
+reggae shaker one shot, warm organic shake, dub character, dry, no melody
+dub shaker one shot, processed warm shake, reggae character, dry, no loop
+ganza shaker one shot, brazilian metal shaker, bright accent, dry, no melody
+bell shaker one shot, jingle shaker with bell, bright tone, dry, no loop
+plastic shaker one shot, hard plastic seed sound, bright tone, dry, no melody

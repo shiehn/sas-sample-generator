@@ -1,0 +1,146 @@
+# =========================================================================
+# Low tom / floor tom one-shots — low-pitched, deep, longer decay.
+# Bias: ~40% EDM, ~30% Hip-Hop, ~30% Acoustic/Rock.
+# =========================================================================
+
+# --- Acoustic studio floor tom ---
+floor tom one shot, classic acoustic deep tom hit, full warm body, natural decay, dry, no loop
+low tom one shot, full bodied stick hit, deep warm tone, dry, no melody
+14 inch floor tom one shot, deep warm body, controlled decay, dry, no loop
+16 inch floor tom one shot, full deep body, natural decay, dry, no melody
+18 inch floor tom one shot, very deep tom, long natural decay, dry, no loop
+maple floor tom one shot, warm woody deep body, balanced attack, dry, no melody
+birch floor tom one shot, sharp deep body, controlled decay, dry, no loop
+concert low tom one shot, single-headed low tom, focused deep tone, dry, no melody
+heavy floor tom one shot, dense warm body, long decay, dry, no loop
+detuned floor tom one shot, slack-tuned tom with pitch drop, warm deep body, dry, no melody
+
+# --- 909 low tom ---
+classic 909 low tom one shot, deep electronic tom, low sustained tone, dry, no loop
+909 low tom one shot, processed deep tom hit, controlled decay, dry, no melody
+processed 909 low tom one shot, saturated low tone, EDM ready, dry, no loop
+pitched 909 low tom one shot, tuned low tom, sustained tone, dry, no melody
+
+# --- 808 low tom ---
+classic 808 low tom one shot, deep electronic tom, low sustained tone, dry, no loop
+808 low tom one shot, vintage drum machine deep tom, controlled body, dry, no melody
+tuned 808 low tom one shot, pitched deep tom, sustained tone, dry, no loop
+warm 808 low tom one shot, soft processed deep tom, vintage tone, dry, no melody
+sub 808 low tom one shot, very deep tom with sub bass, sustained low tone, dry, no loop
+
+# --- Trap low tom ---
+trap low tom one shot, deep processed tom, modern hip hop, dry, no loop, no melody
+modern trap low tom one shot, deep crisp tom, controlled tone, dry, no loop
+hard trap low tom one shot, aggressive deep tom, saturated tone, dry, no melody
+atlanta trap low tom one shot, processed deep tom, modern character, dry, no loop
+
+# --- Drill low tom ---
+drill low tom one shot, dark deep tom, modern sampler tone, dry, no loop, no melody
+uk drill low tom one shot, processed deep tom, tight tone, dry, no loop
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap low tom one shot, dusty sampler deep tom, vintage tone, dry, no loop
+classic 90s hip hop low tom one shot, warm sampled deep tom, soft attack, dry, no melody
+golden era low tom one shot, soft vintage deep tom, dusty character, dry, no loop
+east coast low tom one shot, tight processed deep tom, controlled tone, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop low tom one shot, soft muffled deep tom, vinyl character, dry, no loop
+warm lo-fi low tom one shot, dusty soft deep tom, tape-saturated, dry, no melody
+vintage lo-fi low tom one shot, muted soft deep tom, lo-fi sampler tone, dry, no loop
+
+# --- House / tech house ---
+house low tom one shot, processed deep tom, controlled body, dry, no loop
+deep house low tom one shot, soft warm deep tom, smooth decay, dry, no melody
+tech house low tom one shot, processed deep tom, controlled tone, dry, no loop
+afro house low tom one shot, organic deep tom, controlled decay, dry, no melody
+
+# --- Techno ---
+techno low tom one shot, dark processed deep tom, controlled tone, dry, no loop
+minimal techno low tom one shot, clean electronic deep tom, controlled body, dry, no melody
+hard techno low tom one shot, aggressive deep tom, saturated tone, dry, no loop
+dub techno low tom one shot, warm processed deep tom, soft attack, dry, no melody
+
+# --- Trance ---
+trance low tom one shot, deep electronic tom, electronic character, dry, no loop
+uplifting trance low tom one shot, crisp deep tom, mainroom ready, dry, no melody
+progressive trance low tom one shot, smooth deep tom, controlled tone, dry, no loop
+psytrance low tom one shot, hard processed deep tom, tight tone, dry, no melody
+
+# --- Big-room / festival ---
+big room low tom one shot, deep festival tom, mainstage ready, dry, no loop
+EDM festival low tom one shot, processed deep tom, controlled tone, dry, no melody
+peak time low tom one shot, hard transient deep tom, mastered tone, dry, no loop
+
+# --- Drum and bass ---
+drum and bass low tom one shot, processed deep tom, controlled tone, dry, no loop
+jungle low tom one shot, vintage break deep tom, sampler tone, dry, no melody
+neurofunk low tom one shot, processed digital deep tom, sharp attack, dry, no loop
+liquid dnb low tom one shot, soft warm deep tom, smooth tone, dry, no melody
+
+# --- Dubstep / bass music ---
+dubstep low tom one shot, processed dark deep tom, sharp attack, dry, no loop
+brostep low tom one shot, aggressive deep tom, controlled tone, dry, no melody
+riddim low tom one shot, tight processed deep tom, controlled decay, dry, no loop
+deep dubstep low tom one shot, very deep tom, sub bass character, dry, no melody
+
+# --- Future bass / pop ---
+future bass low tom one shot, smooth deep tom, modern character, dry, no loop
+modern pop low tom one shot, polished deep tom, controlled tone, mastered, dry, no melody
+
+# --- Rock ---
+rock floor tom one shot, hard deep tom hit, controlled body, dry, no loop
+heavy rock floor tom one shot, aggressive deep tom, dense body, dry, no melody
+indie rock low tom one shot, natural acoustic deep tom, soft attack, dry, no loop
+punk rock low tom one shot, sharp explosive deep tom, controlled body, dry, no melody
+classic rock floor tom one shot, full deep tom hit, vintage character, dry, no loop
+
+# --- Funk / disco ---
+funk low tom one shot, sharp deep tom, tight body, vintage, dry, no loop
+disco low tom one shot, deep tom hit, vintage character, dry, no melody
+soul low tom one shot, warm soft deep tom, gentle decay, dry, no loop
+
+# --- Jazz ---
+jazz low tom one shot, soft warm deep tom, vintage jazz character, dry, no loop
+bebop low tom one shot, classic acoustic deep tom, vintage tone, dry, no melody
+brushed low tom one shot, soft swept deep tom, gentle attack, dry, no loop
+
+# --- World ---
+afro percussion low tom one shot, organic deep tom, warm body, dry, no loop
+djembe low one shot, deep djembe bass hit, warm body, dry, no melody
+talking drum low one shot, deep pitched percussion, warm body, dry, no loop
+
+# --- Vintage drum machine ---
+linn drum low tom one shot, vintage drum machine deep tom, 80s character, dry, no loop
+roland tr-707 low tom one shot, classic drum machine deep tom, electronic tone, dry, no melody
+oberheim dmx low tom one shot, vintage sampler deep tom, warm character, dry, no loop
+
+# --- Processed / FX ---
+processed low tom one shot, heavily compressed deep tom, controlled tone, dry, no loop
+distorted low tom one shot, gritty saturated deep tom, controlled tone, dry, no melody
+filtered low tom one shot, narrow-band deep tom, electronic character, dry, no loop
+reversed low tom one shot, swelling deep tom building to attack, dry, no melody
+gated low tom one shot, sharp deep tom with abrupt cutoff, controlled tone, dry, no loop
+pitched low tom one shot, tuned deep tom, sustained tone, dry, no melody
+
+# --- More variants ---
+hardstyle low tom one shot, aggressive deep tom, saturated tone, dry, no loop
+gabber low tom one shot, brutal deep tom, overdriven, dry, no melody
+phonk low tom one shot, dark muffled deep tom, lo-fi character, dry, no loop
+chopped and screwed low tom one shot, slowed deep tom, warm character, dry, no melody
+moombahton low tom one shot, deep round tom, organic character, dry, no loop
+afrobeats low tom one shot, organic deep tom, warm body, dry, no melody
+hyperpop low tom one shot, pitched deep tom, modern character, dry, no loop
+plug low tom one shot, modern processed deep tom, controlled tone, dry, no melody
+breakcore low tom one shot, processed digital deep tom, sharp attack, dry, no loop
+ambient low tom one shot, soft swelling deep tom, dry, no melody
+cinematic low tom one shot, dramatic deep tom, controlled body, dry, no loop
+hybrid low tom one shot, layered acoustic and electronic, deep tone, dry, no melody
+trash low tom one shot, dirty processed tom, controlled tone, dry, no loop
+saturated low tom one shot, warm analog saturation, deep tone, dry, no melody
+tube tom one shot, warm tube tone, deep body, dry, no loop
+bit crushed low tom one shot, digital crushed deep tom, controlled tone, dry, no melody
+chorused low tom one shot, modulated deep tom, controlled tone, dry, no loop
+phased low tom one shot, swirling deep tom, controlled tone, dry, no melody
+detuned floor tom hit one shot, very slack tuned tom with pitch drop, dry, no loop
+deep concert tom one shot, single-headed low tom, focused deep tone, dry, no melody

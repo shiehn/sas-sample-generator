@@ -23,8 +23,13 @@ see [`stable_audio_open_batch_oneshot_guide.md`](stable_audio_open_batch_oneshot
 
 ## What you'll provide
 
-A plain text file with **one description per line** — that's the entire input
-to this project. Each line becomes one generated WAV sample. Example:
+A plain text file with **one description per line** for each drum/percussion
+category you want. The repo ships with **14 starter categories** (1400+
+prompts total) — you can run them as-is, edit them, or subset which to
+generate.
+
+Each line in a `prompts/<category>.txt` becomes one generated WAV. Example
+from [`prompts/kick.txt`](prompts/kick.txt):
 
 ```text
 # 909-style
@@ -37,13 +42,35 @@ warm 808 kick one shot, saturated low end, medium decay, dry, no melody, no loop
 ```
 
 Blank lines and lines starting with `#` are ignored (handy for grouping).
-Aim for ~10 words per line. Always include phrases like `one shot, no loop,
-no hi hats, no snare` so the model doesn't render a rhythmic loop.
+Aim for ~10 words per line. Always include phrases like `one shot, no loop`
+so the model doesn't render a rhythmic loop.
 
-A starter file is already in the repo at
-[`prompts/kicks.txt`](prompts/kicks.txt) (28 kick prompts across 10
-categories) — use it as-is for your first run, then write your own once
-you've heard what the model can do.
+### Categories shipped with the repo
+
+| Category | Duration | Prompts |
+|---|---|---|
+| `kick` | 1.5s | 102 |
+| `snare-standard` | 1.0s | 101 |
+| `snare-rim` | 0.75s | 100 |
+| `hat-closed` | 0.5s | 103 |
+| `hat-open` | 1.5s | 101 |
+| `cymbal-ride` | 2.5s | 100 |
+| `cymbal-crash` | 3.0s | 100 |
+| `cymbal-splash` | 1.5s | 100 |
+| `tamborine` | 1.0s | 101 |
+| `shaker` | 0.75s | 102 |
+| `tom-hi` | 1.0s | 100 |
+| `tom-mid` | 1.25s | 100 |
+| `tom-low` | 1.5s | 100 |
+| `hit` | 1.5s | 102 |
+| **Total** |  | **1412** |
+
+Output filenames are content-addressed: `{category}-{8-char-hash}.wav`. Same
+prompt + seed → same filename → safely re-runnable with `--skip-existing`.
+
+To **subset** what gets generated, edit
+[`scripts/categories.txt`](scripts/categories.txt) — comment out any line to
+skip that category.
 
 ---
 
@@ -147,78 +174,80 @@ hf auth login
 Paste your HF token (One-Time Setup A). Answer `n` to "Add token as git
 credential".
 
-### 5. (Optional) Write your own prompts list
+### 5. (Optional) Edit prompts and choose categories
 
-The repo ships with `prompts/kicks.txt` (28 kick-drum prompts across 10
-categories). **Use it as-is to test, or skip ahead to step 6.**
+The 14 prompt files are already in `prompts/<category>.txt`. To run them
+as-is, **skip to step 6**.
 
-To make your own: edit `prompts/<category>.txt` — one description per line,
-`#` for comments:
+To customize:
 
-```text
-# 808-style
-deep 808 kick one shot, long sub bass decay, dry, no melody, no loop
-warm 808 kick one shot, saturated low end, medium decay, dry
+- **Edit content**: `nano prompts/kick.txt` (or scp over your own version,
+  or edit on Mac → `git push` → `git pull` on the pod).
+- **Subset which categories run**: edit
+  [`scripts/categories.txt`](scripts/categories.txt) and comment out the
+  lines you want to skip. Useful for prompt iteration on a single category.
 
-# Lo-fi
-warm lo-fi kick one shot, soft transient, dusty sampler texture, dry
-```
+### 6. Run the whole pipeline (~5 hours for all 14, ~15 min for one)
 
-Use `nano prompts/kicks.txt` on the pod, or edit locally and `scp` it over,
-or edit + `git push` and `git pull` on the pod.
-
-### 6. Convert the text list to JSONL
+Wrap the run in `tmux` first so an SSH drop doesn't kill the job:
 
 ```bash
-python3 scripts/list_to_jsonl.py \
-  --in prompts/kicks.txt \
-  --out prompts/kicks.jsonl \
-  --prefix kick
+tmux new -s sas
+./scripts/run_all.sh 2>&1 | tee /workspace/run.log
 ```
 
-Use `--prefix kick` for kick IDs (`kick_0001`, `kick_0002`, …). Switch to
-`--prefix snare` etc. for other categories.
+(Detach with `Ctrl-b d`; reattach later with `tmux attach -t sas`.)
 
-### 7. Generate the audio (~5–10 min for 30 prompts)
+The wrapper does three things in order:
+
+1. For each enabled category, run `list_to_jsonl.py` to build
+   `prompts/<cat>.jsonl`.
+2. Run `batch_generate.py` **once** with all the JSONL paths. The model
+   pipeline loads only once — looping per-category would re-load it 14
+   times and waste ~30 minutes.
+3. Run `postprocess_oneshots.py --category <cat>` for each category in
+   turn (trim, normalize, mono).
+
+First call downloads Stable Audio Open (~3–5 GB, ~3 min, one-time). Then
+~10 sec/sample × prompt count.
+
+**Single-category iteration** (when you're tuning prompts):
 
 ```bash
-python scripts/batch_generate.py \
-  --prompts prompts/kicks.jsonl \
-  --out /workspace/outputs/raw \
-  --steps 120 \
-  --skip-existing 2>&1 | tee /workspace/batch.log
+# 1. Edit prompts/kick.txt
+nano prompts/kick.txt
+
+# 2. Comment out everything except `kick` in scripts/categories.txt
+# 3. Re-run — --skip-existing means you only generate the new/changed prompts
+./scripts/run_all.sh
 ```
 
-First call downloads Stable Audio Open (~3–5 GB, ~3 min). Then a tqdm bar at
-~10 sec/sample. The `--skip-existing` flag lets you re-run safely if anything
-dies mid-batch.
+### 7. (skipped — folded into step 6)
 
-### 8. Post-process
+### 8. Verify the outputs
 
 ```bash
-python scripts/postprocess_oneshots.py \
-  --in-dir /workspace/outputs/raw \
-  --out-dir /workspace/outputs/processed \
-  --rejected-dir /workspace/outputs/rejected \
-  --manifest /workspace/outputs/manifests/run_manifest.csv \
-  --mono \
-  --max-seconds 2.5
+ls /workspace/outputs/processed/
+# Should show 14 subdirs, each with ~100 .wav files
+find /workspace/outputs/processed -name "*.wav" | wc -l
+# Should show ~1400 (minus any auto-rejected silent samples)
 ```
 
-Trims silence, normalizes peaks, downmixes to mono, writes a manifest CSV.
-Last line tells you `Processed: N`, `Rejected: M`.
+Per-category manifests with CSV stats live at
+`/workspace/outputs/manifests/<category>.csv`.
 
 ### 9. Zip and download
 
 On the pod:
 ```bash
 cd /workspace
-tar czf run.tar.gz outputs/processed outputs/manifests outputs/raw/_metadata
+tar czf run.tar.gz outputs/processed outputs/manifests
 ls -lh run.tar.gz
 ```
 
 (We use `tar` rather than `zip` because the stock RunPod PyTorch image
-doesn't ship `zip`. `tar` is preinstalled everywhere.)
+doesn't ship `zip`. `tar` is preinstalled everywhere. `tar` also recurses
+into the per-category subdirs automatically.)
 
 In a **second** Mac terminal (don't close the SSH session yet — you still
 need it for step 10):
@@ -231,6 +260,15 @@ open outputs/processed                 # Finder + QuickLook to audition
 ```
 
 `<POD_PORT>` and `<POD_IP>` are the same ones from your step-1 SSH command.
+The unpacked structure is one folder per category:
+
+```text
+outputs/processed/
+  kick/        kick-c1da23da.wav   kick-e5d95885.wav   ...
+  snare-standard/   snare-standard-...wav
+  hat-closed/  ...
+  ...etc
+```
 
 ### 10. ⚠️ TERMINATE THE POD
 
@@ -257,17 +295,35 @@ sas-sample-generator/
 ├── stable_audio_open_batch_oneshot_guide.md    ← long-form background
 ├── requirements.txt
 ├── prompts/
-│   ├── kicks.txt                               ← starter kick-drum prompts (28)
-│   ├── kicks.jsonl                             ← generated by list_to_jsonl.py
-│   └── kicks_smoke_test.jsonl                  ← 3 prompts for a free wire-check
+│   ├── kick.txt          kick.jsonl
+│   ├── snare-standard.txt    snare-standard.jsonl
+│   ├── snare-rim.txt    snare-rim.jsonl
+│   ├── hat-closed.txt   hat-closed.jsonl
+│   ├── hat-open.txt     hat-open.jsonl
+│   ├── cymbal-ride.txt  cymbal-ride.jsonl
+│   ├── cymbal-crash.txt cymbal-crash.jsonl
+│   ├── cymbal-splash.txt cymbal-splash.jsonl
+│   ├── tamborine.txt    tamborine.jsonl
+│   ├── shaker.txt       shaker.jsonl
+│   ├── tom-hi.txt       tom-hi.jsonl
+│   ├── tom-mid.txt      tom-mid.jsonl
+│   ├── tom-low.txt      tom-low.jsonl
+│   └── hit.txt          hit.jsonl
 ├── scripts/
-│   ├── setup.sh                                ← step 3
-│   ├── list_to_jsonl.py                        ← step 6
-│   ├── batch_generate.py                       ← step 7
-│   ├── postprocess_oneshots.py                 ← step 8
+│   ├── setup.sh                                ← step 3 — bootstrap the pod
+│   ├── run_all.sh                              ← step 6 — full pipeline
+│   ├── categories.txt                          ← which categories to include
+│   ├── category_config.py                      ← per-category negatives + durations
+│   ├── list_to_jsonl.py                        ← .txt → .jsonl converter (called by run_all)
+│   ├── batch_generate.py                       ← GPU inference (called by run_all)
+│   ├── postprocess_oneshots.py                 ← trim / normalize (called by run_all)
 │   ├── benchmark.py                            ← optional: per-sample cost math
 │   └── sync.sh                                 ← optional: rclone to B2 / R2
 └── outputs/                                    ← gitignored; generated WAVs land here
+    ├── raw/<category>/                         ← raw model output
+    ├── processed/<category>/                   ← trimmed + normalized
+    ├── rejected/<category>/                    ← samples auto-rejected for silence
+    └── manifests/<category>.csv                ← per-category processing log
 ```
 
 ---
@@ -283,23 +339,29 @@ sas-sample-generator/
 | `batch_generate.py` errors `CUDA out of memory` | duration too long for VRAM | lower `--default-duration` or `--num-waveforms-per-prompt 1` |
 | All samples sound like loops | prompts not specific enough | add `one shot, no loop, no hi hats, no snare` to every prompt |
 | Too much reverb | model adds ambience by default | add `dry, no reverb, no ambience` to prompts |
+| Generated WAV doesn't sound like the target category (e.g. hats sound like snares) | the per-category `negative_prompt` may be excluding the target — bug in `scripts/category_config.py` | open `scripts/category_config.py`, audit the negative for that category; nothing in it should match the target sound |
+| `run_all.sh` skips a category | corresponding `prompts/<cat>.txt` is missing or has only comments | check `prompts/` has the .txt file and contains non-comment lines |
+| SSH disconnects mid-run | network blip + foregrounded run | use `tmux new -s sas` BEFORE running, reattach with `tmux attach -t sas` |
 
 ---
 
 ## Cost recap
 
-A single run, on an RTX A6000 at $0.49/hr:
+On an RTX A6000 at $0.49/hr. Both numbers below assume a fresh pod (so they
+include the one-time bootstrap + model download).
 
-| Phase | Time | Cost |
+| Run shape | Time | Cost |
 |---|---|---|
-| Pod boot + `setup.sh` | ~5 min | ~$0.04 |
-| HF model download (first call only) | ~3 min | ~$0.02 |
-| Generate ~30 samples | ~5 min | ~$0.04 |
-| Post-process + zip + scp | ~2 min | ~$0.02 |
-| **One-batch total** | **~15 min** | **~$0.12** |
+| **Single category** (~100 samples) | ~20 min | ~$0.16 |
+| **All 14 categories** (~1400 samples) | ~5 hr | ~$2.45 |
 
-If you keep the pod alive between runs in the same session (e.g., iterating on
-prompts), each subsequent generation is just step 7 again — no setup cost.
+The "all 14" cost is dominated by GPU inference time (~10 sec × 1400 = ~4 hr).
+The bootstrap + model download is one-time per pod and shared across all
+categories, which is why the per-sample cost stays roughly flat as you scale.
+
+If you keep the pod alive between runs in the same session (e.g., iterating
+prompts on one category), each subsequent run is just step 6 again with
+`--skip-existing` skipping work you've already paid for.
 
 ---
 

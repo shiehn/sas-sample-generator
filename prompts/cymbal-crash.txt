@@ -1,0 +1,144 @@
+# =========================================================================
+# Crash cymbal one-shots — explosive impact with long wash.
+# Bias: ~50% EDM (crashes are huge in EDM drops), ~25% Hip-Hop, ~25% Other.
+# =========================================================================
+
+# --- 909 / electronic crash ---
+classic 909 crash cymbal one shot, bright explosive wash, mainstage character, dry, no loop
+909 crash one shot, sharp electronic crash, medium wash, dry, no melody
+processed 909 crash one shot, saturated bright wash, EDM ready, dry, no loop
+pitched 909 crash one shot, tuned bright crash, controlled wash, dry, no melody
+
+# --- 808 crash ---
+808 crash cymbal one shot, vintage drum machine crash, bright wash, dry, no loop
+warm 808 crash one shot, soft processed crash, vintage tone, dry, no melody
+tuned 808 crash one shot, pitched bright crash, medium wash, dry, no loop
+
+# --- Big-room / festival crash ---
+big room crash cymbal one shot, explosive festival impact, long bright wash, mainstage ready, dry, no loop
+EDM festival crash one shot, processed bright crash, long sustain, mastered tone, dry, no melody
+peak time crash one shot, hard transient, dense bright wash, club ready, dry, no loop
+mainstage crash one shot, sharp explosive impact, controlled long wash, dry, no melody
+EDM drop crash one shot, huge bright crash, mainroom character, dry, no loop
+
+# --- Trance crash ---
+trance crash cymbal one shot, sharp explosive impact, bright sustained wash, mainroom, dry, no loop
+uplifting trance crash one shot, crisp bright crash, long sustain, dry, no melody
+psytrance crash one shot, hard processed crash, controlled wash, dry, no loop
+progressive trance crash one shot, smooth bright crash, controlled long wash, dry, no melody
+hard trance crash one shot, overdriven explosive crash, bright wash, dry, no loop
+
+# --- House / tech house ---
+house crash cymbal one shot, bright sustained crash, controlled wash, dry, no loop
+deep house crash one shot, soft warm crash, smooth long wash, dry, no melody
+tech house crash one shot, processed crash, controlled medium wash, dry, no loop
+afro house crash one shot, organic warm crash, controlled wash, dry, no melody
+
+# --- Techno ---
+techno crash one shot, dark processed crash, controlled medium wash, dry, no loop
+minimal techno crash one shot, clean electronic crash, controlled wash, dry, no melody
+hard techno crash one shot, aggressive bright crash, saturated wash, dry, no loop
+dub techno crash one shot, warm processed crash, soft long wash, dry, no melody
+
+# --- Drum and bass ---
+drum and bass crash one shot, processed sharp crash, controlled long wash, dry, no loop
+jungle crash one shot, vintage break crash, sampler tone, medium wash, dry, no melody
+neurofunk crash one shot, processed digital crash, sharp attack, controlled wash, dry, no loop
+liquid dnb crash one shot, soft warm crash, smooth long wash, dry, no melody
+
+# --- Dubstep / bass music ---
+dubstep crash one shot, processed dark crash, sharp attack, long wash, dry, no loop
+brostep crash one shot, sharp aggressive crash, controlled bright wash, dry, no melody
+riddim crash one shot, tight processed crash, controlled medium wash, dry, no loop
+deep dubstep crash one shot, warm dark crash, controlled wash, dry, no melody
+
+# --- Trap / Hip-Hop ---
+trap crash cymbal one shot, sharp bright crash, modern hip hop, controlled wash, dry, no loop
+modern trap crash one shot, crisp explosive impact, controlled long wash, dry, no melody
+hard trap crash one shot, aggressive bright crash, saturated wash, dry, no loop
+atlanta trap crash one shot, processed bright crash, modern character, dry, no melody
+
+# --- Drill ---
+drill crash one shot, dark sharp crash, modern sampler tone, controlled wash, dry, no loop
+uk drill crash one shot, processed bright crash, tight wash, dry, no melody
+ny drill crash one shot, sharp explosive crash, modern character, dry, no loop
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap crash one shot, dusty sampler crash, vintage tone, controlled wash, dry, no loop
+classic 90s hip hop crash one shot, warm sampled crash, soft long wash, dry, no melody
+golden era crash one shot, soft vintage crash, dusty character, dry, no loop
+east coast crash one shot, tight processed crash, controlled wash, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop crash one shot, soft muffled crash, vinyl character, dry, no loop
+warm lo-fi crash one shot, dusty soft crash, tape-saturated, dry, no melody
+vintage lo-fi crash one shot, muted soft crash, lo-fi sampler tone, dry, no loop
+
+# --- Acoustic studio crash ---
+acoustic crash cymbal one shot, real cymbal hit, natural long wash, dry, no loop
+16 inch crash one shot, bright explosive impact, medium wash, dry studio sample, no melody
+18 inch crash one shot, full bright impact, long natural wash, dry, no loop
+20 inch crash one shot, dark warm crash, long sustain, dry, no melody
+hand hammered crash one shot, complex bright crash, controlled wash, dry, no loop
+fast crash one shot, quick attack with short wash, controlled tone, dry, no melody
+heavy crash one shot, dense explosive impact, long sustain, dry, no loop
+thin crash one shot, bright explosive impact, quick decay, dry, no melody
+
+# --- Rock ---
+rock crash cymbal one shot, hard explosive impact, long bright wash, dry, no loop
+heavy rock crash one shot, aggressive bright crash, dense sustain, dry, no melody
+indie rock crash one shot, soft natural crash, warm wash, dry, no loop
+punk rock crash one shot, sharp explosive impact, controlled medium wash, dry, no melody
+
+# --- Funk / disco ---
+funk crash one shot, sharp bright crash, tight wash, vintage character, dry, no loop
+disco crash one shot, bright explosive crash, medium wash, vintage character, dry, no melody
+soul crash one shot, warm soft crash, gentle wash, dry, no loop
+
+# --- Jazz ---
+jazz crash one shot, soft warm crash, vintage jazz character, controlled wash, dry, no loop
+bebop crash one shot, classic jazz crash, vintage tone, medium wash, dry, no melody
+
+# --- Vintage drum machine ---
+linn drum crash one shot, vintage drum machine crash, 80s character, dry, no loop
+roland tr-707 crash one shot, classic drum machine crash, electronic tone, dry, no melody
+oberheim dmx crash one shot, vintage sampler crash, warm character, dry, no loop
+
+# --- Pitched / tuned ---
+high pitched crash one shot, bright crisp crash, controlled wash, dry, no loop
+low pitched crash one shot, dark warm crash, long sustain, dry, no melody
+
+# --- Processed / FX ---
+processed crash one shot, heavily compressed crash, controlled wash, dry, no loop
+distorted crash one shot, gritty saturated crash, dense wash, dry, no melody
+filtered crash one shot, narrow-band crash, electronic character, dry, no loop
+reversed crash one shot, swelling crash building to impact, dry, no melody
+gated crash one shot, sharp crash with abrupt cutoff, controlled tone, dry, no loop
+white noise crash one shot, synthesized noisy crash, bright sustain, dry, no melody
+
+# --- More variants ---
+hardstyle crash one shot, aggressive bright crash, saturated wash, dry, no loop
+gabber crash one shot, brutal sharp crash, hard wash, dry, no melody
+phonk crash one shot, dark muffled crash, lo-fi character, dry, no loop
+breakcore crash one shot, processed digital crash, sharp attack, dry, no melody
+hyperpop crash one shot, pitched bright crash, modern character, dry, no loop
+amapiano crash one shot, soft warm crash, modern dance character, dry, no melody
+afrobeats crash one shot, organic bright crash, latin character, dry, no loop
+moombahton crash one shot, organic latin crash, controlled wash, dry, no melody
+chopped and screwed crash one shot, slowed warm crash, dusty character, dry, no loop
+plug crash one shot, modern processed crash, layered character, dry, no melody
+memphis rap crash one shot, vintage sampler crash, dark tone, dry, no loop
+trap soul crash one shot, smooth warm crash, modern character, dry, no melody
+new wave crash one shot, processed bright crash, 80s character, dry, no loop
+synthwave crash one shot, retro electronic crash, controlled wash, dry, no melody
+saturated crash one shot, warm analog saturation, dense wash, dry, no loop
+tube saturated crash one shot, warm tube tone, bright crash, dry, no melody
+chorused crash one shot, modulated bright crash, controlled wash, dry, no loop
+phased crash one shot, swirling bright crash, controlled wash, dry, no melody
+compressed crash one shot, heavily pumped crash, sharp transient, dry, no loop
+chinese crash one shot, trashy bright crash, controlled wash, dry, no melody
+turkish crash one shot, complex hand hammered crash, warm wash, dry, no loop
+sizzle crash one shot, controlled sizzle on crash, bright wash, dry, no melody
+hammered crash one shot, complex bright crash, controlled wash, dry, no loop
+maple crash one shot, soft warm crash, natural wash, dry, no melody
+brass crash one shot, bright metallic crash, controlled wash, dry, no loop

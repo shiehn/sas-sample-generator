@@ -1,0 +1,156 @@
+# =========================================================================
+# Snare rim / sidestick one-shots — woody clicks, no full-body snare crack.
+# Bias: EDM (~50%), Hip-Hop (~35%), Other (~15%).
+# =========================================================================
+
+# --- 909 rim ---
+909 rim shot one shot, sharp electronic click, very short decay, dry, no loop
+classic 909 sidestick one shot, bright woody click, tight attack, dry, no melody
+tight 909 rim one shot, sharp processed click, mono, dry, no loop
+bright 909 rim one shot, electronic snap, controlled attack, dry, no melody
+
+# --- 808 rim ---
+808 rim shot one shot, sharp click, dry electronic character, no loop
+classic 808 sidestick one shot, processed woody click, short attack, dry, no melody
+warm 808 rim one shot, soft electronic click, vintage tone, dry, no loop
+
+# --- Acoustic rimshot ---
+acoustic rimshot one shot, sharp metallic click off the snare rim, dry, no body, no loop
+wood block rim shot one shot, hollow woody click, tight short attack, dry, no melody
+sidestick one shot, classic acoustic snare rim click, warm woody character, dry, no loop
+cross stick one shot, soft snare-rim click, jazz-style attack, dry, no melody
+brushed rim shot one shot, soft swept click, gentle attack, dry, no loop
+deep rim shot one shot, low woody click, controlled decay, dry, no melody
+piccolo rim shot one shot, bright high-pitched click, sharp attack, dry, no loop
+
+# --- Trap rim ---
+trap rim shot one shot, sharp processed click, modern hip hop, dry, no loop
+modern trap rim one shot, bright crisp click, tight short attack, dry, no melody
+hard trap rim one shot, aggressive sharp click, controlled tone, dry, no loop
+atlanta trap rim one shot, processed woody click, sharp attack, dry, no melody
+
+# --- Drill rim ---
+drill rim shot one shot, dark sharp click, modern sampler character, dry, no loop
+uk drill rim one shot, processed woody click, tight short attack, dry, no melody
+ny drill rim one shot, punchy crisp click, controlled tone, dry, no loop
+
+# --- Boom-bap / classic Hip-Hop rim ---
+boom bap rim shot one shot, dusty sampler click, warm woody character, dry, no loop
+classic 90s hip hop rim one shot, soft warm click, vintage tone, dry, no melody
+golden era sidestick one shot, soft vintage click, mono, dry, no loop
+east coast rim one shot, tight processed click, dusty sampler tone, dry, no melody
+
+# --- Lo-fi Hip-Hop rim ---
+lofi hip hop rim one shot, soft muffled click, vinyl character, dry, no loop, no melody
+warm lo-fi sidestick one shot, dusty woody click, tape-saturated, dry, no loop
+vintage lo-fi rim one shot, soft muted click, lo-fi sampler tone, dry, no melody
+
+# --- Tech house / house rim ---
+tech house rim shot one shot, tight processed click, dry, no melody, no loop
+deep house sidestick one shot, soft warm click, controlled attack, dry, no loop
+classic house rim one shot, bright electronic click, mono, dry, no melody
+afro house rim one shot, organic wooden click, soft attack, dry, no loop
+
+# --- Techno rim ---
+techno rim shot one shot, processed dark click, tight short attack, dry, no loop, no melody
+minimal techno rim one shot, clean electronic click, controlled tone, dry, no loop
+dub techno rim one shot, warm processed click, soft attack, dry, no melody
+
+# --- Trance rim ---
+trance rim shot one shot, bright electronic click, sharp attack, dry, no melody, no loop
+psytrance rim one shot, hard processed click, tight short attack, dry, no loop
+uplifting trance rim one shot, sharp bright click, controlled tone, dry, no melody
+
+# --- Drum and bass / jungle rim ---
+drum and bass rim shot one shot, processed sampler click, sharp attack, dry, no loop
+jungle rim one shot, vintage break click, woody character, dry, no melody
+neurofunk rim one shot, processed digital click, tight controlled attack, dry, no loop
+
+# --- Dubstep rim ---
+dubstep rim shot one shot, processed dark click, sharp attack, dry, no loop, no melody
+riddim rim one shot, tight processed click, controlled tone, dry, no loop
+
+# --- Future bass / pop rim ---
+future bass rim shot one shot, smooth warm click, modern character, dry, no loop, no melody
+modern pop rim one shot, polished bright click, controlled attack, dry, no loop
+
+# --- Latin / world ---
+latin sidestick one shot, classic salsa rim click, woody character, dry, no melody, no loop
+afro percussion rim one shot, organic wooden click, soft attack, dry, no loop
+cuban sidestick one shot, sharp woody click, latin character, dry, no melody
+samba rim shot one shot, brazilian percussion click, woody warmth, dry, no loop
+
+# --- Rock / pop rim ---
+rock sidestick one shot, sharp acoustic click, tight attack, dry, no loop
+pop rim shot one shot, bright processed click, controlled tone, dry, no melody
+indie rock rim one shot, soft natural click, warm body, dry, no loop
+
+# --- Jazz / brushwork ---
+jazz sidestick one shot, soft warm click, gentle attack, vintage jazz character, dry, no loop
+brushed sidestick one shot, soft swept click, classic jazz brush, dry, no melody
+bebop rim shot one shot, sharp acoustic click, vintage bebop tone, dry, no loop
+
+# --- Vintage drum machine rim ---
+linn drum rim shot one shot, vintage drum machine click, 80s character, dry, no melody, no loop
+roland tr-707 rim one shot, classic drum machine click, electronic tone, dry, no loop
+oberheim dmx rim one shot, vintage sampler click, warm character, dry, no melody
+
+# --- Processed / modern ---
+processed rim shot one shot, heavily compressed click, sharp transient, dry, no loop
+distorted rim one shot, gritty processed click, controlled attack, dry, no melody
+filtered rim one shot, narrow-band click, electronic character, dry, no loop
+
+# --- Pitched rim ---
+pitched rim shot one shot, tuned woody click, controlled tone, dry, no melody, no loop
+high pitched rim one shot, bright crisp click, tight attack, dry, no loop
+low pitched rim one shot, deep woody click, warm tone, dry, no melody
+
+# --- Experimental / FX ---
+glitchy rim shot one shot, digital processed click, sharp attack, dry, no loop, no melody
+metallic rim one shot, bright metallic click, controlled tone, dry, no loop
+clicky rim one shot, sharp short click, no body, dry, no melody, no loop
+
+# --- More EDM variants ---
+hardstyle rim shot one shot, aggressive bright click, saturated tone, dry, no loop
+bigroom rim shot one shot, sharp festival click, mainstage ready, dry, no melody
+electroclash rim shot one shot, vintage analog click, dirty character, dry, no loop
+moombahton rim shot one shot, organic latin-tinged click, controlled tone, dry, no melody
+deephouse rim shot one shot, soft warm click, smooth tone, dry, no loop
+afrobeats rim shot one shot, organic wooden click, latin-style attack, dry, no melody
+amapiano rim shot one shot, soft warm click, modern dance character, dry, no loop
+
+# --- More Hip-Hop variants ---
+modern atlanta rim one shot, processed sharp click, bright tone, dry, no loop
+old school rim shot one shot, dusty sampler click, vintage 80s tone, dry, no melody
+chopped and screwed rim one shot, slowed processed click, warm tone, dry, no loop
+phonk rim shot one shot, dark muffled click, lo-fi sampler tone, dry, no melody
+memphis rap rim one shot, vintage sampler click, dark tone, dry, no loop
+plug rim shot one shot, modern processed click, controlled tone, dry, no melody
+hyperpop rim one shot, pitched bright click, modern character, dry, no loop
+
+# --- More acoustic / studio ---
+maple snare rim shot one shot, warm woody click, balanced attack, dry, no loop
+birch snare rim shot one shot, sharp woody click, controlled tone, dry, no melody
+hammered snare rim one shot, complex bright click, controlled attack, dry, no loop
+deep snare rim one shot, low woody click, warm tone, dry, no melody
+high tension rim shot one shot, bright sharp click, tight attack, dry, no loop
+low tension rim shot one shot, dark woody click, warm tone, dry, no melody
+
+# --- More processed ---
+bit crushed rim shot one shot, digital crushed click, controlled tone, dry, no loop
+chorused rim shot one shot, modulated bright click, controlled tone, dry, no melody
+compressed rim shot one shot, heavily pumped click, sharp transient, dry, no loop
+tube saturated rim one shot, warm tube tone, bright click, dry, no melody
+
+# --- More EDM / experimental ---
+hardstyle hard rim one shot, aggressive overdriven click, dry, no loop
+gabber rim one shot, brutal sharp click, saturated tone, dry, no melody
+breakcore rim one shot, processed digital click, sharp attack, dry, no loop
+
+# --- More variants ---
+ambient rim shot one shot, soft swelling click, dry, no loop
+cinematic rim shot one shot, dramatic woody click, controlled tone, dry, no melody
+hybrid rim shot one shot, layered acoustic and electronic, sharp click, dry, no loop
+roto tom rim one shot, tunable bright click, controlled tone, dry, no melody
+detuned rim shot one shot, slack tuned woody click, controlled tone, dry, no loop
+saturated rim shot one shot, warm analog saturation, woody click, dry, no melody

@@ -1,0 +1,148 @@
+# =========================================================================
+# Standard snare one-shots (full-body, with crack and tail).
+# For rimshots / sidesticks, see snare-rim.txt.
+# Bias: EDM (~55%), Hip-Hop (~30%), Other (~15%).
+# =========================================================================
+
+# --- 909 snare ---
+classic 909 snare one shot, sharp crack attack, short bright tail, dry, no loop
+tight 909 snare one shot, punchy click, controlled body, electronic character, dry
+processed 909 snare one shot, bright transient, saturated body, dry, no melody
+hard 909 snare one shot, sharp attack, short snappy decay, mono, dry, no loop
+tuned 909 snare one shot, pitched crack, controlled tail, dry, no melody
+
+# --- 808 snare ---
+808 snare one shot, sharp click attack, short noisy decay, vintage electronic, dry
+classic 808 snare one shot, bright transient, tight body, dry sampler tone, no loop
+tuned 808 snare one shot, pitched snare hit, short noisy tail, dry, no melody
+processed 808 snare one shot, saturated crack, controlled body, dry, no loop
+
+# --- Trap snare ---
+modern trap snare one shot, sharp crisp crack, tight short tail, dry, no melody, no loop
+trap snare one shot, processed click attack, controlled noisy body, dry, no loop
+hard trap snare one shot, aggressive transient, saturated mid range, dry, no melody
+atlanta trap snare one shot, bright sampler crack, short controlled tail, dry, no loop
+slow trap snare one shot, warm rolling crack, soft attack, dry, no melody
+clap layer trap snare one shot, layered clap and snare, sharp attack, dry, no loop
+
+# --- Drill snare ---
+uk drill snare one shot, dark sharp crack, modern sampler character, dry, no melody, no loop
+ny drill snare one shot, punchy crack, tight short body, dry, no loop
+drill snare one shot, sharp aggressive transient, controlled body, modern hip hop, dry
+dark drill snare one shot, processed crack, short snappy tail, dry, no melody
+
+# --- Boom-bap snare ---
+boom bap snare one shot, vintage sampler character, tight cracky body, dry, no loop
+classic 90s hip hop snare one shot, dusty sampler crack, warm short tail, dry, no melody
+golden era snare one shot, soft cracky attack, vintage analog warmth, dry, no loop
+east coast snare one shot, sharp dry crack, processed sampler tone, dry, no melody
+dusty boom bap snare one shot, lo-fi sampler character, controlled body, dry, no loop
+
+# --- Drum and bass / jungle snare ---
+drum and bass snare one shot, processed sampler crack, tight short tail, dry, no loop
+jungle snare one shot, vintage break tone, sharp attack, dry, no melody
+neurofunk snare one shot, aggressive crack, processed mid body, dry, no loop
+amen-style snare one shot, classic break sampler tone, sharp crack, dry, no melody
+
+# --- Dubstep snare ---
+dubstep snare one shot, processed crack, deep low body, dry, no melody, no loop
+brostep snare one shot, sharp aggressive transient, controlled body, dry, no loop
+deep dubstep snare one shot, warm rolling crack, soft attack, dry, no melody
+riddim snare one shot, tight processed crack, short controlled tail, mono, dry
+
+# --- Trance / techno snare ---
+trance snare one shot, sharp electronic crack, tight body, dry, no melody, no loop
+uplifting trance snare one shot, bright transient, controlled noisy body, mainroom, dry
+techno snare one shot, processed crack, dark controlled body, dry, no loop
+hard techno snare one shot, aggressive transient, saturated body, dry, no melody
+
+# --- Big-room / festival snare ---
+big room snare one shot, sharp festival crack, mainstage ready, dry, no loop
+EDM festival snare one shot, processed bright crack, controlled tail, dry, no melody
+peak time snare one shot, hard transient, mid-rangey body, mastered tone, dry
+mainstage snare one shot, sharp attack, controlled noisy body, club ready, dry, no loop
+
+# --- House / deep house snare ---
+house snare one shot, tight crack attack, controlled body, dry, no melody, no loop
+deep house snare one shot, warm soft crack, smooth body, dry, no loop
+tech house snare one shot, tight processed crack, short snappy tail, dry, no melody
+classic house snare one shot, bright transient, balanced body, dry, no loop
+
+# --- Future bass / future house snare ---
+future bass snare one shot, smooth warm crack, modern character, dry, no melody, no loop
+future house snare one shot, tight bright crack, controlled body, dry, no loop
+modern pop snare one shot, polished crack, controlled body, mastered tone, dry
+
+# --- Lo-fi Hip-Hop snare ---
+lofi hip hop snare one shot, soft warm crack, vinyl crackle character, dry, no melody, no loop
+warm lo-fi snare one shot, muffled crack, dusty sampler tone, dry, no loop
+vintage lo-fi snare one shot, tape-saturated crack, soft attack, dry, no melody
+
+# --- West-coast snare ---
+west coast snare one shot, warm cracky body, classic hip hop tone, dry, no loop
+g funk snare one shot, soft warm crack, vintage character, dry, no melody
+90s west coast snare one shot, dusty sampler crack, tight tail, dry, no loop
+
+# --- Acoustic studio snare ---
+acoustic snare drum one shot, real wood-shell crack, natural decay, dry, no loop, no melody
+studio recorded snare one shot, close mic crack, tight body with snare wire rattle, dry
+piccolo snare one shot, bright high-pitched crack, short snappy tail, dry, no loop
+deep acoustic snare one shot, low-tuned thick body, full warm crack, dry, no melody
+maple snare one shot, warm woody body, balanced crack, studio sample, dry, no loop
+brass snare one shot, bright metallic crack, controlled tail, studio sample, dry
+
+# --- Rock snare ---
+rock snare drum one shot, hard cracky attack, controlled body with rattle, dry, no loop
+heavy rock snare one shot, aggressive crack, tight body, dry, no melody
+indie rock snare one shot, natural ambient crack, soft transient, dry, no loop
+punk rock snare one shot, sharp aggressive transient, dry studio sample, no melody
+
+# --- Funk / disco snare ---
+funk snare one shot, sharp crack, tight controlled body, dry classic sample, no loop
+70s disco snare one shot, bright crack with wire rattle, warm body, dry, no melody
+soulful snare one shot, warm soft crack, balanced body, vintage tone, dry, no loop
+
+# --- Jazz brush snare ---
+brushed jazz snare one shot, soft swept crack, gentle attack, dry, no loop, no melody
+jazz snare one shot, soft brush hit, warm small body, dry, no melody
+
+# --- Gated reverb / 80s ---
+gated reverb snare one shot, sharp crack with abrupt cutoff, 80s style, dry, no melody, no loop
+80s pop snare one shot, processed crack, gated tail, dry, no loop
+phil collins style snare one shot, big gated crack, tight gated decay, dry, no melody
+
+# --- Clap-hybrid / processed ---
+clap hybrid snare one shot, layered handclap and snare crack, sharp attack, dry, no loop
+layered snare one shot, multi-layer crack, controlled body, modern character, dry
+processed snare one shot, heavily compressed crack, sharp transient, dry, no melody, no loop
+
+# --- Experimental / FX ---
+glitchy snare one shot, processed digital crack, short snappy tail, dry, no melody, no loop
+metallic snare one shot, bright metallic crack, short controlled tail, dry, no loop
+distorted snare one shot, overdriven crack, saturated body, dry, no melody
+
+# --- More variants ---
+hardstyle snare one shot, aggressive overdriven crack, saturated body, dry, no loop
+gabber snare one shot, brutal distorted crack, hard tone, dry, no melody
+phonk snare one shot, dark muffled crack, lo-fi sampler character, dry, no loop
+breakcore snare one shot, processed digital crack, sharp attack, dry, no melody
+hyperpop snare one shot, pitched bright crack, modern character, dry, no loop
+amapiano snare one shot, soft warm crack, modern dance character, dry, no melody
+afrobeats snare one shot, organic warm crack, latin character, dry, no loop
+moombahton snare one shot, deep round crack, organic character, dry, no melody
+chopped and screwed snare one shot, slowed warm crack, dusty character, dry, no loop
+plug snare one shot, modern processed crack, layered character, dry, no melody
+memphis rap snare one shot, vintage sampler crack, dark tone, dry, no loop
+trap soul snare one shot, smooth warm crack, modern character, dry, no melody
+new wave snare one shot, processed bright crack, 80s character, dry, no loop
+synthwave snare one shot, retro electronic crack, controlled tone, dry, no melody
+dub snare one shot, processed warm crack, reggae-style attack, dry, no loop
+ska snare one shot, sharp bright crack, vintage character, dry, no melody
+gospel snare one shot, organic warm crack, soulful character, dry, no loop
+country snare one shot, natural warm crack, acoustic character, dry, no melody
+folk snare one shot, soft organic crack, gentle attack, dry, no loop
+soulful snare one shot, warm warm crack, vintage character, dry, no melody
+saturated snare one shot, warm analog saturation, controlled crack, dry, no loop
+tube saturated snare one shot, warm tube tone, bright crack, dry, no melody
+chorused snare one shot, modulated bright crack, controlled tone, dry, no loop
+phased snare one shot, swirling bright crack, controlled tone, dry, no melody

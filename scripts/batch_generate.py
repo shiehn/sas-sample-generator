@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 DEFAULT_NEGATIVE_PROMPT = (
     "low quality, distorted, noisy, clipped, music loop, drum loop, "
-    "hi hats, snare, cymbals, vocals, melody, long ambience, reverb wash"
+    "vocals, melody, long ambience, reverb wash"
 )
 
 
@@ -40,45 +40,22 @@ def audio_to_numpy(audio):
     return np.clip(audio, -1.0, 1.0)
 
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--prompts", required=True, help="Path to JSONL prompts file")
-    parser.add_argument("--out", default="outputs/raw", help="Output directory")
-    parser.add_argument("--model", default="stabilityai/stable-audio-open-1.0")
-    parser.add_argument("--steps", type=int, default=120)
-    parser.add_argument("--cfg-scale", type=float, default=7.0)
-    parser.add_argument("--default-duration", type=float, default=1.5)
-    parser.add_argument("--num-waveforms-per-prompt", type=int, default=1)
-    parser.add_argument("--negative-prompt", default=DEFAULT_NEGATIVE_PROMPT)
-    parser.add_argument("--skip-existing", action="store_true")
-    args = parser.parse_args()
-
-    if not torch.cuda.is_available():
-        raise SystemExit("CUDA GPU not available. Run this on a cloud NVIDIA GPU pod.")
-
-    prompts_path = Path(args.prompts)
-    out_dir = Path(args.out)
+def generate_for_jsonl(jsonl_path: Path, out_root: Path, pipe, sample_rate: int, args):
+    """Generate all WAVs for a single JSONL file. Output: <out_root>/<stem>/."""
+    out_dir = out_root / jsonl_path.stem
     out_dir.mkdir(parents=True, exist_ok=True)
-
     metadata_dir = out_dir / "_metadata"
     metadata_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"Loading model: {args.model}")
-    pipe = StableAudioPipeline.from_pretrained(
-        args.model,
-        torch_dtype=torch.float16,
-    )
-    pipe = pipe.to("cuda")
+    jobs = list(read_jsonl(jsonl_path))
+    print(f"Loaded {len(jobs)} jobs from {jsonl_path}")
 
-    sample_rate = pipe.vae.sampling_rate
-    jobs = list(read_jsonl(prompts_path))
-    print(f"Loaded {len(jobs)} jobs")
-
-    for job in tqdm(jobs, desc="Generating"):
+    for job in tqdm(jobs, desc=f"Generating {jsonl_path.stem}"):
         sample_id = job["id"]
         prompt = job["prompt"]
         duration = float(job.get("duration", args.default_duration))
         seed = int(job.get("seed", 0))
+        negative_prompt = job.get("negative_prompt", args.negative_prompt)
 
         for variant_index in range(args.num_waveforms_per_prompt):
             suffix = f"_v{variant_index:02d}" if args.num_waveforms_per_prompt > 1 else ""
@@ -93,7 +70,7 @@ def main():
             started = time.time()
             result = pipe(
                 prompt=prompt,
-                negative_prompt=args.negative_prompt,
+                negative_prompt=negative_prompt,
                 num_inference_steps=args.steps,
                 guidance_scale=args.cfg_scale,
                 audio_end_in_s=duration,
@@ -106,9 +83,10 @@ def main():
 
             metadata = {
                 "id": sample_id,
+                "category": job.get("category"),
                 "variant_index": variant_index,
                 "prompt": prompt,
-                "negative_prompt": args.negative_prompt,
+                "negative_prompt": negative_prompt,
                 "seed": seed + variant_index,
                 "duration_requested_seconds": duration,
                 "steps": args.steps,
@@ -122,6 +100,41 @@ def main():
 
             del result
             torch.cuda.empty_cache()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--prompts", required=True, nargs="+",
+                        help="One or more JSONL prompts files. Output for each goes "
+                             "to <out-root>/<jsonl-stem>/")
+    parser.add_argument("--out-root", default="outputs/raw",
+                        help="Per-category output root. Default: outputs/raw")
+    parser.add_argument("--model", default="stabilityai/stable-audio-open-1.0")
+    parser.add_argument("--steps", type=int, default=120)
+    parser.add_argument("--cfg-scale", type=float, default=7.0)
+    parser.add_argument("--default-duration", type=float, default=1.5)
+    parser.add_argument("--num-waveforms-per-prompt", type=int, default=1)
+    parser.add_argument("--negative-prompt", default=DEFAULT_NEGATIVE_PROMPT,
+                        help="Fallback negative prompt if a JSONL row doesn't set one")
+    parser.add_argument("--skip-existing", action="store_true")
+    args = parser.parse_args()
+
+    if not torch.cuda.is_available():
+        raise SystemExit("CUDA GPU not available. Run this on a cloud NVIDIA GPU pod.")
+
+    out_root = Path(args.out_root)
+    out_root.mkdir(parents=True, exist_ok=True)
+
+    print(f"Loading model: {args.model}")
+    pipe = StableAudioPipeline.from_pretrained(
+        args.model,
+        torch_dtype=torch.float16,
+    )
+    pipe = pipe.to("cuda")
+    sample_rate = pipe.vae.sampling_rate
+
+    for jsonl in args.prompts:
+        generate_for_jsonl(Path(jsonl), out_root, pipe, sample_rate, args)
 
 
 if __name__ == "__main__":

@@ -112,49 +112,98 @@ Do not rely on Colab for:
 
 ## 4. Suggested repo layout
 
-Create this project locally on your Mac:
+> **Operational note:** the [`README.md`](README.md) is the source of truth
+> for the step-by-step run procedure. This guide focuses on rationale and
+> design. If anything in the sections below conflicts with the README,
+> follow the README.
+
+The actual layout in this repo (multi-category):
 
 ```text
-stable-audio-oneshots/
+sas-sample-generator/
   README.md
+  stable_audio_open_batch_oneshot_guide.md   (this file)
   requirements.txt
   prompts/
-    kicks_1000.jsonl
+    kick.txt           kick.jsonl
+    snare-standard.txt snare-standard.jsonl
+    snare-rim.txt      snare-rim.jsonl
+    hat-closed.txt     hat-closed.jsonl
+    hat-open.txt       hat-open.jsonl
+    cymbal-ride.txt    cymbal-ride.jsonl
+    cymbal-crash.txt   cymbal-crash.jsonl
+    cymbal-splash.txt  cymbal-splash.jsonl
+    tamborine.txt      tamborine.jsonl
+    shaker.txt         shaker.jsonl
+    tom-hi.txt         tom-hi.jsonl
+    tom-mid.txt        tom-mid.jsonl
+    tom-low.txt        tom-low.jsonl
+    hit.txt            hit.jsonl
   scripts/
+    setup.sh             (pod bootstrap)
+    run_all.sh           (full pipeline wrapper)
+    categories.txt       (which categories are enabled)
+    category_config.py   (per-category negative prompts + durations)
+    list_to_jsonl.py     (.txt -> .jsonl converter)
     batch_generate.py
     postprocess_oneshots.py
     benchmark.py
-  outputs/
-    raw/
-    processed/
-    rejected/
-    manifests/
+    sync.sh              (optional rclone push)
+  outputs/                                       (gitignored)
+    raw/<category>/<id>.wav
+    raw/<category>/_metadata/<id>.json
+    processed/<category>/<id>.wav
+    rejected/<category>/<id>.wav
+    manifests/<category>.csv
 ```
 
-You can then copy this folder to the cloud GPU machine.
+Two key changes vs. earlier versions of this doc:
+
+1. **Per-category subdirectories** under `outputs/` — generated WAVs are
+   organised by category rather than dumped flat. The wrapper script
+   `run_all.sh` orchestrates the whole flow.
+2. **Content-addressed IDs** — filenames are `{category}-{hash8}.wav`
+   instead of sequential `kick_0001.wav`. The hash is reproducible
+   (`sha1(category:prompt:seed)`), which means re-runs are idempotent: a
+   prompt that already produced a WAV is skipped by `--skip-existing`.
 
 ---
 
 ## 5. Prompt file format
 
-Use JSONL: one JSON object per line.
+**Two layers:**
 
-Example: `prompts/kicks_1000.jsonl`
+- **Editable input** (`prompts/<category>.txt`): one description per line,
+  blank lines and `#` comments ignored. This is what you write.
+- **Generated** (`prompts/<category>.jsonl`): one JSON row per prompt with
+  resolved `id`, `category`, `prompt`, `negative_prompt`, `seed`, and
+  `duration`. Built automatically by `scripts/list_to_jsonl.py` (which
+  `run_all.sh` calls for each category).
+
+Example JSONL row:
 
 ```jsonl
-{"id":"kick_0001","prompt":"short punchy analog kick drum one shot, dry, deep sub tail, clean transient, no hi hats, no snare, no cymbals, studio quality","seed":1001,"duration":1.5}
-{"id":"kick_0002","prompt":"tight 909-style kick drum one shot, hard transient, short decay, clean low end, no melody, no loop","seed":1002,"duration":1.25}
-{"id":"kick_0003","prompt":"deep techno kick drum one shot, warm saturated low end, short click transient, mono-compatible, dry, no percussion loop","seed":1003,"duration":1.75}
+{"id":"kick-c1da23da","category":"kick","prompt":"tight 909-style kick drum one shot, hard click transient, short punchy body, dry, no hi hats, no snare, no cymbals, no loop","negative_prompt":"low quality, distorted, ...","seed":1001,"duration":1.5}
 ```
 
-Recommended prompt rules:
+You normally won't read or write JSONL by hand. Edit the `.txt`.
+
+### Prompt rules (target → positive prompt)
 
 - Say **one shot** explicitly.
 - Say **no loop** explicitly.
-- Exclude unwanted instruments: hi-hats, snare, cymbals, vocals, melody.
-- Keep duration short.
-- Use seed values so runs are reproducible.
-- Generate more than you need. For example, generate 1,500 and keep the best 1,000.
+- Exclude unwanted instruments in the positive prompt where genre-specific:
+  `no hi hats, no cymbals, no melody`.
+- Keep descriptions ~10–15 words.
+- Generate more than you need; curate the keepers locally.
+
+### Per-category negative prompts
+
+The negative prompt lives in `scripts/category_config.py` as a `dict[str,
+str]` and is auto-injected per row. **A category's negative prompt must
+NOT exclude the target sound**: a hat category negative listing `"hi
+hats"` would actively suppress the thing being requested. Always cross-
+check when you add a new category.
 
 ---
 

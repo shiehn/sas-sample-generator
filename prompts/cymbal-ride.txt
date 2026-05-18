@@ -1,0 +1,147 @@
+# =========================================================================
+# Ride cymbal one-shots — sustained ping/bell, longer than closed hi-hat.
+# Bias: more acoustic/jazz than other categories since ride is less common
+# in pure EDM. Still ~40% EDM, ~25% Hip-Hop, ~35% Acoustic/Jazz/Rock.
+# =========================================================================
+
+# --- Acoustic studio ride ---
+ride cymbal one shot, classic bow strike, bright ping with sustaining wash, dry, no loop
+ride cymbal ping one shot, focused bell-like attack, controlled sustain, dry, no melody
+heavy ride cymbal one shot, full bow strike, dark sustain, dry studio sample, no loop
+light ride cymbal one shot, soft bow strike, bright sustain, dry, no melody
+20 inch ride one shot, full warm sustain, defined bow strike, dry, no loop
+22 inch ride one shot, dark warm sustain, controlled bow ping, dry, no melody
+sizzle ride one shot, controlled sizzle texture on the wash, dry, no loop
+crash ride one shot, hybrid ride and crash character, controlled wash, dry, no melody
+
+# --- Ride bell ---
+ride bell one shot, sharp metallic ping, bright sustain, dry, no loop
+ride cymbal bell one shot, focused bell strike, clear sustain, dry, no melody
+heavy ride bell one shot, dense metallic ping, sustained tone, dry, no loop
+brass ride bell one shot, bright bell attack, warm sustain, dry, no melody
+small ride bell one shot, tight high bell ping, controlled sustain, dry, no loop
+
+# --- Jazz ride ---
+jazz ride cymbal one shot, soft bow strike, warm sustain, vintage character, dry, no loop
+bebop ride one shot, classic jazz ride ping, controlled wash, vintage tone, dry, no melody
+swing ride one shot, soft groovy ping, vintage jazz character, dry, no loop
+brushed ride one shot, soft swept tone, gentle sustain, dry, no melody
+ballad ride one shot, soft warm ping, smooth sustain, jazz character, dry, no loop
+
+# --- Rock ride ---
+rock ride cymbal one shot, hard bow strike, bright sustain, dry studio sample, no loop
+heavy rock ride one shot, aggressive bow ping, dense sustain, dry, no melody
+indie rock ride one shot, soft natural ping, warm sustain, dry, no loop
+classic rock ride one shot, full bow strike, controlled wash, dry, no melody
+
+# --- Funk / disco ---
+funk ride one shot, sharp bow strike, tight sustain, vintage character, dry, no loop
+disco ride one shot, bright sustained ping, vintage character, dry, no melody
+soul ride one shot, warm soft ping, gentle sustain, dry, no loop
+
+# --- House / dance ---
+house ride one shot, bright sustained ping, controlled wash, dry, no loop
+deep house ride one shot, soft warm ping, smooth sustain, dry, no melody
+tech house ride one shot, processed ping, controlled sustain, dry, no loop
+classic house ride one shot, bright bell-like ping, mono, dry, no melody
+
+# --- Techno ---
+techno ride one shot, dark processed ping, controlled sustain, dry, no loop
+minimal techno ride one shot, clean electronic ping, controlled wash, dry, no melody
+dub techno ride one shot, warm processed ping, soft sustain, dry, no loop
+
+# --- Trance ---
+trance ride one shot, bright sustained ping, electronic character, dry, no loop
+uplifting trance ride one shot, crisp ping with controlled sustain, mainroom, dry, no melody
+progressive trance ride one shot, smooth bright ping, controlled wash, dry, no loop
+
+# --- Drum and bass ---
+drum and bass ride one shot, processed bright ping, controlled sustain, dry, no loop
+jungle ride one shot, vintage break ping, sampler tone, dry, no melody
+liquid dnb ride one shot, soft warm ping, smooth sustain, dry, no loop
+
+# --- Hip-Hop / boom-bap ride ---
+boom bap ride one shot, dusty sampler ping, vintage tone, dry, no loop, no melody
+classic 90s hip hop ride one shot, warm sampled ping, soft sustain, dry, no melody
+golden era ride one shot, soft vintage ping, dusty character, dry, no loop
+east coast ride one shot, tight processed ping, controlled sustain, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop ride one shot, soft muffled ping, vinyl character, dry, no loop
+warm lo-fi ride one shot, dusty soft ping, tape-saturated, dry, no melody
+vintage lo-fi ride one shot, muted soft ping, lo-fi sampler tone, dry, no loop
+
+# --- Trap (rare in trap but used) ---
+trap ride one shot, sharp bright ping, modern hip hop, dry, no loop
+modern trap ride one shot, crisp ping with controlled sustain, dry, no melody
+atlanta trap ride one shot, processed bright ping, modern character, dry, no loop
+
+# --- World / Latin ---
+latin ride one shot, classic salsa ride ping, controlled sustain, dry, no melody
+afro percussion ride one shot, organic metallic ping, soft sustain, dry, no loop
+cuban ride one shot, sharp bow strike, latin character, dry, no melody
+
+# --- Vintage drum machine (rare for ride but exists) ---
+linn drum ride one shot, vintage drum machine ping, 80s character, dry, no loop
+roland tr-727 ride one shot, classic drum machine ping, electronic tone, dry, no melody
+
+# --- Pitched / tuned ---
+high pitched ride one shot, bright crisp ping, tight short sustain, dry, no loop
+low pitched ride one shot, dark warm ping, controlled sustain, dry, no melody
+tuned ride one shot, pitched bell-like ping, clear sustain, dry, no loop
+
+# --- Processed / FX ---
+processed ride one shot, heavily compressed ping, controlled sustain, dry, no loop
+distorted ride one shot, gritty saturated ping, controlled sustain, dry, no melody
+filtered ride one shot, narrow-band ping, electronic character, dry, no loop
+reversed ride one shot, swelling ping building to attack, dry, no melody
+gated ride one shot, sharp ping with abrupt cutoff, controlled tone, dry, no loop
+
+# --- More EDM variants ---
+big room ride one shot, sharp festival ping, mainstage ready, dry, no loop
+EDM festival ride one shot, processed bright ping, controlled sustain, dry, no melody
+peak time ride one shot, hard transient ping, mastered tone, dry, no loop
+mainstage ride one shot, sharp ride hit, club ready, dry, no melody
+dubstep ride one shot, processed dark ping, controlled tone, dry, no loop
+brostep ride one shot, sharp aggressive ping, controlled sustain, dry, no melody
+riddim ride one shot, tight processed ping, controlled tone, dry, no loop
+neurofunk ride one shot, processed digital ping, sharp attack, dry, no melody
+hardstyle ride one shot, aggressive bright ping, dense sustain, dry, no loop
+
+# --- More Hip-Hop variants ---
+hard trap ride one shot, aggressive bright ping, saturated tone, dry, no loop
+slow trap ride one shot, soft warm ping, modern character, dry, no melody
+pitched trap ride one shot, tuned bright ping, controlled tone, dry, no loop
+modern hip hop ride one shot, polished ping, controlled sustain, mastered, dry, no melody
+dark drill ride one shot, processed ping, controlled tone, dry, no loop
+90s east coast ride one shot, dusty sampler ping, vintage tone, dry, no melody
+
+# --- More acoustic / world ---
+turkish ride cymbal one shot, hand hammered ping, warm sustain, dry, no loop
+chinese ride cymbal one shot, trashy bright ping, controlled sustain, dry, no melody
+flat ride cymbal one shot, soft warm ping, jazz character, dry, no loop
+sizzle chain ride one shot, controlled chain sizzle, warm sustain, dry, no melody
+afro percussion ride one shot, organic metallic accent, warm sustain, dry, no loop
+indian percussion ride one shot, traditional bright ping, controlled tone, dry, no melody
+
+# --- More processed ---
+bit crushed ride one shot, digital crushed ping, controlled tone, dry, no loop
+chorused ride one shot, modulated bright ping, controlled sustain, dry, no melody
+phased ride one shot, swirling bright ping, controlled tone, dry, no loop
+compressed ride one shot, heavily pumped ping, controlled tone, dry, no melody
+saturated ride one shot, warm analog saturation, bright ping, dry, no loop
+tube saturated ride one shot, warm tube tone, bright ping, dry, no melody
+
+# --- Final fill ---
+hardstyle ride one shot, aggressive bright ping, saturated sustain, dry, no loop
+gabber ride one shot, brutal sharp ping, hard sustain, dry, no melody
+phonk ride one shot, dark muffled ping, lo-fi character, dry, no loop
+breakcore ride one shot, processed digital ping, sharp attack, dry, no melody
+hyperpop ride one shot, pitched bright ping, modern character, dry, no loop
+amapiano ride one shot, soft warm ping, modern dance character, dry, no melody
+afrobeats ride one shot, organic warm ping, latin character, dry, no loop
+synthwave ride one shot, retro electronic ping, controlled sustain, dry, no melody
+ambient ride one shot, soft swelling ping, dry, no loop
+cinematic ride one shot, dramatic bright ping, controlled sustain, dry, no melody
+hybrid ride one shot, layered acoustic and electronic, bright ping, dry, no loop
+trash ride one shot, dirty processed ping, controlled sustain, dry, no melody

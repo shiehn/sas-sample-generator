@@ -1,0 +1,18 @@
+# Categories to include in run_all.sh.
+# Comment out (#) any line to skip that category for a run.
+# Order is preserved.
+
+kick
+snare-standard
+snare-rim
+hat-closed
+hat-open
+cymbal-ride
+cymbal-crash
+cymbal-splash
+tamborine
+shaker
+tom-hi
+tom-mid
+tom-low
+hit

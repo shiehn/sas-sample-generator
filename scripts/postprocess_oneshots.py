@@ -1,5 +1,22 @@
+"""Post-process generated WAVs: trim silence, normalize, optional mono downmix.
+
+Two invocation styles:
+
+  # Category-aware (recommended): resolves paths under $SAS_OUTPUTS_DIR
+  python scripts/postprocess_oneshots.py --category kick --mono
+
+  # Explicit (back-compat for one-offs):
+  python scripts/postprocess_oneshots.py \\
+    --in-dir outputs/raw/kick \\
+    --out-dir outputs/processed/kick \\
+    --rejected-dir outputs/rejected/kick \\
+    --manifest outputs/manifests/kick.csv \\
+    --mono
+"""
+
 import argparse
 import csv
+import os
 import shutil
 from pathlib import Path
 
@@ -64,8 +81,7 @@ def process_file(path, out_dir, rejected_dir, args):
     y, sr = sf.read(path, always_2d=True)
 
     trimmed, reject_reason = trim_silence(
-        y,
-        sr,
+        y, sr,
         threshold_db=args.trim_threshold_db,
         pad_ms=args.pad_ms,
     )
@@ -116,12 +132,35 @@ def process_file(path, out_dir, rejected_dir, args):
     }
 
 
+def resolve_paths(args):
+    """Derive in/out/rejected/manifest paths when --category is given."""
+    if args.category:
+        outputs_dir = os.environ.get("SAS_OUTPUTS_DIR", "outputs")
+        cat = args.category
+        args.in_dir = args.in_dir or f"{outputs_dir}/raw/{cat}"
+        args.out_dir = args.out_dir or f"{outputs_dir}/processed/{cat}"
+        args.rejected_dir = args.rejected_dir or f"{outputs_dir}/rejected/{cat}"
+        args.manifest = args.manifest or f"{outputs_dir}/manifests/{cat}.csv"
+
+    # Defaults if neither --category nor explicit dirs were given
+    args.in_dir = args.in_dir or "outputs/raw"
+    args.out_dir = args.out_dir or "outputs/processed"
+    args.rejected_dir = args.rejected_dir or "outputs/rejected"
+    args.manifest = args.manifest or "outputs/manifests/processed_manifest.csv"
+
+
 def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--in-dir", default="outputs/raw")
-    parser.add_argument("--out-dir", default="outputs/processed")
-    parser.add_argument("--rejected-dir", default="outputs/rejected")
-    parser.add_argument("--manifest", default="outputs/manifests/processed_manifest.csv")
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    parser.add_argument("--category", default=None,
+                        help="If set, derive --in-dir/--out-dir/--rejected-dir/--manifest "
+                             "from $SAS_OUTPUTS_DIR/{raw,processed,rejected,manifests}/<category>")
+    parser.add_argument("--in-dir", default=None)
+    parser.add_argument("--out-dir", default=None)
+    parser.add_argument("--rejected-dir", default=None)
+    parser.add_argument("--manifest", default=None)
     parser.add_argument("--mono", action="store_true")
     parser.add_argument("--max-seconds", type=float, default=2.5)
     parser.add_argument("--trim-threshold-db", type=float, default=-45)
@@ -129,6 +168,8 @@ def main():
     parser.add_argument("--fade-ms", type=float, default=5)
     parser.add_argument("--target-peak-db", type=float, default=-1.0)
     args = parser.parse_args()
+
+    resolve_paths(args)
 
     in_dir = Path(args.in_dir)
     out_dir = Path(args.out_dir)
@@ -140,9 +181,12 @@ def main():
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
 
     wavs = sorted(in_dir.glob("*.wav"))
-    rows = []
+    if not wavs:
+        print(f"no WAVs found in {in_dir}; nothing to do")
+        return
 
-    for wav in tqdm(wavs, desc="Post-processing"):
+    rows = []
+    for wav in tqdm(wavs, desc=f"Post-processing {in_dir.name}"):
         rows.append(process_file(wav, out_dir, rejected_dir, args))
 
     fieldnames = sorted({key for row in rows for key in row.keys()})

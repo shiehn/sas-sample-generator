@@ -1,0 +1,144 @@
+# =========================================================================
+# Mid tom one-shots — medium-pitched, balanced tom hits.
+# Bias: ~40% EDM, ~30% Hip-Hop, ~30% Acoustic/Rock.
+# =========================================================================
+
+# --- Acoustic studio mid tom ---
+mid tom one shot, classic acoustic tom hit, balanced body, natural decay, dry, no loop
+acoustic mid tom one shot, full bodied stick hit, controlled decay, dry, no melody
+12 inch tom one shot, mid-tuned bright body, natural decay, dry, no loop
+13 inch tom one shot, full mid body, balanced attack, dry, no melody
+14 inch tom one shot, full mid-low body, controlled decay, dry, no loop
+maple mid tom one shot, warm woody body, balanced attack, dry, no melody
+birch mid tom one shot, bright punchy body, controlled decay, dry, no loop
+mounted mid tom one shot, full bodied tom, natural decay, dry, no melody
+concert mid tom one shot, single-headed mid tom, focused tone, dry, no loop
+mid tom rim shot one shot, sharp metallic accent, mid body, dry, no melody
+
+# --- 909 mid tom ---
+classic 909 mid tom one shot, sharp electronic tom, mid range tone, dry, no loop
+909 mid tom one shot, processed mid tom hit, controlled decay, dry, no melody
+processed 909 mid tom one shot, saturated mid range, EDM ready, dry, no loop
+pitched 909 mid tom one shot, tuned mid tom, clear tone, dry, no melody
+
+# --- 808 mid tom ---
+classic 808 mid tom one shot, sharp electronic tom, mid tone, dry, no loop
+808 mid tom one shot, vintage drum machine tom, controlled body, dry, no melody
+tuned 808 mid tom one shot, pitched mid tom, sustained tone, dry, no loop
+warm 808 mid tom one shot, soft processed tom, vintage tone, dry, no melody
+
+# --- Trap mid tom ---
+trap mid tom one shot, processed mid tom, modern hip hop, dry, no loop, no melody
+modern trap mid tom one shot, crisp mid tom, controlled tone, dry, no loop
+hard trap mid tom one shot, aggressive mid tom, saturated tone, dry, no melody
+atlanta trap mid tom one shot, processed mid tom, modern character, dry, no loop
+
+# --- Drill mid tom ---
+drill mid tom one shot, dark mid tom, modern sampler tone, dry, no loop, no melody
+uk drill mid tom one shot, processed mid tom, tight tone, dry, no loop
+
+# --- Boom-bap / classic Hip-Hop ---
+boom bap mid tom one shot, dusty sampler tom, vintage tone, dry, no loop
+classic 90s hip hop mid tom one shot, warm sampled tom, soft attack, dry, no melody
+golden era mid tom one shot, soft vintage tom, dusty character, dry, no loop
+east coast mid tom one shot, tight processed tom, controlled tone, dry, no melody
+
+# --- Lo-fi Hip-Hop ---
+lofi hip hop mid tom one shot, soft muffled tom, vinyl character, dry, no loop
+warm lo-fi mid tom one shot, dusty soft tom, tape-saturated, dry, no melody
+vintage lo-fi mid tom one shot, muted soft tom, lo-fi sampler tone, dry, no loop
+
+# --- House / tech house ---
+house mid tom one shot, processed mid tom, controlled body, dry, no loop
+deep house mid tom one shot, soft warm tom, smooth decay, dry, no melody
+tech house mid tom one shot, processed tom, controlled tone, dry, no loop
+afro house mid tom one shot, organic mid tom, controlled decay, dry, no melody
+
+# --- Techno ---
+techno mid tom one shot, dark processed tom, controlled tone, dry, no loop
+minimal techno mid tom one shot, clean electronic tom, controlled body, dry, no melody
+hard techno mid tom one shot, aggressive mid tom, saturated tone, dry, no loop
+dub techno mid tom one shot, warm processed tom, soft attack, dry, no melody
+
+# --- Trance ---
+trance mid tom one shot, sharp mid tom, electronic character, dry, no loop
+uplifting trance mid tom one shot, crisp mid tom, mainroom ready, dry, no melody
+progressive trance mid tom one shot, smooth mid tom, controlled tone, dry, no loop
+psytrance mid tom one shot, hard processed tom, tight tone, dry, no melody
+
+# --- Big-room / festival ---
+big room mid tom one shot, sharp festival tom, mainstage ready, dry, no loop
+EDM festival mid tom one shot, processed mid tom, controlled tone, dry, no melody
+peak time mid tom one shot, hard transient tom, mastered tone, dry, no loop
+
+# --- Drum and bass ---
+drum and bass mid tom one shot, processed sharp tom, controlled tone, dry, no loop
+jungle mid tom one shot, vintage break tom, sampler tone, dry, no melody
+neurofunk mid tom one shot, processed digital tom, sharp attack, dry, no loop
+liquid dnb mid tom one shot, soft warm tom, smooth tone, dry, no melody
+
+# --- Dubstep / bass music ---
+dubstep mid tom one shot, processed dark tom, sharp attack, dry, no loop
+brostep mid tom one shot, sharp aggressive tom, controlled tone, dry, no melody
+
+# --- Future bass / pop ---
+future bass mid tom one shot, smooth mid tom, modern character, dry, no loop
+modern pop mid tom one shot, polished tom, controlled tone, mastered, dry, no melody
+
+# --- Rock ---
+rock mid tom one shot, hard mid tom hit, controlled body, dry, no loop
+heavy rock mid tom one shot, aggressive tom, dense body, dry, no melody
+indie rock mid tom one shot, natural acoustic tom, soft attack, dry, no loop
+punk rock mid tom one shot, sharp explosive tom, controlled body, dry, no melody
+classic rock mid tom one shot, full tom hit, vintage character, dry, no loop
+
+# --- Funk / disco ---
+funk mid tom one shot, sharp mid tom, tight body, vintage, dry, no loop
+disco mid tom one shot, mid tom hit, vintage character, dry, no melody
+soul mid tom one shot, warm soft tom, gentle decay, dry, no loop
+
+# --- Jazz ---
+jazz mid tom one shot, soft warm tom, vintage jazz character, dry, no loop
+bebop mid tom one shot, classic acoustic tom, vintage tone, dry, no melody
+brushed mid tom one shot, soft swept tom, gentle attack, dry, no loop
+
+# --- Vintage drum machine ---
+linn drum mid tom one shot, vintage drum machine tom, 80s character, dry, no loop
+roland tr-707 mid tom one shot, classic drum machine tom, electronic tone, dry, no melody
+oberheim dmx mid tom one shot, vintage sampler tom, warm character, dry, no loop
+
+# --- Processed / FX ---
+processed mid tom one shot, heavily compressed tom, controlled tone, dry, no loop
+distorted mid tom one shot, gritty saturated tom, controlled tone, dry, no melody
+filtered mid tom one shot, narrow-band tom, electronic character, dry, no loop
+reversed mid tom one shot, swelling tom building to attack, dry, no melody
+gated mid tom one shot, sharp tom with abrupt cutoff, controlled tone, dry, no loop
+pitched mid tom one shot, tuned mid tom, clear tone, dry, no melody
+
+# --- More variants ---
+hardstyle mid tom one shot, aggressive mid tom, saturated tone, dry, no loop
+gabber mid tom one shot, brutal mid tom, hard tone, dry, no melody
+phonk mid tom one shot, dark muffled mid tom, lo-fi character, dry, no loop
+breakcore mid tom one shot, processed digital tom, sharp attack, dry, no melody
+hyperpop mid tom one shot, pitched mid tom, modern character, dry, no loop
+amapiano mid tom one shot, soft warm tom, modern dance character, dry, no melody
+afrobeats mid tom one shot, organic mid tom, latin character, dry, no loop
+moombahton mid tom one shot, organic latin tom, controlled tone, dry, no melody
+chopped and screwed mid tom one shot, slowed warm tom, dusty character, dry, no loop
+plug mid tom one shot, modern processed tom, layered character, dry, no melody
+saturated mid tom one shot, warm analog saturation, mid tone, dry, no loop
+tube saturated mid tom one shot, warm tube tone, mid tom, dry, no melody
+chorused mid tom one shot, modulated mid tom, controlled tone, dry, no loop
+phased mid tom one shot, swirling mid tom, controlled tone, dry, no melody
+compressed mid tom one shot, heavily pumped tom, sharp transient, dry, no loop
+bit crushed mid tom one shot, digital crushed tom, controlled tone, dry, no melody
+ambient mid tom one shot, soft swelling tom, dry, no loop
+cinematic mid tom one shot, dramatic mid tom, controlled body, dry, no melody
+hybrid mid tom one shot, layered acoustic and electronic, mid tone, dry, no loop
+trash mid tom one shot, dirty processed tom, controlled tone, dry, no melody
+roto tom one shot, tunable mid tom, bright body, dry, no loop
+single headed mid tom one shot, concert tom tone, focused mid body, dry, no melody
+detuned mid tom one shot, slack tuned mid tom, controlled body, dry, no loop
+hi-mid tom one shot, between hi and mid tom, balanced body, dry, no melody
+ska mid tom one shot, sharp mid tom, vintage character, dry, no loop
+country mid tom one shot, natural warm tom, acoustic character, dry, no melody
