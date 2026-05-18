@@ -1,24 +1,44 @@
 #!/usr/bin/env bash
 # First-time pod setup. Idempotent — safe to re-run on every pod boot.
 #
-# Assumes a RunPod GPU pod with a Network Volume mounted at /workspace.
-# Everything that survives a pod termination MUST live under /workspace.
+# Layout (matters for speed):
+#   /root/.venv               — Python venv. CONTAINER-LOCAL DISK (fast SSD).
+#                               Lives ~30 seconds to install. Wiped on pod
+#                               termination — that's fine, we rebuild fresh.
+#   /workspace/.cache/...     — HuggingFace model cache. NETWORK FS (MooseFS).
+#                               Slow for many-tiny-files but fine for the
+#                               big sequential model downloads.
+#   /workspace/outputs/...    — Generated audio. NETWORK FS.
+#
+# Why this split: RunPod's /workspace is a MooseFS network mount (verified
+# via `df -T /workspace`). Many-tiny-file pip extraction over MooseFS takes
+# ~15 minutes; the same install on /root takes ~30 seconds.
+#
+# Override any path with env vars: VENV_DIR=/foo ./scripts/setup.sh
 
 set -euo pipefail
 
 VOLUME_ROOT="${VOLUME_ROOT:-/workspace}"
+LOCAL_ROOT="${LOCAL_ROOT:-/root}"
 PROJECT_DIR="${PROJECT_DIR:-${VOLUME_ROOT}/sas-sample-generator}"
-VENV_DIR="${VENV_DIR:-${VOLUME_ROOT}/.venv}"
+VENV_DIR="${VENV_DIR:-${LOCAL_ROOT}/.venv}"
 HF_CACHE="${HF_CACHE:-${VOLUME_ROOT}/.cache/huggingface}"
 TORCH_CUDA_INDEX="${TORCH_CUDA_INDEX:-https://download.pytorch.org/whl/cu124}"
 
 echo "[setup] volume:       ${VOLUME_ROOT}"
 echo "[setup] project_dir:  ${PROJECT_DIR}"
-echo "[setup] venv:         ${VENV_DIR}"
+echo "[setup] venv:         ${VENV_DIR}    (container-local, fast)"
 echo "[setup] hf_cache:     ${HF_CACHE}"
 
 if [[ ! -d "${VOLUME_ROOT}" ]]; then
-  echo "[setup] ERROR: ${VOLUME_ROOT} is not mounted. Attach a Network Volume to this pod." >&2
+  echo "[setup] ERROR: ${VOLUME_ROOT} is not mounted." >&2
+  echo "[setup]        Attach a 100 GB Volume Disk at /workspace when deploying the pod." >&2
+  exit 1
+fi
+
+if [[ ! -d "${LOCAL_ROOT}" ]] || [[ ! -w "${LOCAL_ROOT}" ]]; then
+  echo "[setup] ERROR: ${LOCAL_ROOT} is not writable. Venv would be installed somewhere slow." >&2
+  echo "[setup]        Override with: VENV_DIR=/some/writable/path ./scripts/setup.sh" >&2
   exit 1
 fi
 
@@ -31,6 +51,7 @@ export HF_HOME="${HF_CACHE}"
 export HUGGINGFACE_HUB_CACHE="${HF_CACHE}/hub"
 export TRANSFORMERS_CACHE="${HF_CACHE}/hub"
 export SAS_OUTPUTS_DIR="${VOLUME_ROOT}/outputs"
+export SAS_VENV_DIR="${VENV_DIR}"
 EOF
 # shellcheck disable=SC1090
 source "${PROFILE}"
@@ -68,5 +89,7 @@ if torch.cuda.is_available():
     print(f"[setup] device:         {torch.cuda.get_device_name(0)}")
 PY
 
-echo "[setup] done. activate the venv with: source ${VENV_DIR}/bin/activate"
-echo "[setup] log into huggingface (once per volume): huggingface-cli login"
+echo ""
+echo "[setup] done."
+echo "[setup] next: source ${VENV_DIR}/bin/activate"
+echo "[setup]       huggingface-cli login"

@@ -72,31 +72,42 @@ ssh-add ~/.ssh/id_ed25519
 ```
 …then retry.
 
-### 3. Clone + bootstrap (SLOW: ~10–15 min on first boot)
+### 3. Clone + bootstrap (~4–5 min)
 
 On the pod:
 ```bash
 cd /workspace && \
 git clone https://github.com/shiehn/sas-sample-generator.git && \
-cd sas-sample-generator && \
+cd /workspace/sas-sample-generator && \
 ./scripts/setup.sh 2>&1 | tee /workspace/setup.log
 ```
 
-⚠️ **Looks frozen at `Installing collected packages:` for ~10 min — this is normal.**
-`/workspace` is a network filesystem (MooseFS) and pip is extracting ~4 GB of
-CUDA libraries one tiny file at a time. Don't Ctrl-C.
+**Why these paths matter** (and the reason this used to be slow): `/workspace`
+is a network filesystem (MooseFS) — fine for big sequential reads/writes
+(model weights, generated audio) but painfully slow for many-tiny-files (a
+Python venv). The script installs the venv at **`/root/.venv`**, which is on
+the pod's container-local SSD, and only keeps the HuggingFace cache and
+outputs on `/workspace`. Roughly:
+
+```text
+/root/.venv                   ← Python venv          (fast SSD; ~5 min install)
+/workspace/sas-sample-generator   ← cloned repo
+/workspace/.cache/huggingface ← model weights        (downloaded once)
+/workspace/outputs            ← generated WAVs
+```
 
 You're done when you see:
 ```text
 [setup] cuda available: True
 [setup] device:         NVIDIA RTX A6000
-[setup] done. ...
+[setup] done.
+[setup] next: source /root/.venv/bin/activate
 ```
 
 ### 4. Hugging Face login
 
 ```bash
-source /workspace/.venv/bin/activate
+source /root/.venv/bin/activate
 huggingface-cli login
 ```
 
@@ -230,7 +241,7 @@ sas-sample-generator/
 | Symptom | Most likely cause | Fix |
 |---|---|---|
 | `Permission denied (publickey)` on ssh | private key not loaded into agent | `ssh-add ~/.ssh/id_ed25519` |
-| `setup.sh` hangs at `Installing collected packages:` | MooseFS network FS is slow; not stuck | wait 10–15 min |
+| `setup.sh` hangs at `Installing collected packages:` for >5 min | something redirected the venv onto `/workspace` (MooseFS); script defaults to `/root/.venv` for a reason | check `echo $VENV_DIR` — should be `/root/.venv`. If overridden, unset it and re-run |
 | `cuda available: False` after `setup.sh` | picked a CPU template | terminate; re-deploy with PyTorch GPU template |
 | `huggingface_hub.utils._errors.GatedRepoError` | didn't accept the SAO license | visit the [model page](https://huggingface.co/stabilityai/stable-audio-open-1.0), click "Agree" |
 | `batch_generate.py` errors `CUDA out of memory` | duration too long for VRAM | lower `--default-duration` or `--num-waveforms-per-prompt 1` |
@@ -245,11 +256,11 @@ A single run, on an RTX A6000 at $0.49/hr:
 
 | Phase | Time | Cost |
 |---|---|---|
-| Pod boot + `setup.sh` | ~15 min | ~$0.12 |
+| Pod boot + `setup.sh` | ~5 min | ~$0.04 |
 | HF model download (first call only) | ~3 min | ~$0.02 |
 | Generate ~30 samples | ~5 min | ~$0.04 |
 | Post-process + zip + scp | ~2 min | ~$0.02 |
-| **One-batch total** | **~25 min** | **~$0.20** |
+| **One-batch total** | **~15 min** | **~$0.12** |
 
 If you keep the pod alive between runs in the same session (e.g., iterating on
 prompts), each subsequent generation is just step 7 again — no setup cost.
