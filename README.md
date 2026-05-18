@@ -108,7 +108,7 @@ You're done when you see:
 
 ```bash
 source /root/.venv/bin/activate
-huggingface-cli login
+hf auth login
 ```
 
 Paste your HF token (One-Time Setup A). Answer `n` to "Add token as git

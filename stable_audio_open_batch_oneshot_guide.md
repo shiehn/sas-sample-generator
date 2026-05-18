@@ -255,7 +255,7 @@ safe to re-run on every pod boot.
 cd /workspace/sas-sample-generator
 ./scripts/setup.sh
 source /workspace/.venv/bin/activate
-huggingface-cli login    # one time per volume
+hf auth login    # one time per volume
 ```
 
 After this, `outputs/` for batch_generate.py is `/workspace/outputs` (set by
@@ -306,7 +306,7 @@ On your Mac or in a browser:
 On the pod:
 
 ```bash
-huggingface-cli login
+hf auth login
 ```
 
 Paste your token.
@@ -943,7 +943,7 @@ You probably did not accept the model license terms or your token is not logged 
 Fix:
 
 ```bash
-huggingface-cli login
+hf auth login
 ```
 
 Then visit the model page in a browser and accept the terms.

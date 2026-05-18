@@ -92,4 +92,4 @@ PY
 echo ""
 echo "[setup] done."
 echo "[setup] next: source ${VENV_DIR}/bin/activate"
-echo "[setup]       huggingface-cli login"
+echo "[setup]       hf auth login"
