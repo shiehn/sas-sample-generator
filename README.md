@@ -1,415 +1,283 @@
 # sas-sample-generator
 
-Generate large batches of one-shot audio samples (kicks, snares, hats, etc.)
-with [Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0)
-on a rented [RunPod](https://www.runpod.io) GPU. Prompts in (JSONL) → WAVs out.
+Generate batches of one-shot audio samples (kicks, snares, hats, etc.) with
+[Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0)
+on a rented [RunPod](https://www.runpod.io) GPU.
 
-Workflow assumes an **Apple Silicon Mac** as the control machine and a
-**RunPod L40S 48GB pod** as the temporary GPU. The pod is ephemeral; a Network
-Volume holds the venv, model weights, and generated audio so you can terminate
-and resume freely.
+**Designed for occasional use.** This README is the recipe — read top to bottom,
+copy-paste each command block, finish in ~30 minutes for ~$0.30 of GPU time.
 
-For the long-form rationale (why these settings, prompt design, cost math, etc.),
+Assumes an **Apple Silicon Mac** as the control machine.
+
+For the rationale (why these settings, prompt-design tips, deep cost math),
 see [`stable_audio_open_batch_oneshot_guide.md`](stable_audio_open_batch_oneshot_guide.md).
-This README is the operational quickstart.
 
 ---
 
-## Prerequisites
+## ONE-TIME SETUP (do once, then forget)
 
-### Accounts
+### A. Hugging Face
 
-- **Hugging Face** — create an account, then visit the
-  [Stable Audio Open model page](https://huggingface.co/stabilityai/stable-audio-open-1.0)
-  and accept the license. Generate a read-only access token under Settings →
-  Access Tokens. You'll paste this on the pod via `huggingface-cli login`.
-- **RunPod** — create an account and add a payment method.
-- **Object storage (optional but recommended for large runs)** — Backblaze B2
-  (~$6/TB/month) or Cloudflare R2 (~$15/TB/month, zero egress). Skip this for
-  small smoke tests; use `scp` instead.
+1. Create / sign in at [huggingface.co](https://huggingface.co).
+2. Visit [stabilityai/stable-audio-open-1.0](https://huggingface.co/stabilityai/stable-audio-open-1.0)
+   and click **Agree and access repository**.
+3. Create a read-only access token at
+   [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
+   Save it in your password manager — you'll paste it once per pod.
 
-### Local Mac tools
+### B. RunPod
 
-```bash
-brew install rclone     # only needed if you'll push outputs to B2/R2
-# scp and ssh ship with macOS
-```
-
-Nothing else is required on the Mac for the basic flow. Python runs on the pod.
+1. Create / sign in at [runpod.io](https://runpod.io). Add a payment method.
+2. Add your Mac SSH public key under
+   [Settings → SSH Keys](https://www.runpod.io/console/user/settings):
+   ```bash
+   pbcopy < ~/.ssh/id_ed25519.pub        # copies key to clipboard
+   ```
+   Paste it into the form. (If `~/.ssh/id_ed25519.pub` doesn't exist:
+   `ssh-keygen -t ed25519` first, accept defaults.)
 
 ---
 
-## One-time RunPod setup
+## EVERY-RUN STEPS
 
-### 1. Create a Network Volume
+### 1. Deploy a pod
 
-In the RunPod console: **Storage → Network Volumes → New Volume**.
+[runpod.io/console/pods](https://www.runpod.io/console/pods) → **Deploy → GPU Pod**:
 
-| Field | Value |
+| Setting | Value |
 |---|---|
-| Region | pick one with L40S availability (e.g. `US-OR-1`) |
-| Size | **100 GB** (raise later if you blow past it) |
-| Name | `sas-samples` |
+| GPU | **RTX A6000** (48 GB VRAM, ~$0.49/hr) |
+| Template | most recent **RunPod PyTorch** with CUDA 12.x |
+| Container Disk | 50 GB (default) |
+| Volume Disk | 100 GB at `/workspace` |
+| Expose | SSH (port 22) — default |
 
-The volume is billed monthly per GB and survives pod terminations. This is what
-makes resume-after-kill work.
+Click **Deploy On-Demand**. Wait ~30 sec until status is `RUNNING`.
 
-### 2. Deploy a pod attached to the volume
-
-**Pods → Deploy → GPU Pod**:
-
-| Field | Value |
-|---|---|
-| GPU | **L40S 48GB** (or RTX 4090 24GB for cheaper smoke tests) |
-| Region | same region as the volume |
-| Network Volume | select `sas-samples`, mount path `/workspace` |
-| Template | `RunPod PyTorch 2.x` (any recent CUDA 12.x build) |
-| Container Disk | default (~20 GB is plenty; the volume holds the heavy stuff) |
-| Expose | SSH (port 22) |
-
-Click **Deploy**. Wait ~30 seconds for the pod to come up, then copy the SSH
-command from the pod's "Connect" panel — it looks like:
+On the pod's card click **Connect → SSH over exposed TCP** and copy the SSH
+command. It looks like:
 
 ```text
-ssh root@123.45.67.89 -p 12345 -i ~/.ssh/id_ed25519
+ssh root@<POD_IP> -p <POD_PORT> -i ~/.ssh/id_ed25519
 ```
 
----
+### 2. SSH into the pod
 
-## Bootstrap the pod (first time on this volume)
+From your Mac terminal, paste the SSH command from step 1. Type `yes` to
+accept the host key on first connect.
 
-From your Mac terminal:
-
+If you get `Permission denied (publickey)`:
 ```bash
-ssh root@YOUR_RUNPOD_HOST -p YOUR_RUNPOD_PORT
+ssh-add ~/.ssh/id_ed25519
 ```
+…then retry.
+
+### 3. Clone + bootstrap (SLOW: ~10–15 min on first boot)
 
 On the pod:
-
 ```bash
-cd /workspace
-git clone https://github.com/YOUR_GITHUB_USER/sas-sample-generator.git
-cd sas-sample-generator
-
-# Creates /workspace/.venv, installs CUDA torch + requirements, points HF cache
-# at /workspace/.cache/huggingface. Idempotent — safe to re-run on every boot.
-./scripts/setup.sh
-
-source /workspace/.venv/bin/activate
-huggingface-cli login    # paste your HF token; stored under /workspace/.cache
+cd /workspace && \
+git clone https://github.com/shiehn/sas-sample-generator.git && \
+cd sas-sample-generator && \
+./scripts/setup.sh 2>&1 | tee /workspace/setup.log
 ```
 
-Expected output from `setup.sh` at the end:
+⚠️ **Looks frozen at `Installing collected packages:` for ~10 min — this is normal.**
+`/workspace` is a network filesystem (MooseFS) and pip is extracting ~4 GB of
+CUDA libraries one tiny file at a time. Don't Ctrl-C.
 
+You're done when you see:
 ```text
 [setup] cuda available: True
-[setup] device:         NVIDIA L40S
+[setup] device:         NVIDIA RTX A6000
 [setup] done. ...
 ```
 
-If `cuda available: False`, you booted onto a CPU template by mistake — destroy
-the pod and redeploy with a GPU pod template.
-
----
-
-## Smoke test (3 samples, ~30 seconds of GPU time)
-
-A `prompts/kicks_smoke_test.jsonl` is already in the repo. From the pod, in the
-project directory with the venv active:
+### 4. Hugging Face login
 
 ```bash
-python scripts/batch_generate.py \
-  --prompts prompts/kicks_smoke_test.jsonl \
-  --out /workspace/outputs/raw \
-  --steps 80 \
-  --skip-existing
-
-python scripts/postprocess_oneshots.py \
-  --in-dir /workspace/outputs/raw \
-  --out-dir /workspace/outputs/processed \
-  --rejected-dir /workspace/outputs/rejected \
-  --manifest /workspace/outputs/manifests/smoke_test_manifest.csv \
-  --mono \
-  --max-seconds 2.5
+source /workspace/.venv/bin/activate
+huggingface-cli login
 ```
 
-You should end up with 3 WAVs in `/workspace/outputs/processed/`. Listen to one
-on the pod via `head -c 200000 /workspace/outputs/processed/kick_test_0001.wav`
-through a player, or skip ahead to the "Get the data off the pod" step.
+Paste your HF token (One-Time Setup A). Answer `n` to "Add token as git
+credential".
 
----
+### 5. (Optional) Write your own prompts list
 
-## Full batch run
+The repo ships with `prompts/kicks.txt` (28 kick-drum prompts across 10
+categories). **Use it as-is to test, or skip ahead to step 6.**
 
-### Build the prompts file
-
-Write descriptions in a plain text file, **one per line** — much easier than
-hand-writing 1000 lines of JSONL. Blank lines and lines starting with `#` are
-ignored. Example `prompts/kicks.txt`:
+To make your own: edit `prompts/<category>.txt` — one description per line,
+`#` for comments:
 
 ```text
-# 909-style
-tight 909-style kick drum one shot, hard transient, short decay, clean low end, no melody, no loop
-punchy 909 kick drum one shot, sharp click, short body, dry, no hi hats, no snare, no cymbals
-
 # 808-style
-deep 808-style kick drum one shot, long sub bass decay, smooth sine low end, clean transient, dry
-warm 808 kick drum one shot, saturated low end, medium decay, dry, no vocals, no melody
+deep 808 kick one shot, long sub bass decay, dry, no melody, no loop
+warm 808 kick one shot, saturated low end, medium decay, dry
 
-# Techno
-deep techno kick drum one shot, warm saturated low end, short click transient, mono-compatible, dry
-distorted industrial techno kick drum one shot, aggressive transient, saturated body, no cymbals
+# Lo-fi
+warm lo-fi kick one shot, soft transient, dusty sampler texture, dry
 ```
 
-Convert it to JSONL with `scripts/list_to_jsonl.py`:
+Use `nano prompts/kicks.txt` on the pod, or edit locally and `scp` it over,
+or edit + `git push` and `git pull` on the pod.
+
+### 6. Convert the text list to JSONL
 
 ```bash
-# From your Mac (or on the pod, doesn't matter — pure stdlib Python)
 python3 scripts/list_to_jsonl.py \
   --in prompts/kicks.txt \
   --out prompts/kicks.jsonl \
-  --prefix kick \
-  --duration 1.5
+  --prefix kick
 ```
 
-Produces:
+Use `--prefix kick` for kick IDs (`kick_0001`, `kick_0002`, …). Switch to
+`--prefix snare` etc. for other categories.
 
-```jsonl
-{"id": "kick_0001", "prompt": "tight 909-style kick drum one shot, ...", "seed": 1001, "duration": 1.5}
-{"id": "kick_0002", "prompt": "punchy 909 kick drum one shot, ...", "seed": 1002, "duration": 1.5}
-...
-```
-
-Flags worth knowing:
-
-| Flag | Default | What it does |
-|---|---|---|
-| `--prefix` | input filename stem | ID prefix; override to get `kick_0001` from `kicks.txt` |
-| `--start-seed` | `1001` | First seed; subsequent rows increment by 1 |
-| `--start-id` | `1` | First ID number |
-| `--duration` | `1.5` | Seconds per sample (applies to every row) |
-| `--pad` | `4` | Zero-pad width for IDs (`0001` vs `001`) |
-
-The helper dedupes identical lines, normalizes whitespace, and warns about
-skipped rows to stderr. If you need per-row duration overrides (e.g. 808s with
-longer tails), edit the resulting JSONL or maintain separate `.txt` files per
-duration target.
-
-### Copy the JSONL to the pod and run
-
-```bash
-# From your Mac
-scp -P YOUR_RUNPOD_PORT prompts/kicks.jsonl \
-  root@YOUR_RUNPOD_HOST:/workspace/sas-sample-generator/prompts/
-```
-
-Run on the pod (inside the venv):
+### 7. Generate the audio (~5–10 min for 30 prompts)
 
 ```bash
 python scripts/batch_generate.py \
   --prompts prompts/kicks.jsonl \
   --out /workspace/outputs/raw \
   --steps 120 \
-  --cfg-scale 7 \
-  --default-duration 1.5 \
-  --skip-existing
+  --skip-existing 2>&1 | tee /workspace/batch.log
+```
 
+First call downloads Stable Audio Open (~3–5 GB, ~3 min). Then a tqdm bar at
+~10 sec/sample. The `--skip-existing` flag lets you re-run safely if anything
+dies mid-batch.
+
+### 8. Post-process
+
+```bash
 python scripts/postprocess_oneshots.py \
   --in-dir /workspace/outputs/raw \
   --out-dir /workspace/outputs/processed \
   --rejected-dir /workspace/outputs/rejected \
-  --manifest /workspace/outputs/manifests/kicks_manifest.csv \
+  --manifest /workspace/outputs/manifests/run_manifest.csv \
   --mono \
   --max-seconds 2.5
 ```
 
-If the run dies partway through, just re-run — `--skip-existing` resumes from
-the last successful WAV. The outputs are on the persistent volume, so even a
-full pod termination is recoverable.
+Trims silence, normalizes peaks, downmixes to mono, writes a manifest CSV.
+Last line tells you `Processed: N`, `Rejected: M`.
 
----
-
-## Get the data off the pod
-
-### Small runs (≤ 5 GB): zip + scp
+### 9. Zip and download
 
 On the pod:
-
 ```bash
 cd /workspace
-zip -r kicks_1000.zip outputs/processed outputs/manifests outputs/raw/_metadata
+zip -r run.zip outputs/processed outputs/manifests outputs/raw/_metadata
+ls -lh run.zip
 ```
 
-On your Mac:
+In a **second** Mac terminal (don't close the SSH session yet — you still
+need it for step 10):
 
 ```bash
-scp -P YOUR_RUNPOD_PORT \
-  root@YOUR_RUNPOD_HOST:/workspace/kicks_1000.zip ~/Downloads/
+cd ~/Downloads
+scp -P <POD_PORT> root@<POD_IP>:/workspace/run.zip .
+unzip run.zip
+open outputs/processed                 # Finder + QuickLook to audition
 ```
 
-### Large / repeated runs: rclone to B2 or R2
+`<POD_PORT>` and `<POD_IP>` are the same ones from your step-1 SSH command.
 
-One-time setup on the pod:
+### 10. ⚠️ TERMINATE THE POD
 
-```bash
-apt-get install -y rclone
-rclone config
-```
+This is the step you will forget. The pod bills **$0.49/hr** for as long as
+it exists, whether you're using it or not.
 
-`rclone config` is interactive. For Backblaze B2, pick `b2`, paste your
-Application Key ID and Application Key, name the remote `samples`. For
-Cloudflare R2, pick `s3` → `Cloudflare R2` and follow the prompts.
+- **Idle overnight** ≈ $12
+- **Forgotten for a week** ≈ $80
+- **Forgotten for a month** ≈ $350
 
-Test it:
+In the [RunPod console](https://www.runpod.io/console/pods), click your pod's
+card → **Terminate**. Confirm.
 
-```bash
-rclone lsd samples:
-```
-
-Then use the wrapper:
-
-```bash
-./scripts/sync.sh push                     # push outputs/ to samples:sas-samples/<hostname>/
-./scripts/sync.sh push outputs/processed   # only push the curated tree
-./scripts/sync.sh ls                       # see what's on the remote
-./scripts/sync.sh size                     # total bytes on the remote
-```
-
-On your Mac, set up the same rclone remote and pull:
-
-```bash
-brew install rclone
-rclone config                              # mirror the pod's "samples" remote
-cd ~/path/to/sas-sample-generator
-RUN_TAG=<the-pod-hostname-from-the-push> ./scripts/sync.sh pull
-```
-
-`RUN_TAG` defaults to the current machine's hostname on both push and pull. On
-the Mac you have to set it explicitly to the pod's hostname so the pull lands
-on the right path.
+Termination wipes `/workspace`. That's fine — you have the zip on your Mac.
+Next month, you start fresh from step 1.
 
 ---
 
-## Stop / resume
-
-When a run is done:
-
-1. Confirm the data is somewhere durable — either on the Network Volume (it
-   stays there for as long as the volume exists) or pushed to B2/R2.
-2. **Stop or terminate the pod from the RunPod console.** GPU billing stops
-   immediately; the volume keeps billing (~$0.07/GB/month).
-
-Coming back later:
-
-1. Deploy a new pod, attach the same Network Volume.
-2. SSH in. The repo, venv, HF cache, and outputs are all still under
-   `/workspace/`. Just re-activate the venv:
-
-   ```bash
-   source /workspace/.venv/bin/activate
-   cd /workspace/sas-sample-generator
-   ```
-
-3. Re-run `./scripts/setup.sh` if you want — it's idempotent and will pick up
-   any new requirements you've added since the last boot.
-
-What does NOT survive a pod termination:
-- `/root/.bashrc` exports (re-run by `setup.sh`)
-- Anything written outside `/workspace/`
-- The pod's SSH host key (your Mac will warn about a changed key; that's
-  expected — clear it with `ssh-keygen -R '[host]:port'`)
-
----
-
-## Local prep on macOS
-
-Day-to-day, you'll be:
-
-1. **Writing prompts** in `prompts/*.jsonl`. JSONL = one JSON object per line;
-   field reference is in
-   [`stable_audio_open_batch_oneshot_guide.md` §5](stable_audio_open_batch_oneshot_guide.md).
-2. **Auditioning samples** after `sync.sh pull` or `scp`. Drag the unzipped
-   `outputs/processed/` into your DAW of choice or QuickLook them in Finder.
-3. **Curating**. The model overproduces; throw out the bad ones manually. The
-   manifest CSV (`outputs/manifests/*.csv`) tells you what was auto-rejected
-   and why.
-
-`outputs/` is gitignored — that's deliberate, you don't want gigs of WAVs in
-git.
-
----
-
-## Repo layout
+## File layout
 
 ```text
 sas-sample-generator/
-├── README.md                                 # you are here
-├── stable_audio_open_batch_oneshot_guide.md  # long-form reference
-├── Dockerfile                                # optional custom image (see below)
-├── .dockerignore
+├── README.md                                   ← you are here
+├── stable_audio_open_batch_oneshot_guide.md    ← long-form background
 ├── requirements.txt
 ├── prompts/
-│   └── kicks_smoke_test.jsonl                # ships with the repo
+│   ├── kicks.txt                               ← starter kick-drum prompts (28)
+│   ├── kicks.jsonl                             ← generated by list_to_jsonl.py
+│   └── kicks_smoke_test.jsonl                  ← 3 prompts for a free wire-check
 ├── scripts/
-│   ├── setup.sh                              # idempotent pod bootstrap
-│   ├── sync.sh                               # rclone wrapper for B2/R2
-│   ├── list_to_jsonl.py                      # text list -> JSONL helper
-│   ├── batch_generate.py                     # the actual generator
-│   ├── postprocess_oneshots.py               # trim / normalize / reject
-│   └── benchmark.py                          # per-sample timing + cost estimate
-└── outputs/                                  # gitignored; generated WAVs land here
-    ├── raw/
-    ├── processed/
-    ├── rejected/
-    └── manifests/
+│   ├── setup.sh                                ← step 3
+│   ├── list_to_jsonl.py                        ← step 6
+│   ├── batch_generate.py                       ← step 7
+│   ├── postprocess_oneshots.py                 ← step 8
+│   ├── benchmark.py                            ← optional: per-sample cost math
+│   └── sync.sh                                 ← optional: rclone to B2 / R2
+└── outputs/                                    ← gitignored; generated WAVs land here
 ```
 
 ---
 
-## Optional: custom Docker image
+## When something breaks
 
-Stock RunPod templates + `setup.sh` add ~5 minutes to a cold start (pip
-install, torch download). If you're booting pods often and that bothers you,
-build a custom image:
-
-```bash
-docker build -t YOUR_DOCKERHUB_USER/sas-sample-generator:latest .
-docker push YOUR_DOCKERHUB_USER/sas-sample-generator:latest
-```
-
-In RunPod, deploy with **Custom Image** and paste the tag. Cold start drops to
-~30s. Model weights still download into the Network Volume on first run — the
-image deliberately doesn't bake them in.
-
-Skip this until you're past prototyping. It's not worth the iteration loop
-overhead during prompt design.
+| Symptom | Most likely cause | Fix |
+|---|---|---|
+| `Permission denied (publickey)` on ssh | private key not loaded into agent | `ssh-add ~/.ssh/id_ed25519` |
+| `setup.sh` hangs at `Installing collected packages:` | MooseFS network FS is slow; not stuck | wait 10–15 min |
+| `cuda available: False` after `setup.sh` | picked a CPU template | terminate; re-deploy with PyTorch GPU template |
+| `huggingface_hub.utils._errors.GatedRepoError` | didn't accept the SAO license | visit the [model page](https://huggingface.co/stabilityai/stable-audio-open-1.0), click "Agree" |
+| `batch_generate.py` errors `CUDA out of memory` | duration too long for VRAM | lower `--default-duration` or `--num-waveforms-per-prompt 1` |
+| All samples sound like loops | prompts not specific enough | add `one shot, no loop, no hi hats, no snare` to every prompt |
+| Too much reverb | model adds ambience by default | add `dry, no reverb, no ambience` to prompts |
 
 ---
 
-## Security notes
+## Cost recap
 
-This is a public repo. A few rules:
+A single run, on an RTX A6000 at $0.49/hr:
 
-- **Never commit secrets.** `.env`, `*.token`, `*.secret`, `.huggingface/` are
-  all in `.gitignore`. Hugging Face tokens, RunPod API keys, B2/R2
-  Application Keys, and SSH private keys live only on disk + in the pod's
-  environment.
-- **Prompts can be public.** They don't contain anything sensitive.
-- **Generated WAVs are gitignored.** If you want to publish a sample pack,
-  push it to a Hugging Face dataset or release it via your own channel.
+| Phase | Time | Cost |
+|---|---|---|
+| Pod boot + `setup.sh` | ~15 min | ~$0.12 |
+| HF model download (first call only) | ~3 min | ~$0.02 |
+| Generate ~30 samples | ~5 min | ~$0.04 |
+| Post-process + zip + scp | ~2 min | ~$0.02 |
+| **One-batch total** | **~25 min** | **~$0.20** |
+
+If you keep the pod alive between runs in the same session (e.g., iterating on
+prompts), each subsequent generation is just step 7 again — no setup cost.
 
 ---
 
-## Cost guardrails
+## Security
 
-- **Stop the pod when you walk away.** GPU billing is per-second; an L40S pod
-  left running overnight is ~$20 of nothing.
-- **Smoke-test at low step counts** (`--steps 80`) before committing to a long
-  batch at 120+.
-- **Use `--skip-existing`.** A killed run resumes for free.
-- **Keep the Network Volume sized to actual need.** 100 GB ≈ $7/month.
-  Generated WAVs are ~400 KB each at 1.5s stereo 24-bit, so 100 GB holds
-  ~250k one-shots.
+This is a **public repo**. Never commit:
+- Hugging Face tokens
+- RunPod API keys
+- B2 / R2 / S3 keys
+- SSH private keys
+- The generated WAVs (gitignored already)
 
-Per-sample cost math is in
-[`stable_audio_open_batch_oneshot_guide.md` §19](stable_audio_open_batch_oneshot_guide.md).
+`.gitignore` covers `.env`, `*.token`, `*.secret`, `outputs/*`. If you ever
+`git add` a file containing a secret by mistake: **rotate the secret first**,
+then `git rm` + commit + push. Treat anything that hit `main` as compromised.
+
+---
+
+## Long-form reference
+
+[`stable_audio_open_batch_oneshot_guide.md`](stable_audio_open_batch_oneshot_guide.md)
+covers:
+- Why Stable Audio Open vs alternatives
+- Prompt-design rules and category-specific templates
+- Optional persistent Network Volume layout (for users running multiple times per week)
+- Optional rclone push to Backblaze B2 / Cloudflare R2 instead of `scp`
+- Optional custom Docker image
+- Cost-control deep dive
