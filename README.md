@@ -180,17 +180,20 @@ Last line tells you `Processed: N`, `Rejected: M`.
 On the pod:
 ```bash
 cd /workspace
-zip -r run.zip outputs/processed outputs/manifests outputs/raw/_metadata
-ls -lh run.zip
+tar czf run.tar.gz outputs/processed outputs/manifests outputs/raw/_metadata
+ls -lh run.tar.gz
 ```
+
+(We use `tar` rather than `zip` because the stock RunPod PyTorch image
+doesn't ship `zip`. `tar` is preinstalled everywhere.)
 
 In a **second** Mac terminal (don't close the SSH session yet — you still
 need it for step 10):
 
 ```bash
 cd ~/Downloads
-scp -P <POD_PORT> root@<POD_IP>:/workspace/run.zip .
-unzip run.zip
+scp -P <POD_PORT> root@<POD_IP>:/workspace/run.tar.gz .
+tar xzf run.tar.gz
 open outputs/processed                 # Finder + QuickLook to audition
 ```
 

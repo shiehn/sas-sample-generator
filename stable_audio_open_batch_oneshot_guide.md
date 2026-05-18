@@ -665,13 +665,13 @@ python scripts/postprocess_oneshots.py \
 Zip and download:
 
 ```bash
-zip -r smoke_test_outputs.zip outputs/processed outputs/manifests
+tar czf smoke_test_outputs.tar.gz outputs/processed outputs/manifests
 ```
 
 From your Mac:
 
 ```bash
-scp -P YOUR_RUNPOD_PORT root@YOUR_RUNPOD_HOST:/workspace/stable-audio-oneshots/smoke_test_outputs.zip .
+scp -P YOUR_RUNPOD_PORT root@YOUR_RUNPOD_HOST:/workspace/sas-sample-generator/smoke_test_outputs.tar.gz .
 ```
 
 Listen to the files locally before doing a big run.
@@ -757,7 +757,7 @@ python scripts/postprocess_oneshots.py \
 Create final ZIP:
 
 ```bash
-zip -r stable_audio_kicks_1000.zip outputs/processed outputs/manifests outputs/raw/_metadata
+tar czf stable_audio_kicks_1000.tar.gz outputs/processed outputs/manifests outputs/raw/_metadata
 ```
 
 ### 14.1 Get the data off the pod
@@ -765,7 +765,7 @@ zip -r stable_audio_kicks_1000.zip outputs/processed outputs/manifests outputs/r
 For small runs (< 5 GB), `scp` the zip directly to your Mac:
 
 ```bash
-scp -P YOUR_RUNPOD_PORT root@YOUR_RUNPOD_HOST:/workspace/sas-sample-generator/stable_audio_kicks_1000.zip .
+scp -P YOUR_RUNPOD_PORT root@YOUR_RUNPOD_HOST:/workspace/sas-sample-generator/stable_audio_kicks_1000.tar.gz .
 ```
 
 For larger / repeated runs, push to a cheap object store (Backblaze B2 ≈
