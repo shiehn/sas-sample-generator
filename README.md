@@ -1,5 +1,9 @@
 # sas-sample-generator
 
+<p align="center">
+  <img src="docs/img/cauldron.png" alt="sas-sample-generator" width="360" />
+</p>
+
 Generate batches of one-shot audio samples (kicks, snares, hats, etc.) with
 [Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0)
 on a rented [RunPod](https://www.runpod.io) GPU.
@@ -11,6 +15,35 @@ Assumes an **Apple Silicon Mac** as the control machine.
 
 For the rationale (why these settings, prompt-design tips, deep cost math),
 see [`stable_audio_open_batch_oneshot_guide.md`](stable_audio_open_batch_oneshot_guide.md).
+
+> Part of the [Signals & Sorcery](https://signalsandsorcery.com) family.
+> See [Related repos](#signals--sorcery-family) at the bottom of this README.
+
+---
+
+## What you'll provide
+
+A plain text file with **one description per line** — that's the entire input
+to this project. Each line becomes one generated WAV sample. Example:
+
+```text
+# 909-style
+tight 909-style kick drum one shot, hard click transient, short punchy body, dry
+punchy 909 kick drum one shot, sharp transient, controlled low end, clean studio sample
+
+# 808-style
+deep 808 kick one shot, long sub bass decay, smooth sine low end, dry
+warm 808 kick one shot, saturated low end, medium decay, dry, no melody, no loop
+```
+
+Blank lines and lines starting with `#` are ignored (handy for grouping).
+Aim for ~10 words per line. Always include phrases like `one shot, no loop,
+no hi hats, no snare` so the model doesn't render a rhythmic loop.
+
+A starter file is already in the repo at
+[`prompts/kicks.txt`](prompts/kicks.txt) (28 kick prompts across 10
+categories) — use it as-is for your first run, then write your own once
+you've heard what the model can do.
 
 ---
 
@@ -295,3 +328,35 @@ covers:
 - Optional rclone push to Backblaze B2 / Cloudflare R2 instead of `scp`
 - Optional custom Docker image
 - Cost-control deep dive
+
+---
+
+## Signals & Sorcery family
+
+This is one piece of a larger ecosystem around the
+[Signals & Sorcery](https://signalsandsorcery.com) audio app.
+
+**Plugin SDK & templates**
+- [sas-plugin-sdk](https://github.com/shiehn/sas-plugin-sdk) — types, components, and hooks for building generator plugins
+- [sas-plugin-template](https://github.com/shiehn/sas-plugin-template) — starter template for new plugins
+- [sas-chat-plugin](https://github.com/shiehn/sas-chat-plugin) — in-app conversational agent
+
+**Built-in plugins**
+- [sas-audio-plugin](https://github.com/shiehn/sas-audio-plugin) — default AI audio generation plugin
+- [sas-sample-plugin](https://github.com/shiehn/sas-sample-plugin) — default sample plugin
+- [sas-synth-plugin](https://github.com/shiehn/sas-synth-plugin) — default synth plugin
+- [sas-texture-plugin](https://github.com/shiehn/sas-texture-plugin) — texture/ambient plugin
+- [sas-recorder-plugin](https://github.com/shiehn/sas-recorder-plugin) — line-in recording plugin
+
+**Audio tooling**
+- [sas-audio-processor](https://github.com/shiehn/sas-audio-processor) — audio processing utilities
+- [Signals2Surge](https://github.com/shiehn/Signals2Surge) — synth patch transfer to Surge XT
+
+**Infrastructure**
+- [signals-and-sorcery-server](https://github.com/shiehn/signals-and-sorcery-server) — DAWNet API + WebSocket server
+- [signals-and-sorcery-docs](https://github.com/shiehn/signals-and-sorcery-docs) — public docs
+
+**Other**
+- [signalsandsorcery-game-ui](https://github.com/shiehn/signalsandsorcery-game-ui) — LLM-powered RPG frontend
+- [SignalsAndSorcery](https://github.com/shiehn/SignalsAndSorcery) — earlier VueJS + Web Audio sample arrangement tool
+- [Errantry](https://github.com/shiehn/Errantry) — E2E testing for agent-facing CLIs (drives this project's CLI too)
