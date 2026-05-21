@@ -83,11 +83,12 @@ if [[ -f "${REQ_FILE}" ]]; then
 fi
 
 # stable-audio-tools transitively pulls in OpenAI's `clip` package, which
-# still does `from pkg_resources import packaging`. setuptools v70+ removed
-# that path and some sub-dep can downgrade/break our earlier setuptools
-# install, so re-assert it AFTER the main requirements install.
-echo "[setup] re-asserting setuptools (pkg_resources fix for openai/CLIP)"
-pip install --upgrade setuptools >/dev/null
+# still does `from pkg_resources import packaging` — a submodule access
+# that setuptools v68 removed. We have to PIN setuptools <68; upgrading
+# to latest actively breaks the import. Force-reinstall to overwrite
+# whatever the requirements install resolved.
+echo "[setup] pinning setuptools <68 (pkg_resources.packaging fix for openai/CLIP)"
+pip install 'setuptools<68' --force-reinstall >/dev/null
 
 python - <<'PY'
 import torch
