@@ -1,7 +1,10 @@
 torch
 torchaudio
 torchsde
-stable-audio-tools
+# SA3-medium model_config.json passes `local_add_cond_dim` to the transformer,
+# which the PyPI release of stable-audio-tools doesn't accept yet. Pull from
+# the git main branch instead, which has the matching architecture.
+stable-audio-tools @ git+https://github.com/Stability-AI/stable-audio-tools.git
 einops
 transformers
 accelerate
