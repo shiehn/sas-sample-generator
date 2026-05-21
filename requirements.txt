@@ -11,12 +11,12 @@ accelerate
 safetensors
 soundfile
 pyloudnorm
-# pywavelets (via stable-audio-tools -> wavelets module) is built against
-# numpy 2.x ABI on recent PyPI wheels. If pip resolves numpy 1.x we hit:
+# pywavelets <1.6.0 was compiled against numpy 1.x and crashes at import
+# under numpy 2.x with:
 #   ValueError: numpy.dtype size changed, may indicate binary incompatibility.
-#   Expected 96 from C header, got 88 from PyObject
-# Pin to 2.x to avoid that gamble.
+# Pin both to versions that share the numpy 2 ABI.
 numpy>=2.0
+pywavelets>=1.6.0
 pandas
 tqdm
 huggingface_hub
