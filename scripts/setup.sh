@@ -23,7 +23,7 @@ LOCAL_ROOT="${LOCAL_ROOT:-/root}"
 PROJECT_DIR="${PROJECT_DIR:-${VOLUME_ROOT}/sas-sample-generator}"
 VENV_DIR="${VENV_DIR:-${LOCAL_ROOT}/.venv}"
 HF_CACHE="${HF_CACHE:-${VOLUME_ROOT}/.cache/huggingface}"
-TORCH_CUDA_INDEX="${TORCH_CUDA_INDEX:-https://download.pytorch.org/whl/cu124}"
+TORCH_CUDA_INDEX="${TORCH_CUDA_INDEX:-https://download.pytorch.org/whl/cu128}"
 
 echo "[setup] volume:       ${VOLUME_ROOT}"
 echo "[setup] project_dir:  ${PROJECT_DIR}"
@@ -70,10 +70,15 @@ source "${VENV_DIR}/bin/activate"
 
 python -m pip install --upgrade pip wheel setuptools
 
-# Install torch from the CUDA wheel index; skip if already present and matches.
+# Install torch + torchaudio + torchvision from the CUDA wheel index so all
+# three share ABI. (torchvision is a transitive dep of pytorch-lightning ->
+# torchmetrics; if we let pip resolve it implicitly it can land on a build
+# compiled against a different torch and crash with the "partially
+# initialized module" / "no attribute 'extension'" import error.)
+# cu128 (CUDA 12.8) is the default — covers Blackwell sm_120 + older archs.
 if ! python -c "import torch, sys; sys.exit(0 if torch.cuda.is_available() else 1)" 2>/dev/null; then
-  echo "[setup] installing torch + torchaudio from ${TORCH_CUDA_INDEX}"
-  pip install torch torchaudio --index-url "${TORCH_CUDA_INDEX}"
+  echo "[setup] installing torch + torchaudio + torchvision from ${TORCH_CUDA_INDEX}"
+  pip install torch torchaudio torchvision --index-url "${TORCH_CUDA_INDEX}"
 fi
 
 REQ_FILE="${PROJECT_DIR}/requirements.txt"
