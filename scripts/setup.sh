@@ -22,7 +22,25 @@ VOLUME_ROOT="${VOLUME_ROOT:-/workspace}"
 LOCAL_ROOT="${LOCAL_ROOT:-/root}"
 PROJECT_DIR="${PROJECT_DIR:-${VOLUME_ROOT}/sas-sample-generator}"
 VENV_DIR="${VENV_DIR:-${LOCAL_ROOT}/.venv}"
-HF_CACHE="${HF_CACHE:-${VOLUME_ROOT}/.cache/huggingface}"
+
+# HF cache placement: prefer the volume so model weights persist across
+# pod terminations. BUT — RunPod's "pod migration" workflow sometimes
+# attaches a tiny network volume (e.g. 10 GB instead of the originally-
+# configured 100 GB). If /workspace has <20 GB free, fall back to the
+# container disk at /root (~85 GB typical) so the model can fit. Trade-
+# off: HF cache on /root is wiped on terminate.
+if [[ -z "${HF_CACHE:-}" ]]; then
+  WS_AVAIL_KB=$(df -P "${VOLUME_ROOT}" | awk 'NR==2 {print $4}')
+  WS_AVAIL_GB=$(( WS_AVAIL_KB / 1024 / 1024 ))
+  if (( WS_AVAIL_GB < 20 )); then
+    echo "[setup] WARN: ${VOLUME_ROOT} only has ${WS_AVAIL_GB} GB free; HF cache -> ${LOCAL_ROOT}"
+    echo "[setup]       (likely a small post-migration network volume — fine for single runs"
+    echo "[setup]        but the model will re-download on each fresh pod)"
+    HF_CACHE="${LOCAL_ROOT}/.cache/huggingface"
+  else
+    HF_CACHE="${VOLUME_ROOT}/.cache/huggingface"
+  fi
+fi
 TORCH_CUDA_INDEX="${TORCH_CUDA_INDEX:-https://download.pytorch.org/whl/cu128}"
 
 echo "[setup] volume:       ${VOLUME_ROOT}"
