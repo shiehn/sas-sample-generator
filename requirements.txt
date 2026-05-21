@@ -5,6 +5,9 @@ torchsde
 # which the PyPI release of stable-audio-tools doesn't accept yet. Pull from
 # the git main branch instead, which has the matching architecture.
 stable-audio-tools @ git+https://github.com/Stability-AI/stable-audio-tools.git
+# pytorch_lightning is imported by stable-audio-tools/.../lora/callbacks.py
+# but not declared in their package metadata. Pull it ourselves.
+pytorch-lightning
 einops
 transformers
 accelerate
