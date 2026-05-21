@@ -82,6 +82,13 @@ if [[ -f "${REQ_FILE}" ]]; then
   pip install -r "${REQ_FILE}"
 fi
 
+# stable-audio-tools transitively pulls in OpenAI's `clip` package, which
+# still does `from pkg_resources import packaging`. setuptools v70+ removed
+# that path and some sub-dep can downgrade/break our earlier setuptools
+# install, so re-assert it AFTER the main requirements install.
+echo "[setup] re-asserting setuptools (pkg_resources fix for openai/CLIP)"
+pip install --upgrade setuptools >/dev/null
+
 python - <<'PY'
 import torch
 print(f"[setup] cuda available: {torch.cuda.is_available()}")
