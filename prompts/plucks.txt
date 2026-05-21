@@ -1,0 +1,53 @@
+# =========================================================================
+# Pluck one-shots — single pitched notes from plucked / struck strings or
+# pitched mallets. Sharp attack, decaying tone.
+# Small starter set (~30 prompts) — enough for a low-cost test run.
+# =========================================================================
+
+# --- Acoustic guitar ---
+nylon string acoustic guitar pluck one shot, warm woody tone, natural decay, dry, no chord, no loop
+steel string acoustic guitar pluck one shot, bright clear single note, natural sustain, dry, no melody, no loop
+classical guitar pluck one shot, warm nylon tone, gentle attack, dry, no chord, no loop
+fingerpicked guitar pluck one shot, soft warm single note, controlled decay, dry, no melody
+
+# --- Electric guitar ---
+clean electric guitar pluck one shot, bright clear single note, controlled decay, dry, no chord, no loop
+muted electric guitar pluck one shot, palm muted tight tone, short decay, dry, no melody, no loop
+jazz guitar pluck one shot, warm hollow body single note, smooth decay, dry, no chord
+
+# --- Bass guitar ---
+electric bass pluck one shot, warm deep single note, natural sustain, dry, no melody, no loop
+fingerstyle bass pluck one shot, soft warm low note, controlled decay, dry, no loop
+upright bass pluck one shot, warm acoustic low note, natural decay, dry, no melody
+
+# --- Harp / harp-like ---
+harp pluck one shot, bright shimmering single note, natural decay, dry, no chord, no loop
+classical concert harp pluck one shot, warm resonant tone, gentle decay, dry, no melody
+
+# --- Pizzicato strings ---
+pizzicato violin pluck one shot, classical short note, controlled decay, dry, no loop
+pizzicato cello pluck one shot, warm mid note, natural decay, dry, no melody
+pizzicato double bass pluck one shot, deep warm note, controlled sustain, dry, no chord
+
+# --- Pitched mallet percussion ---
+kalimba pluck one shot, bright metallic single tone, short decay, dry, no melody, no loop
+thumb piano pluck one shot, warm metallic tone, controlled decay, dry, no loop
+marimba pluck one shot, warm wooden mallet tone, natural decay, dry, no melody
+vibraphone pluck one shot, bright metallic mallet tone, sustained decay, dry, no chord
+
+# --- Ukulele / mandolin / banjo ---
+ukulele pluck one shot, bright nylon single note, short natural decay, dry, no chord, no loop
+mandolin pluck one shot, bright metallic tone, sharp attack, dry, no melody
+banjo pluck one shot, bright twangy single note, sharp attack, dry, no loop
+
+# --- World / ethnic ---
+sitar pluck one shot, indian classical single note, bright shimmering decay, dry, no melody, no loop
+kora pluck one shot, african harp-like warm tone, natural resonance, dry, no chord
+koto pluck one shot, japanese string warm tone, controlled decay, dry, no melody
+
+# --- Synth plucks ---
+analog synth pluck one shot, warm vintage single note, sharp attack, dry, no loop, no melody
+digital synth pluck one shot, bright modern single tone, controlled decay, dry, no chord
+fm synth pluck one shot, metallic bright tone, sharp attack, dry, no melody
+bell synth pluck one shot, bright ringing single tone, natural decay, dry, no loop
+percussive synth pluck one shot, short bright single note, fast decay, dry, no chord

@@ -1,4 +1,4 @@
-# Stable Audio Open Batch One-Shot Generator Guide
+# Stable Audio 3 Batch One-Shot Generator Guide
 
 **Goal:** generate large batches of one-shot audio samples, for example: 1,000 kick drum prompts in → 1,000 generated kick drum WAVs out.
 
@@ -16,7 +16,7 @@ Your M4 MacBook Air
   └─ audition/curate/import samples into Signals & Sorcery
 
 Temporary cloud GPU machine
-  ├─ loads Stable Audio Open
+  ├─ loads Stable Audio 3
   ├─ runs batch_generate.py
   ├─ runs postprocess_oneshots.py
   ├─ writes WAV files and metadata
@@ -27,9 +27,25 @@ Temporary cloud GPU machine
 
 ---
 
-## 1. Why Stable Audio Open for this job
+## 1. Why Stable Audio 3 for this job
 
-Stable Audio Open 1.0 is a text-to-audio model intended for generation of music/audio from prompts. It can generate variable-length stereo audio at 44.1kHz, up to 47 seconds. For one-shots, you will deliberately request short durations such as 1.0–2.5 seconds.
+Stable Audio 3 (released May 2026) is a family of text-to-audio latent
+diffusion transformers. It supersedes Stable Audio Open 1.0 — the headline
+practical difference for this repo is that SA3 converges in ~8 diffusion
+steps (vs 120 for SAO 1.0) and so generates one-shots ~15× faster on the
+same hardware. The relevant open-weights variants are:
+
+| Repo | Params | Best for |
+|---|---|---|
+| `stabilityai/stable-audio-3-medium` | 2B | Full musical / textural content (this repo's default). |
+| `stabilityai/stable-audio-3-small-sfx` | 0.6B | Pure sound-effect / drum / percussion one-shots. Fastest. |
+| `stabilityai/stable-audio-3-small-music` | 0.6B | Short music — not relevant here. |
+
+Switch models via `--model` to `batch_generate.py`. The `small-sfx` variant
+is the closest match to the drum / percussion focus of this repo and will
+run faster on cheaper GPUs; the default `medium` produces broader, more
+"musical" textures. Both generate variable-length stereo audio at the
+sample rate reported by `model_config["sample_rate"]` (44.1 kHz).
 
 This is a better fit than a general audio conversation model because your target workflow is:
 
@@ -50,8 +66,10 @@ audio conversation / speech understanding / transcription
 Create or confirm these accounts:
 
 1. **Hugging Face account**
-   - Required to download `stabilityai/stable-audio-open-1.0`.
-   - You must accept the model license/terms on the Hugging Face model page before the download works.
+   - Required to download `stabilityai/stable-audio-3-medium` (or whichever
+     SA3 variant you point `--model` at).
+   - You must accept the SA3 community license and the Gemma terms it
+     inherits on the Hugging Face model page before the download works.
 
 2. **RunPod account**
    - Recommended for actual batch runs.
@@ -214,7 +232,9 @@ Create:
 ```txt
 torch
 torchaudio
-diffusers
+torchsde
+stable-audio-tools
+einops
 transformers
 accelerate
 safetensors
@@ -224,6 +244,11 @@ pandas
 tqdm
 huggingface_hub
 ```
+
+The shift from `diffusers` to `stable-audio-tools` is what lets us drive the
+SA3 sampler ("pingpong"), pass `negative_conditioning` for loop/reverb
+suppression, and access the underlying `sample_size` / `sample_rate` from
+the model config.
 
 On CUDA machines, you may want to install PyTorch from the CUDA wheel index instead of relying on the default PyPI resolution. See the setup commands below.
 
@@ -293,9 +318,9 @@ Recommended layout on the volume:
 ```
 
 Without this layout, every fresh pod re-runs `pip install` (~5 min) and
-re-downloads Stable Audio Open weights from Hugging Face (~3–5 GB, another
-~2 min). With this layout, a new pod is ready in ~30 seconds because the venv
-and the model cache are already on the volume.
+re-downloads Stable Audio 3 weights from Hugging Face (~5–8 GB for medium,
+~2 GB for small, another ~2–3 min). With this layout, a new pod is ready in
+~30 seconds because the venv and the model cache are already on the volume.
 
 `scripts/setup.sh` (in this repo) sets all of this up. It is idempotent —
 safe to re-run on every pod boot.
@@ -350,7 +375,7 @@ On your Mac or in a browser:
 
 1. Go to Hugging Face.
 2. Create an access token.
-3. Accept the Stable Audio Open model terms on the model page.
+3. Accept the Stable Audio 3 model terms (and the Gemma terms) on the model page.
 
 On the pod:
 
@@ -364,315 +389,57 @@ Paste your token.
 
 ## 10. Batch generation script
 
-Create `scripts/batch_generate.py`.
+The working implementation lives at
+[`scripts/batch_generate.py`](scripts/batch_generate.py) — read it there
+rather than from a snapshot in this guide. The shape:
 
-```python
-import argparse
-import json
-import time
-from pathlib import Path
-
-import numpy as np
-import soundfile as sf
-import torch
-from diffusers import StableAudioPipeline
-from tqdm import tqdm
-
-
-DEFAULT_NEGATIVE_PROMPT = (
-    "low quality, distorted, noisy, clipped, music loop, drum loop, "
-    "hi hats, snare, cymbals, vocals, melody, long ambience, reverb wash"
-)
-
-
-def read_jsonl(path: Path):
-    with path.open("r", encoding="utf-8") as f:
-        for line_number, line in enumerate(f, start=1):
-            line = line.strip()
-            if not line:
-                continue
-            try:
-                yield json.loads(line)
-            except json.JSONDecodeError as exc:
-                raise ValueError(f"Invalid JSON on line {line_number}: {exc}") from exc
-
-
-def audio_to_numpy(audio):
-    """Convert pipeline audio output to shape: samples x channels."""
-    if torch.is_tensor(audio):
-        audio = audio.detach().float().cpu().numpy()
-
-    audio = np.asarray(audio, dtype=np.float32)
-
-    # Common model output: channels x samples. soundfile wants samples x channels.
-    if audio.ndim == 2 and audio.shape[0] <= 8 and audio.shape[1] > audio.shape[0]:
-        audio = audio.T
-
-    return np.clip(audio, -1.0, 1.0)
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--prompts", required=True, help="Path to JSONL prompts file")
-    parser.add_argument("--out", default="outputs/raw", help="Output directory")
-    parser.add_argument("--model", default="stabilityai/stable-audio-open-1.0")
-    parser.add_argument("--steps", type=int, default=120)
-    parser.add_argument("--cfg-scale", type=float, default=7.0)
-    parser.add_argument("--default-duration", type=float, default=1.5)
-    parser.add_argument("--num-waveforms-per-prompt", type=int, default=1)
-    parser.add_argument("--negative-prompt", default=DEFAULT_NEGATIVE_PROMPT)
-    parser.add_argument("--skip-existing", action="store_true")
-    args = parser.parse_args()
-
-    if not torch.cuda.is_available():
-        raise SystemExit("CUDA GPU not available. Run this on a cloud NVIDIA GPU pod.")
-
-    prompts_path = Path(args.prompts)
-    out_dir = Path(args.out)
-    out_dir.mkdir(parents=True, exist_ok=True)
-
-    metadata_dir = out_dir / "_metadata"
-    metadata_dir.mkdir(parents=True, exist_ok=True)
-
-    print(f"Loading model: {args.model}")
-    pipe = StableAudioPipeline.from_pretrained(
-        args.model,
-        torch_dtype=torch.float16,
-    )
-    pipe = pipe.to("cuda")
-
-    sample_rate = pipe.vae.sampling_rate
-    jobs = list(read_jsonl(prompts_path))
-    print(f"Loaded {len(jobs)} jobs")
-
-    for job in tqdm(jobs, desc="Generating"):
-        sample_id = job["id"]
-        prompt = job["prompt"]
-        duration = float(job.get("duration", args.default_duration))
-        seed = int(job.get("seed", 0))
-
-        for variant_index in range(args.num_waveforms_per_prompt):
-            suffix = f"_v{variant_index:02d}" if args.num_waveforms_per_prompt > 1 else ""
-            wav_path = out_dir / f"{sample_id}{suffix}.wav"
-            json_path = metadata_dir / f"{sample_id}{suffix}.json"
-
-            if args.skip_existing and wav_path.exists():
-                continue
-
-            generator = torch.Generator("cuda").manual_seed(seed + variant_index)
-
-            started = time.time()
-            result = pipe(
-                prompt=prompt,
-                negative_prompt=args.negative_prompt,
-                num_inference_steps=args.steps,
-                guidance_scale=args.cfg_scale,
-                audio_end_in_s=duration,
-                num_waveforms_per_prompt=1,
-                generator=generator,
-            )
-
-            audio = audio_to_numpy(result.audios[0])
-            sf.write(wav_path, audio, sample_rate, subtype="PCM_24")
-
-            metadata = {
-                "id": sample_id,
-                "variant_index": variant_index,
-                "prompt": prompt,
-                "negative_prompt": args.negative_prompt,
-                "seed": seed + variant_index,
-                "duration_requested_seconds": duration,
-                "steps": args.steps,
-                "cfg_scale": args.cfg_scale,
-                "model": args.model,
-                "sample_rate": sample_rate,
-                "output_file": str(wav_path),
-                "generation_seconds": round(time.time() - started, 3),
-            }
-            json_path.write_text(json.dumps(metadata, indent=2), encoding="utf-8")
-
-            # Keep VRAM tidy across long runs.
-            del result
-            torch.cuda.empty_cache()
-
-
-if __name__ == "__main__":
-    main()
-```
+- Loads the SA3 model via `stable_audio_tools.get_pretrained_model(model_id)`
+  in `torch.float16` on CUDA.
+- Iterates one or more JSONL prompt files; supports multi-category batch
+  generation in a single pipeline-load (only pay the model-load cost once).
+- For each prompt, calls
+  `stable_audio_tools.inference.generation.generate_diffusion_cond` with
+  `conditioning=[{"prompt": ..., "seconds_total": duration}]` and a parallel
+  `negative_conditioning` list to suppress loops / reverb / vocals.
+- Defaults: `--steps 8`, `--cfg-scale 1.0`, `--sampler pingpong` — these
+  are the values the SA3 model card specifies, and they're ~15× cheaper to
+  evaluate than SAO 1.0's 120 / 7.0 defaults.
+- Writes 24-bit PCM WAVs and a sibling `_metadata/{id}.json` per output;
+  honours `--skip-existing` for idempotent re-runs.
 
 ---
 
 ## 11. Post-processing script
 
-This trims silence, normalizes, optionally converts to mono, rejects extremely quiet files, and writes a manifest.
+The working implementation lives at
+[`scripts/postprocess_oneshots.py`](scripts/postprocess_oneshots.py) — read
+it there rather than from a snapshot in this guide. The shape:
 
-Create `scripts/postprocess_oneshots.py`.
+- Reads raw WAVs from `outputs/raw/<category>/` (or `--in-dir`),
+  trims leading/trailing silence by RMS threshold (`--trim-threshold-db`,
+  default -45 dB), truncates to `--max-seconds`, optionally downmixes
+  to mono (`--mono`).
+- Normalizes loudness via one of three modes (`--normalize`):
+  - `lufs` (default): BS.1770-4 perceived loudness to `--target-lufs`
+    (default -16 LUFS), with a hard `--peak-ceiling-db` (default
+    -1 dBFS) applied after the LUFS gain. Loop-pads samples shorter
+    than 3.5 s before the integrated-loudness measurement so very
+    short hats/clicks still resolve.
+  - `peak`: legacy peak-only normalize to `--target-peak-db`.
+  - `none`: skip the gain stage entirely (still trims + fades).
+- Writes 24-bit PCM WAVs with a sibling `<id>.txt` containing the
+  generation prompt (read from `outputs/raw/<cat>/_metadata/<id>.json`
+  written by `batch_generate.py`); also embeds the prompt in the WAV's
+  RIFF INFO `ICMT` chunk via the `soundfile.SoundFile` context manager.
+- Rejected samples (`too_quiet`, `silence`, `lufs_unmeasurable`,
+  `normalization_failed`) go to `outputs/rejected/<category>/` with
+  the same `.txt` sibling pattern, so you can grep which prompts
+  produced bad output.
 
-```python
-import argparse
-import csv
-import shutil
-from pathlib import Path
-
-import numpy as np
-import soundfile as sf
-from tqdm import tqdm
-
-
-def db_to_amp(db):
-    return 10 ** (db / 20)
-
-
-def ensure_2d(y):
-    if y.ndim == 1:
-        return y[:, None]
-    return y
-
-
-def apply_fade(y, sr, fade_ms=5):
-    fade_len = int(sr * fade_ms / 1000)
-    if fade_len <= 1 or len(y) < fade_len * 2:
-        return y
-
-    fade_in = np.linspace(0, 1, fade_len)[:, None]
-    fade_out = np.linspace(1, 0, fade_len)[:, None]
-
-    y[:fade_len] *= fade_in
-    y[-fade_len:] *= fade_out
-    return y
-
-
-def trim_silence(y, sr, threshold_db=-45, pad_ms=15):
-    y = ensure_2d(y)
-    mono = np.mean(y, axis=1)
-
-    peak = float(np.max(np.abs(mono))) if len(mono) else 0.0
-    if peak < 1e-5:
-        return None, "too_quiet"
-
-    threshold = peak * db_to_amp(threshold_db)
-    active = np.where(np.abs(mono) >= threshold)[0]
-
-    if len(active) == 0:
-        return None, "silence"
-
-    pad = int(sr * pad_ms / 1000)
-    start = max(0, int(active[0]) - pad)
-    end = min(len(y), int(active[-1]) + pad)
-
-    return y[start:end], None
-
-
-def normalize_peak(y, target_db=-1.0):
-    peak = float(np.max(np.abs(y))) if len(y) else 0.0
-    if peak < 1e-5:
-        return None
-    target = db_to_amp(target_db)
-    return np.clip(y / peak * target, -1.0, 1.0)
-
-
-def process_file(path, out_dir, rejected_dir, args):
-    y, sr = sf.read(path, always_2d=True)
-
-    trimmed, reject_reason = trim_silence(
-        y,
-        sr,
-        threshold_db=args.trim_threshold_db,
-        pad_ms=args.pad_ms,
-    )
-
-    if reject_reason:
-        rejected_path = rejected_dir / path.name
-        shutil.copy2(path, rejected_path)
-        return {
-            "file": path.name,
-            "status": "rejected",
-            "reason": reject_reason,
-            "duration_seconds": 0,
-            "output": str(rejected_path),
-        }
-
-    max_samples = int(args.max_seconds * sr)
-    if len(trimmed) > max_samples:
-        # For one-shots, keep the attack and early body.
-        trimmed = trimmed[:max_samples]
-
-    if args.mono:
-        trimmed = np.mean(trimmed, axis=1, keepdims=True)
-
-    processed = normalize_peak(trimmed, target_db=args.target_peak_db)
-    if processed is None:
-        rejected_path = rejected_dir / path.name
-        shutil.copy2(path, rejected_path)
-        return {
-            "file": path.name,
-            "status": "rejected",
-            "reason": "normalization_failed",
-            "duration_seconds": 0,
-            "output": str(rejected_path),
-        }
-
-    processed = apply_fade(processed, sr, fade_ms=args.fade_ms)
-
-    out_path = out_dir / path.name
-    sf.write(out_path, processed, sr, subtype="PCM_24")
-
-    return {
-        "file": path.name,
-        "status": "ok",
-        "reason": "",
-        "duration_seconds": round(len(processed) / sr, 4),
-        "sample_rate": sr,
-        "channels": processed.shape[1],
-        "output": str(out_path),
-    }
-
-
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--in-dir", default="outputs/raw")
-    parser.add_argument("--out-dir", default="outputs/processed")
-    parser.add_argument("--rejected-dir", default="outputs/rejected")
-    parser.add_argument("--manifest", default="outputs/manifests/processed_manifest.csv")
-    parser.add_argument("--mono", action="store_true")
-    parser.add_argument("--max-seconds", type=float, default=2.5)
-    parser.add_argument("--trim-threshold-db", type=float, default=-45)
-    parser.add_argument("--pad-ms", type=float, default=15)
-    parser.add_argument("--fade-ms", type=float, default=5)
-    parser.add_argument("--target-peak-db", type=float, default=-1.0)
-    args = parser.parse_args()
-
-    in_dir = Path(args.in_dir)
-    out_dir = Path(args.out_dir)
-    rejected_dir = Path(args.rejected_dir)
-    manifest_path = Path(args.manifest)
-
-    out_dir.mkdir(parents=True, exist_ok=True)
-    rejected_dir.mkdir(parents=True, exist_ok=True)
-    manifest_path.parent.mkdir(parents=True, exist_ok=True)
-
-    wavs = sorted(in_dir.glob("*.wav"))
-    rows = []
-
-    for wav in tqdm(wavs, desc="Post-processing"):
-        rows.append(process_file(wav, out_dir, rejected_dir, args))
-
-    fieldnames = sorted({key for row in rows for key in row.keys()})
-    with manifest_path.open("w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
-        writer.writeheader()
-        writer.writerows(rows)
-
-    ok = sum(1 for row in rows if row["status"] == "ok")
-    rejected = len(rows) - ok
-    print(f"Processed: {ok}")
-    print(f"Rejected: {rejected}")
-    print(f"Manifest: {manifest_path}")
-
-
-if __name__ == "__main__":
-    main()
-```
+The previously-inline snapshot (pre-LUFS, pre-multi-category, pre-`.txt`
+sidecars) has been removed in favor of pointing at the live file — the
+implementation diverged enough that pinning a snapshot here misled more
+than it helped.
 
 ---
 
@@ -693,9 +460,9 @@ source .venv/bin/activate
 
 python scripts/batch_generate.py \
   --prompts prompts/kicks_smoke_test.jsonl \
-  --out outputs/raw \
-  --steps 80 \
-  --cfg-scale 7 \
+  --out-root outputs/raw \
+  --steps 8 \
+  --cfg-scale 1.0 \
   --skip-existing
 ```
 
@@ -706,7 +473,6 @@ python scripts/postprocess_oneshots.py \
   --in-dir outputs/raw \
   --out-dir outputs/processed \
   --rejected-dir outputs/rejected \
-  --manifest outputs/manifests/smoke_test_manifest.csv \
   --mono \
   --max-seconds 2.5
 ```
@@ -714,7 +480,7 @@ python scripts/postprocess_oneshots.py \
 Zip and download:
 
 ```bash
-tar czf smoke_test_outputs.tar.gz outputs/processed outputs/manifests
+tar czf smoke_test_outputs.tar.gz outputs/processed
 ```
 
 From your Mac:
@@ -784,9 +550,9 @@ source .venv/bin/activate
 
 python scripts/batch_generate.py \
   --prompts prompts/kicks_1000.jsonl \
-  --out outputs/raw \
-  --steps 120 \
-  --cfg-scale 7 \
+  --out-root outputs/raw \
+  --steps 8 \
+  --cfg-scale 1.0 \
   --default-duration 1.5 \
   --skip-existing
 ```
@@ -798,7 +564,6 @@ python scripts/postprocess_oneshots.py \
   --in-dir outputs/raw \
   --out-dir outputs/processed \
   --rejected-dir outputs/rejected \
-  --manifest outputs/manifests/kicks_1000_manifest.csv \
   --mono \
   --max-seconds 2.5
 ```
@@ -806,7 +571,7 @@ python scripts/postprocess_oneshots.py \
 Create final ZIP:
 
 ```bash
-tar czf stable_audio_kicks_1000.tar.gz outputs/processed outputs/manifests outputs/raw/_metadata
+tar czf stable_audio_kicks_1000.tar.gz outputs/processed
 ```
 
 ### 14.1 Get the data off the pod
@@ -909,25 +674,113 @@ warm lo-fi kick drum one shot, soft transient, dusty sampler texture, short deca
 
 ## 17. Practical settings to try
 
-Start conservative:
+Start with SA3's documented defaults:
 
 ```text
 duration: 1.25–2.0 seconds
-steps: 80 for smoke tests
-steps: 120 for batch tests
-cfg-scale: 6–8
+steps: 8       (SA3 default — converges much faster than SAO 1.0)
+cfg-scale: 1.0 (SA3 default; higher values often degrade quality on SA3)
+sampler: pingpong
 num-waveforms-per-prompt: 1
 ```
 
-Then experiment:
+Then experiment carefully — SA3's compute scaling is different from SAO 1.0:
 
 ```text
-steps: 150–200 if quality improves enough to justify cost
+steps: 4–6     for cheap iteration on prompt wording
+steps: 12–16   if 8 steps under-resolves transients on a specific category
+cfg-scale: 1.5–3.0   if positive prompt isn't being respected enough
 duration: 2.5 seconds for long 808 tails
 num-waveforms-per-prompt: 2–3 for curation runs
 ```
 
-Avoid starting with maximum settings. First find the cheapest settings that produce usable samples.
+Unlike SAO 1.0, blindly increasing steps on SA3 rarely pays for itself.
+Tune the prompt first, the step count second.
+
+### Loudness normalization
+
+`postprocess_oneshots.py` perceived-loudness-normalizes every sample to
+**-16 LUFS** (BS.1770-4) by default, with a hard **-1 dBFS** peak ceiling
+applied afterwards. Samples shorter than ~3.5 s are loop-padded internally
+just for the measurement — the gain is applied to the original buffer.
+
+Three modes are available via `--normalize`:
+
+```text
+--normalize lufs   (default)  target -16 LUFS, peak ceiling -1 dBFS
+--normalize peak              legacy mode: peak-only to --target-peak-db
+--normalize none              skip the gain stage entirely
+```
+
+Tune the LUFS target if your sampler needs hotter signal:
+
+```text
+--target-lufs -14   streaming-hot (Spotify-ish)
+--target-lufs -10   commercial-library hot (Splice-style)
+```
+
+The post-process per-sample measurements (LUFS in/out, peak ceiling
+applied, etc.) are no longer shipped in a CSV manifest — they live only
+in the pipeline run log (`/workspace/run.log` if you `tee`d it) and can
+be re-derived from the processed WAVs at any time with `pyloudnorm`.
+If you need an audit of how the empirical mean tracks `--target-lufs`,
+run a quick `find outputs/processed -name '*.wav' | xargs -I{} python
+-c 'import soundfile,pyloudnorm,sys;y,sr=soundfile.read(sys.argv[1]);
+print(sys.argv[1], pyloudnorm.Meter(sr).integrated_loudness(y))' {}`
+and adjust `--target-lufs` on the next run.
+
+### Per-sample provenance (prompts travel with the WAVs)
+
+Each processed WAV ships with its generation prompt attached in **two
+places** so the data survives both the tar → scp boundary AND any
+downstream "I dragged a WAV into Logic" detour:
+
+1. **Sibling `<id>.txt`** in the same category folder — plain UTF-8
+   text containing the positive prompt verbatim. Sits next to
+   `<id>.wav` so merging two generation runs is a single `rsync`
+   (no manifest CSV to reconcile, no `_metadata/` subdir to chase).
+2. **Embedded WAV RIFF INFO chunks** — the positive prompt is also
+   written to the `ICMT` (comment) chunk and the generator name to
+   the `ISFT` (software) chunk. Logic, Ableton Live, Reaper,
+   Audacity, `ffprobe`, and macOS Finder's Get-Info → "More Info"
+   all surface these. So WAVs dragged outside the SAS workflow still
+   carry the prompt.
+
+Rejected samples get the same `<id>.txt` sibling under
+`outputs/rejected/<cat>/`, so you can `grep -r '<keyword>' outputs/rejected`
+to find which prompts produced silent or unmeasurable output.
+
+Reading the WAV-embedded prompt from Python:
+
+```python
+import soundfile as sf
+with sf.SoundFile("outputs/processed/kick/kick-c1da23da.wav") as f:
+    print(f.comment)   # the original generation prompt
+    print(f.software)  # "sas-sample-generator + Stable Audio 3 (libsndfile-...)"
+```
+
+Or just `cat outputs/processed/kick/kick-c1da23da.txt`.
+
+**What's NOT in the shipped tar**: structured generation telemetry
+(seed, model, exact sampler, steps, cfg-scale, per-sample LUFS in/out
+values) lives only at `outputs/raw/<cat>/_metadata/<id>.json` on the pod
+— `batch_generate.py` writes it pre-postprocess and the user's tar
+boundary excludes `raw/` to keep downloads small. This is a deliberate
+trade-off in favor of merge-friendly downstream layout. If you need
+audit data on the Mac side, either grab `outputs/raw/<cat>/_metadata/`
+separately, or re-measure LUFS with `pyloudnorm` after the fact.
+
+This is **Phase 1** of a description-aware sample-selection feature
+for the wider Signals & Sorcery ecosystem — Phase 2 will teach
+`sas-drum-plugin`'s kit resolver to consult these prompts when ranking
+candidates against the user's free-text request (so "funky 1960's
+motown feel kick" preferentially picks the kick whose generation
+prompt was closest in meaning). Phase 2 can read either the `.txt`
+sibling or the WAV's `ICMT` chunk — both yield identical content.
+
+Caveat: hand-edits to the processed `<id>.txt` are lost on the next
+postprocess run. For stable annotations, edit the upstream raw
+`_metadata/<id>.json` (the script only reads, never writes raw).
 
 ---
 
@@ -956,7 +809,7 @@ Avoid starting with maximum settings. First find the cheapest settings that prod
 4. **Keep a persistent volume for model cache, but delete old raw outputs if storage grows.**
 5. **Stop the pod immediately after downloading results.**
 6. **Generate short one-shots, not 30–47 second clips.**
-7. **Use 80–120 steps first, then only increase if quality requires it.**
+7. **Use 8 steps first (SA3 default), then only increase if quality requires it.**
 
 Cost formula:
 
@@ -1091,7 +944,7 @@ docker push YOUR_DOCKERHUB_USER/sas-sample-generator:latest
 ```
 
 In RunPod, pick "Deploy a custom image" and paste the tag. The image deliberately
-does NOT bake in the Stable Audio Open weights — those still download into the
+does NOT bake in the Stable Audio 3 weights — those still download into the
 persistent volume's HF cache on first run, same as the stock-template flow. That
 keeps the image small (~6 GB instead of ~10 GB) and avoids re-pushing on every
 weight update.
@@ -1100,9 +953,11 @@ weight update.
 
 ## References
 
-- Stable Audio Open 1.0 model card: https://huggingface.co/stabilityai/stable-audio-open-1.0
-- Stable Audio Open paper: https://arxiv.org/abs/2407.14358
-- Stable Audio Tools: https://github.com/Stability-AI/stable-audio-tools
+- Stable Audio 3 collection: https://huggingface.co/collections/stabilityai/stable-audio-3
+- Stable Audio 3 Medium model card: https://huggingface.co/stabilityai/stable-audio-3-medium
+- Stable Audio 3 Small SFX model card: https://huggingface.co/stabilityai/stable-audio-3-small-sfx
+- Stable Audio Open paper (prior gen, for sampler / architecture background): https://arxiv.org/abs/2407.14358
+- Stable Audio Tools (inference library this repo uses): https://github.com/Stability-AI/stable-audio-tools
 - RunPod GPU pricing: https://www.runpod.io/pricing
 - RunPod L40S page: https://www.runpod.io/gpu-models/l40s
 - RunPod RTX 4090 page: https://www.runpod.io/gpu-models/rtx-4090

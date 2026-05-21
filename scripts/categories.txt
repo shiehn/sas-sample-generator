@@ -16,3 +16,4 @@ tom-hi
 tom-mid
 tom-low
 hit
+plucks

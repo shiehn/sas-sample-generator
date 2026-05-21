@@ -5,7 +5,7 @@
 </p>
 
 Generate batches of one-shot audio samples (kicks, snares, hats, etc.) with
-[Stable Audio Open](https://huggingface.co/stabilityai/stable-audio-open-1.0)
+[Stable Audio 3](https://huggingface.co/stabilityai/stable-audio-3-medium)
 on a rented [RunPod](https://www.runpod.io) GPU.
 
 **Designed for occasional use.** This README is the recipe — read top to bottom,
@@ -79,8 +79,12 @@ skip that category.
 ### A. Hugging Face
 
 1. Create / sign in at [huggingface.co](https://huggingface.co).
-2. Visit [stabilityai/stable-audio-open-1.0](https://huggingface.co/stabilityai/stable-audio-open-1.0)
-   and click **Agree and access repository**.
+2. Visit [stabilityai/stable-audio-3-medium](https://huggingface.co/stabilityai/stable-audio-3-medium)
+   and click **Agree and access repository**. SA3 also requires accepting
+   the Gemma Terms of Use (linked from the same page). If you switch models
+   via `--model`, accept the license on that model's page too —
+   [stable-audio-3-small-sfx](https://huggingface.co/stabilityai/stable-audio-3-small-sfx)
+   is the lighter 0.6B SFX-tuned alternative.
 3. Create a read-only access token at
    [huggingface.co/settings/tokens](https://huggingface.co/settings/tokens).
    Save it in your password manager — you'll paste it once per pod.
@@ -187,7 +191,7 @@ To customize:
   [`scripts/categories.txt`](scripts/categories.txt) and comment out the
   lines you want to skip. Useful for prompt iteration on a single category.
 
-### 6. Run the whole pipeline (~5 hours for all 14, ~15 min for one)
+### 6. Run the whole pipeline (~25 min for all 14, ~2 min for one)
 
 Wrap the run in `tmux` first so an SSH drop doesn't kill the job:
 
@@ -206,10 +210,23 @@ The wrapper does three things in order:
    pipeline loads only once — looping per-category would re-load it 14
    times and waste ~30 minutes.
 3. Run `postprocess_oneshots.py --category <cat>` for each category in
-   turn (trim, normalize, mono).
+   turn (trim, perceived-loudness normalize to **-16 LUFS** with a -1 dBFS
+   peak ceiling, mono downmix). Each WAV ships with a sibling `<id>.txt`
+   in the same category folder containing its exact generation prompt;
+   the prompt is also embedded in the WAV's RIFF INFO comment chunk so
+   Logic / Ableton / Audacity / `ffprobe` / macOS Get-Info can show it.
+   Merging samples from multiple runs is a single `rsync` — no manifest
+   to reconcile.
 
-First call downloads Stable Audio Open (~3–5 GB, ~3 min, one-time). Then
-~10 sec/sample × prompt count.
+First call downloads Stable Audio 3 (~5–8 GB for medium, ~2 GB for small, ~3 min,
+one-time). Then ~1 sec/sample × prompt count — SA3 converges in ~8 diffusion
+steps (vs 120 for SAO 1.0), so generation is ~10–15× faster.
+
+Outputs are LUFS-normalized by default so kicks, hats, and splashes all
+sit at the same perceived volume in your sampler. To revert to the old
+peak-only behavior pass `--normalize peak` to `postprocess_oneshots.py`,
+or override the target with `--target-lufs -14` (streaming-hot) or
+`--target-lufs -10` (commercial library hot).
 
 **Single-category iteration** (when you're tuning prompts):
 
@@ -233,15 +250,21 @@ find /workspace/outputs/processed -name "*.wav" | wc -l
 # Should show ~1400 (minus any auto-rejected silent samples)
 ```
 
-Per-category manifests with CSV stats live at
-`/workspace/outputs/manifests/<category>.csv`.
+Every `<id>.wav` ships with a sibling `<id>.txt` containing its
+generation prompt. Spot-check the pairing:
+
+```bash
+test "$(find /workspace/outputs/processed -name '*.wav' | wc -l)" \
+   = "$(find /workspace/outputs/processed -name '*.txt' | wc -l)" \
+   && echo "wav/txt pairing OK"
+```
 
 ### 9. Zip and download
 
 On the pod:
 ```bash
 cd /workspace
-tar czf run.tar.gz outputs/processed outputs/manifests
+tar czf run.tar.gz outputs/processed
 ls -lh run.tar.gz
 ```
 
@@ -320,10 +343,12 @@ sas-sample-generator/
 │   ├── benchmark.py                            ← optional: per-sample cost math
 │   └── sync.sh                                 ← optional: rclone to B2 / R2
 └── outputs/                                    ← gitignored; generated WAVs land here
-    ├── raw/<category>/                         ← raw model output
-    ├── processed/<category>/                   ← trimmed + normalized
-    ├── rejected/<category>/                    ← samples auto-rejected for silence
-    └── manifests/<category>.csv                ← per-category processing log
+    ├── raw/<category>/<id>.wav                 ← raw model output
+    ├── raw/<category>/_metadata/<id>.json      ← prompt + gen params (written by batch_generate.py; stays on pod)
+    ├── processed/<category>/<id>.wav           ← trimmed + LUFS-normalized; ICMT chunk = prompt
+    ├── processed/<category>/<id>.txt           ← sibling positive prompt (plain text)
+    ├── rejected/<category>/<id>.wav            ← samples auto-rejected for silence / LUFS failure
+    └── rejected/<category>/<id>.txt            ← prompt that produced the rejection
 ```
 
 ---
@@ -335,12 +360,14 @@ sas-sample-generator/
 | `Permission denied (publickey)` on ssh | private key not loaded into agent | `ssh-add ~/.ssh/id_ed25519` |
 | `setup.sh` hangs at `Installing collected packages:` for >5 min | something redirected the venv onto `/workspace` (MooseFS); script defaults to `/root/.venv` for a reason | check `echo $VENV_DIR` — should be `/root/.venv`. If overridden, unset it and re-run |
 | `cuda available: False` after `setup.sh` | picked a CPU template | terminate; re-deploy with PyTorch GPU template |
-| `huggingface_hub.utils._errors.GatedRepoError` | didn't accept the SAO license | visit the [model page](https://huggingface.co/stabilityai/stable-audio-open-1.0), click "Agree" |
+| `huggingface_hub.utils._errors.GatedRepoError` | didn't accept the SA3 license (or the Gemma terms it inherits) | visit the [model page](https://huggingface.co/stabilityai/stable-audio-3-medium), click "Agree" |
 | `batch_generate.py` errors `CUDA out of memory` | duration too long for VRAM | lower `--default-duration` or `--num-waveforms-per-prompt 1` |
 | All samples sound like loops | prompts not specific enough | add `one shot, no loop, no hi hats, no snare` to every prompt |
 | Too much reverb | model adds ambience by default | add `dry, no reverb, no ambience` to prompts |
 | Generated WAV doesn't sound like the target category (e.g. hats sound like snares) | the per-category `negative_prompt` may be excluding the target — bug in `scripts/category_config.py` | open `scripts/category_config.py`, audit the negative for that category; nothing in it should match the target sound |
 | `run_all.sh` skips a category | corresponding `prompts/<cat>.txt` is missing or has only comments | check `prompts/` has the .txt file and contains non-comment lines |
+| Samples land in `rejected/` with `reason=lufs_unmeasurable` | sample was so quiet that LUFS couldn't resolve even after loop-padding | usually a generation artifact — audition the rejected file. If a category has many of these, prompts are likely generating near-silent output; tighten them |
+| One category sounds louder than the others in your sampler | likely peak-mode artifact, or LUFS target was overridden | re-measure the processed WAVs with `pyloudnorm` and check they cluster near `--target-lufs`. The pipeline log at `/workspace/run.log` (from step 6) records the as-run postprocess flags for each category. |
 | SSH disconnects mid-run | network blip + foregrounded run | use `tmux new -s sas` BEFORE running, reattach with `tmux attach -t sas` |
 
 ---
@@ -348,16 +375,19 @@ sas-sample-generator/
 ## Cost recap
 
 On an RTX A6000 at $0.49/hr. Both numbers below assume a fresh pod (so they
-include the one-time bootstrap + model download).
+include the one-time bootstrap + model download). Stable Audio 3 needs only
+~8 diffusion steps vs 120 for SAO 1.0, so inference time dropped ~15×
+compared to the prior version of this repo.
 
 | Run shape | Time | Cost |
 |---|---|---|
-| **Single category** (~100 samples) | ~20 min | ~$0.16 |
-| **All 14 categories** (~1400 samples) | ~5 hr | ~$2.45 |
+| **Single category** (~100 samples) | ~7 min | ~$0.06 |
+| **All 14 categories** (~1400 samples) | ~30 min | ~$0.25 |
 
-The "all 14" cost is dominated by GPU inference time (~10 sec × 1400 = ~4 hr).
-The bootstrap + model download is one-time per pod and shared across all
-categories, which is why the per-sample cost stays roughly flat as you scale.
+The "all 14" cost is now dominated by the one-time bootstrap + model
+download (~8 min) rather than inference (~1 sec × 1400 = ~25 min). If you
+keep a pod alive between runs, subsequent iterations are pure inference and
+the per-sample cost trends toward $0.0001.
 
 If you keep the pod alive between runs in the same session (e.g., iterating
 prompts on one category), each subsequent run is just step 6 again with
@@ -384,7 +414,7 @@ then `git rm` + commit + push. Treat anything that hit `main` as compromised.
 
 [`stable_audio_open_batch_oneshot_guide.md`](stable_audio_open_batch_oneshot_guide.md)
 covers:
-- Why Stable Audio Open vs alternatives
+- Why Stable Audio 3 vs alternatives (and what changed from SAO 1.0)
 - Prompt-design rules and category-specific templates
 - Optional persistent Network Volume layout (for users running multiple times per week)
 - Optional rclone push to Backblaze B2 / Cloudflare R2 instead of `scp`
@@ -404,8 +434,8 @@ This is one piece of a larger ecosystem around the
 - [sas-chat-plugin](https://github.com/shiehn/sas-chat-plugin) — in-app conversational agent
 
 **Built-in plugins**
-- [sas-audio-plugin](https://github.com/shiehn/sas-audio-plugin) — default AI audio generation plugin
-- [sas-sample-plugin](https://github.com/shiehn/sas-sample-plugin) — default sample plugin
+- [sas-stems-plugin](https://github.com/shiehn/sas-stems-plugin) — default AI audio-from-text + stem-splitting plugin
+- [sas-loops-plugin](https://github.com/shiehn/sas-loops-plugin) — default audio loop / sample plugin
 - [sas-synth-plugin](https://github.com/shiehn/sas-synth-plugin) — default synth plugin
 - [sas-texture-plugin](https://github.com/shiehn/sas-texture-plugin) — texture/ambient plugin
 - [sas-recorder-plugin](https://github.com/shiehn/sas-recorder-plugin) — line-in recording plugin

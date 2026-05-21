@@ -67,6 +67,13 @@ CATEGORY_NEGATIVES: dict[str, str] = {
         "low quality, music loop, drum loop, vocals, melody, long ambience, "
         "rhythmic pattern, sustained tone"
     ),
+    "plucks": (
+        # Plucks ARE pitched single notes, so don't exclude pitch or melody
+        # outright — exclude *phrasing* and percussion instead.
+        "low quality, distorted, noisy, clipped, music loop, drum loop, "
+        "melodic phrase, multiple notes, sustained chord, kick, snare, "
+        "hi hats, cymbals, vocals, song, long ambience, reverb wash"
+    ),
 }
 
 CATEGORY_DURATIONS: dict[str, float] = {
@@ -84,6 +91,7 @@ CATEGORY_DURATIONS: dict[str, float] = {
     "tom-mid": 1.25,
     "tom-low": 1.5,
     "hit": 1.5,
+    "plucks": 2.0,
 }
 
 DEFAULT_NEGATIVE_PROMPT = (

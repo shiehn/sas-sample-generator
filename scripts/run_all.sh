@@ -10,7 +10,7 @@
 # /workspace/outputs on a RunPod pod, or ./outputs locally).
 #
 # Tips:
-#   STEPS=80 ./scripts/run_all.sh      # cheaper iteration
+#   STEPS=4 ./scripts/run_all.sh       # even cheaper iteration (SA3 needs few steps)
 #   tmux new -s sas; ./scripts/run_all.sh   # survives SSH drops
 
 set -euo pipefail
@@ -18,9 +18,19 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${REPO_ROOT}"
 
+# setup.sh writes /workspace/.bash_env with SAS_OUTPUTS_DIR=/workspace/outputs
+# and adds a source line to ~/.bashrc. That only fires for interactive shells
+# — tmux panes / scripted SSH sessions can launch without it, which silently
+# falls back to ${REPO_ROOT}/outputs and lands the WAVs in the wrong place
+# (lost an entire 14-category run to this bug once). Source explicitly here.
+if [[ -z "${SAS_OUTPUTS_DIR:-}" && -f /workspace/.bash_env ]]; then
+  # shellcheck disable=SC1091
+  source /workspace/.bash_env
+fi
+
 CATEGORIES_FILE="${REPO_ROOT}/scripts/categories.txt"
 OUTPUTS_DIR="${SAS_OUTPUTS_DIR:-${REPO_ROOT}/outputs}"
-STEPS="${STEPS:-120}"
+STEPS="${STEPS:-8}"
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_all] ERROR: ${CATEGORIES_FILE} not found" >&2

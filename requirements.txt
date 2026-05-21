@@ -1,11 +1,13 @@
 torch
 torchaudio
 torchsde
-diffusers
+stable-audio-tools
+einops
 transformers
 accelerate
 safetensors
 soundfile
+pyloudnorm
 numpy
 pandas
 tqdm
