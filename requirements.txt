@@ -42,7 +42,11 @@ huggingface_hub
 librosa>=0.10
 torchcrepe          # primary pitch detection, GPU-accelerated
 basic-pitch         # polyphony detection (Spotify, also GPU-friendly)
-pyrubberband        # pitch shift with formant preservation (calls rubberband-cli)
+# pyrubberband 0.4.0+ passes --fine to rubberband, which only rubberband 3.x
+# supports. Ubuntu 22.04's apt-shipped rubberband-cli is 1.9, so 0.4 fails
+# every shift with exit status 2. 0.3.x uses the older flag set that works
+# with rubberband 1.x / 2.x.
+pyrubberband<0.4    # pitch shift with formant preservation (calls rubberband-cli)
 soxr                # high-quality resampling backend for librosa
 # NOTE: pyrubberband shells out to `rubberband` (a.k.a. rubberband-cli).
 # Install separately:
