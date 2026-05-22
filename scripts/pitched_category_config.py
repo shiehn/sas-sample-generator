@@ -66,6 +66,17 @@ class PitchedCategoryConfig:
     open_ended: bool
     pitch_detection_floor_hz: float
     skip_pitch_shift: bool = False
+    # max_correction_semitones: how aggressively enrich is allowed to shift
+    # a sample toward the originally-requested target pitch. SA3 doesn't
+    # reliably hit the prompted pitch, so:
+    #   - if measured pitch is within N semitones of target: shift to target
+    #     (preserves prompt semantics — a "C4 plucks" file really is at C4)
+    #   - else: snap to nearest integer semitone (minimal <50 cent shift,
+    #     no audible artifacts) and use THAT as the sampler's root
+    # 3 semitones is the conventional "still sounds natural" threshold.
+    # Set to 0 to ALWAYS snap to nearest semitone (skip target lock-in).
+    # Set to a large value (24+) to ALWAYS shift to target.
+    max_correction_semitones: int = 3
     variants_per_prompt: int = 5
 
 

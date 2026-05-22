@@ -271,15 +271,56 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
     winner = gate_report["winner"]
     metrics = winner.get("metrics", {})
 
-    # Load + pitch correct + normalize + (maybe) sustain-trim
+    # Load + smart pitch correct + normalize + (maybe) sustain-trim
     y, sr = sf.read(gate_wav, always_2d=True)
 
+    # ---------------- Smart pitch correction ----------------
+    # Goal: every output sample lands EXACTLY on a MIDI semitone, but with
+    # the smallest possible pitch shift to avoid timbral artifacts.
+    #
+    #   measured pitch is within max_correction_semitones of target →
+    #     shift all the way to target (preserves prompt semantics, e.g.
+    #     a "C4 piano" prompt yields a sample really at C4)
+    #
+    #   measured pitch is further away →
+    #     snap to nearest integer semitone (shift is always ≤50 cents,
+    #     no audible artifact). The sample's effective root is whatever
+    #     pitch SA3 actually generated, rounded to the nearest MIDI note.
+    #
+    # Either way: the sample is at a clean integer-MIDI pitch, ready to
+    # be the sampler's root note. Zone rendering re-centers around it.
     cents_offset = metrics.get("measured_pitch_cents_offset")
+    measured_midi_metric = metrics.get("measured_pitch_midi")
+    effective_root_midi = target_midi  # default: target
     correction_applied = 0
-    if cents_offset is not None and abs(cents_offset) > 5.0 and abs(cents_offset) <= cfg.pitch_tolerance_cents:
-        semitones = -cents_offset / 100.0
+
+    if cfg.skip_pitch_shift:
+        # FX: no pitch handling at all.
+        pass
+    elif measured_midi_metric is not None and math.isfinite(float(measured_midi_metric)):
+        measured_midi = float(measured_midi_metric)
+        distance_semitones = abs(measured_midi - target_midi)
+        if distance_semitones <= cfg.max_correction_semitones:
+            # Close enough: shift to original target.
+            effective_root_midi = target_midi
+        else:
+            # Too far: snap to nearest integer semitone.
+            effective_root_midi = int(round(measured_midi))
+        shift_semitones = effective_root_midi - measured_midi
+        if abs(shift_semitones) > 0.05:  # > 5 cents — worth a shift
+            y = pitch_shift(y, sr, shift_semitones, preserve_formants=True)
+            correction_applied = int(round(shift_semitones * 100.0))
+    elif cents_offset is not None and abs(cents_offset) > 5.0:
+        # Fallback for older gate verdicts: cents_offset only, no measured midi
+        # in metrics. Use the original "shift toward target by cents_offset" path
+        # but cap at max_correction_semitones.
+        cap_cents = cfg.max_correction_semitones * 100
+        clipped_cents = max(-cap_cents, min(cap_cents, cents_offset))
+        semitones = -clipped_cents / 100.0
         y = pitch_shift(y, sr, semitones, preserve_formants=True)
         correction_applied = int(round(semitones * 100.0))
+        effective_root_midi = target_midi
+    # ---------------------------------------------------------
 
     if cfg.open_ended:
         y = trim_to_sustain(y, sr, cfg.min_sustain_seconds, pad_seconds=0.5)
@@ -293,21 +334,23 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
     sources_dir.mkdir(parents=True, exist_ok=True)
     zones_dir.mkdir(parents=True, exist_ok=True)
 
-    # Write the source WAV (24-bit, target-pitched + normalized)
-    source_filename = f"{midi_to_filename(target_midi)}.wav"
+    # Write the source WAV (24-bit, locked to effective_root + normalized)
+    source_filename = f"{midi_to_filename(effective_root_midi)}.wav"
     source_path = sources_dir / source_filename
     sf.write(source_path, y_norm, sr, subtype="PCM_24")
 
     # Pre-render zones (FX: skip; everything else: every zone_step_semitones across ±span)
+    # Zones now center on effective_root_midi, not target_midi — keeps zone
+    # rendering aligned with where the audio actually is.
     zones: list[dict] = []
     if cfg.skip_pitch_shift:
         # FX: single zone covering full keyboard, no shift
-        zone_filename = f"{midi_to_filename(target_midi)}.flac"
+        zone_filename = f"{midi_to_filename(effective_root_midi)}.flac"
         zone_path = zones_dir / zone_filename
         sf.write(zone_path, y_norm, sr, format="FLAC", subtype="PCM_24")
         zones.append({
             "sample": f"zones/{zone_filename}",
-            "root_midi": target_midi,
+            "root_midi": effective_root_midi,
             "min_midi": 0,
             "max_midi": 127,
         })
@@ -315,12 +358,12 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
         # Build disjoint zone ranges first, then render each.
         roots: list[int] = []
         for delta in range(-cfg.zone_span_semitones, cfg.zone_span_semitones + 1, cfg.zone_step_semitones):
-            r = target_midi + delta
+            r = effective_root_midi + delta
             if 0 <= r <= 127:
                 roots.append(r)
-        # Ensure target is included (in case step skips it)
-        if target_midi not in roots:
-            roots.append(target_midi)
+        # Ensure effective_root is included (in case step skips it)
+        if effective_root_midi not in roots:
+            roots.append(effective_root_midi)
             roots.sort()
 
         # Compute disjoint min/max for each root: split midpoints between adjacent roots.
@@ -335,11 +378,11 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
                 max_midi = (root + roots[i + 1]) // 2
             zone_filename = f"{midi_to_filename(root)}.flac"
             zone_path = zones_dir / zone_filename
-            if root == target_midi:
+            if root == effective_root_midi:
                 # The source IS this zone — no pitch shift required
                 sf.write(zone_path, y_norm, sr, format="FLAC", subtype="PCM_24")
             else:
-                shifted = pitch_shift(y_norm, sr, semitones=root - target_midi, preserve_formants=True)
+                shifted = pitch_shift(y_norm, sr, semitones=root - effective_root_midi, preserve_formants=True)
                 sf.write(zone_path, shifted, sr, format="FLAC", subtype="PCM_24")
             zones.append({
                 "sample": f"zones/{zone_filename}",
