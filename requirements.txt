@@ -1,10 +1,14 @@
 torch
 torchaudio
 torchsde
-# SA3-medium model_config.json passes `local_add_cond_dim` to the transformer,
-# which the PyPI release of stable-audio-tools doesn't accept yet. Pull from
-# the git main branch instead, which has the matching architecture.
-stable-audio-tools @ git+https://github.com/Stability-AI/stable-audio-tools.git
+# NOTE: stable-audio-tools is installed SEPARATELY by setup.sh with --no-deps,
+# because its package metadata pins PyWavelets==1.4.1 (numpy 1.x ABI). That
+# conflicts with our pywavelets>=1.6.0 requirement below and pip's resolver
+# refuses to install both in one pass. setup.sh installs it after this file.
+#
+# Manually on a fresh shell:
+#   pip install --no-deps git+https://github.com/Stability-AI/stable-audio-tools.git
+
 # pytorch_lightning is imported by stable-audio-tools/.../lora/callbacks.py
 # but not declared in their package metadata. Pull it ourselves.
 pytorch-lightning

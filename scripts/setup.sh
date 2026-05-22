@@ -105,6 +105,15 @@ if [[ -f "${REQ_FILE}" ]]; then
   pip install -r "${REQ_FILE}"
 fi
 
+# stable-audio-tools git main pins PyWavelets==1.4.1 (numpy 1.x ABI). That
+# conflicts with our pywavelets>=1.6.0 (numpy 2.x ABI), so pip's resolver
+# refuses to do them in one pass. Install it AFTER requirements.txt with
+# --no-deps so its outdated pin is ignored; the deps it actually needs are
+# already in requirements.txt.
+echo "[setup] installing stable-audio-tools from git (no-deps)"
+pip install --no-deps --force-reinstall \
+  git+https://github.com/Stability-AI/stable-audio-tools.git
+
 # stable-audio-tools transitively pulls in OpenAI's `clip` package, which
 # still does `from pkg_resources import packaging` — a submodule access
 # that setuptools v68 removed. We have to PIN setuptools <68; upgrading
