@@ -25,6 +25,16 @@ set -euo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "${REPO_ROOT}"
 
+# Source /workspace/.bash_env if SAS_OUTPUTS_DIR isn't already set in the
+# environment — same fix as run_all.sh. Without this, run_pitched.sh from
+# a fresh tmux pane / new SSH session that didn't inherit interactive-shell
+# env can fall back to ${REPO_ROOT}/outputs while a sibling run in a
+# different shell uses /workspace/outputs. Cost us a couple of hours.
+if [[ -z "${SAS_OUTPUTS_DIR:-}" && -f /workspace/.bash_env ]]; then
+  # shellcheck disable=SC1091
+  source /workspace/.bash_env
+fi
+
 CATEGORIES_FILE="${REPO_ROOT}/scripts/pitched_categories.txt"
 OUTPUTS_DIR="${SAS_OUTPUTS_DIR:-${REPO_ROOT}/outputs}"
 STEPS="${STEPS:-8}"                       # SA3 sweet spot
