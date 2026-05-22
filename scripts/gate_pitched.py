@@ -115,8 +115,13 @@ def gate_prefilter(y: np.ndarray) -> Optional[str]:
 # Gate 2 — onset (librosa)
 # -----------------------------------------------------------------------------
 
-def gate_onset(mono: np.ndarray, sr: int, max_onset_ms: float = 30.0) -> tuple[Optional[str], float]:
-    """Returns (reject_reason, onset_ms). Imported inside to keep cold-start cheap."""
+def gate_onset(mono: np.ndarray, sr: int, max_onset_ms: float = 300.0) -> tuple[Optional[str], float]:
+    """Returns (reject_reason, onset_ms). Imported inside to keep cold-start cheap.
+
+    Default 300 ms (was 30 ms). SA3 output routinely has lead-in noise / fade-in
+    before the actual transient; 30 ms was rejecting ~95% of usable samples.
+    300 ms still rejects samples where the audio is just a tail-end with no
+    perceptible attack."""
     import librosa
     try:
         onsets = librosa.onset.onset_detect(y=mono, sr=sr, units="frames", backtrack=True)
@@ -167,9 +172,12 @@ def gate_sustain(mono: np.ndarray, sr: int, min_sustain_seconds: float, onset_ms
     if peak_rms <= 0:
         return "rms_zero", 0.0, 0.0
 
-    # Plateau = frames within 6 dB of peak (i.e. >= peak/2). Find the longest
-    # contiguous run.
-    threshold = peak_rms / 2.0
+    # Plateau = frames within 12 dB of peak (i.e. >= peak/4). Find the longest
+    # contiguous run. Was 6 dB (peak/2) — too tight for naturally-decaying
+    # envelopes (piano, plucked strings, mallets) where the RMS curve drops
+    # below 6dB-down within ~100ms of the attack. 12 dB still excludes the
+    # noise floor and the late-decay tail.
+    threshold = peak_rms / 4.0
     above = rms >= threshold
     # Run-length encode
     longest_run_frames = 0
@@ -284,7 +292,11 @@ def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int
     skip_frames = max(0, int(0.05 / 0.01))
     sustain = pitch_hz[skip_frames:]
     sustain_per = periodicity[skip_frames:]
-    voiced_mask = (sustain > 0) & np.isfinite(sustain) & (sustain_per >= 0.5)
+    # Voiced-frame periodicity threshold lowered from 0.5 -> 0.3. SA3 audio
+    # has more natural dynamic/timbral variation than studio-clean library
+    # content; 0.5 was rejecting too many otherwise-pitched frames as
+    # unvoiced. 0.3 still excludes truly noisy frames.
+    voiced_mask = (sustain > 0) & np.isfinite(sustain) & (sustain_per >= 0.3)
     if not voiced_mask.any():
         return "no_voiced_frames", float("nan"), float("nan"), 0.0, pitch_hz
     crepe_hz = float(np.median(sustain[voiced_mask]))
@@ -293,7 +305,11 @@ def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int
     is_sub_bass = target_hz < 82.0  # below E2
 
     if not is_sub_bass:
-        if crepe_conf < 0.85:
+        # Confidence threshold lowered from 0.85 -> 0.3. 0.85 demanded
+        # near-perfect pitch clarity which clean studio samples have but
+        # SA3 output doesn't. 0.3 keeps clearly-pitched content while still
+        # rejecting noise/atonal output.
+        if crepe_conf < 0.3:
             return "unconfident", hz_to_midi(crepe_hz), cents_between(crepe_hz, target_hz), crepe_conf, pitch_hz
         cents = cents_between(crepe_hz, target_hz)
         if abs(cents) > tolerance_cents:

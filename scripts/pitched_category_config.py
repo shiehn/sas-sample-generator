@@ -79,23 +79,27 @@ _GENERIC_NEG = (
     "long ambience, vocals, drums"
 )
 
+# min_sustain_seconds (7th field) values halved 2026-05-22. Original values
+# were calibrated for studio-clean library content; SA3 output decays faster
+# than steady-state library samples, causing ~100% short_stab rejections.
+# Original values shown in trailing comments.
 PITCHED_CATEGORIES: dict[str, PitchedCategoryConfig] = {
-    "plucks":     PitchedCategoryConfig((60,),  _GENERIC_NEG, 3.0,  12, 3, 50, 0.4,  False, 80.0),
-    "basses":     PitchedCategoryConfig((40,),  _GENERIC_NEG, 6.0,  12, 3, 50, 1.5,  False, 30.0),
-    "bells":      PitchedCategoryConfig((72,),  _GENERIC_NEG, 4.0,  12, 3, 50, 0.8,  False, 200.0),
-    "brass":      PitchedCategoryConfig((57,),  _GENERIC_NEG, 6.0,  12, 3, 50, 1.5,  True,  80.0),
+    "plucks":     PitchedCategoryConfig((60,),  _GENERIC_NEG, 3.0,  12, 3, 50, 0.2,   False, 80.0),   # was 0.4
+    "basses":     PitchedCategoryConfig((40,),  _GENERIC_NEG, 6.0,  12, 3, 50, 0.75,  False, 30.0),   # was 1.5
+    "bells":      PitchedCategoryConfig((72,),  _GENERIC_NEG, 4.0,  12, 3, 50, 0.4,   False, 200.0),  # was 0.8
+    "brass":      PitchedCategoryConfig((57,),  _GENERIC_NEG, 6.0,  12, 3, 50, 0.75,  True,  80.0),   # was 1.5
     "fx":         PitchedCategoryConfig((69,),  _GENERIC_NEG, 4.0,  0,  1, 9999, 0.0, False, 80.0, skip_pitch_shift=True),
-    "guitars":    PitchedCategoryConfig((52,),  _GENERIC_NEG, 4.0,  12, 3, 50, 0.6,  False, 80.0),
-    "keys":       PitchedCategoryConfig((48,),  _GENERIC_NEG, 5.0,  12, 3, 50, 1.0,  False, 80.0),
-    "mallets":    PitchedCategoryConfig((60,),  _GENERIC_NEG, 3.0,  12, 3, 50, 0.3,  False, 200.0),
-    "organs":     PitchedCategoryConfig((48,),  _GENERIC_NEG, 8.0,  12, 3, 50, 2.0,  True,  80.0),
-    "pads":       PitchedCategoryConfig((48,),  _GENERIC_NEG, 12.0, 12, 2, 50, 2.5,  True,  80.0),
-    "pianos":     PitchedCategoryConfig((60,),  _GENERIC_NEG, 5.0,  12, 2, 50, 1.0,  False, 60.0),
-    "percussion": PitchedCategoryConfig((60,),  _GENERIC_NEG, 2.0,  12, 3, 50, 0.2,  False, 80.0),
-    "strings":    PitchedCategoryConfig((57,),  _GENERIC_NEG, 8.0,  12, 2, 50, 2.0,  True,  60.0),
-    "synths":     PitchedCategoryConfig((48,),  _GENERIC_NEG, 5.0,  12, 3, 50, 1.5,  False, 60.0),
-    "vocals":     PitchedCategoryConfig((57,),  _GENERIC_NEG, 5.0,  12, 2, 50, 1.5,  False, 100.0, variants_per_prompt=20),
-    "winds":      PitchedCategoryConfig((69,),  _GENERIC_NEG, 5.0,  12, 2, 50, 1.5,  True,  100.0),
+    "guitars":    PitchedCategoryConfig((52,),  _GENERIC_NEG, 4.0,  12, 3, 50, 0.3,   False, 80.0),   # was 0.6
+    "keys":       PitchedCategoryConfig((48,),  _GENERIC_NEG, 5.0,  12, 3, 50, 0.5,   False, 80.0),   # was 1.0
+    "mallets":    PitchedCategoryConfig((60,),  _GENERIC_NEG, 3.0,  12, 3, 50, 0.15,  False, 200.0),  # was 0.3
+    "organs":     PitchedCategoryConfig((48,),  _GENERIC_NEG, 8.0,  12, 3, 50, 1.0,   True,  80.0),   # was 2.0
+    "pads":       PitchedCategoryConfig((48,),  _GENERIC_NEG, 12.0, 12, 2, 50, 1.25,  True,  80.0),   # was 2.5
+    "pianos":     PitchedCategoryConfig((60,),  _GENERIC_NEG, 5.0,  12, 2, 50, 0.5,   False, 60.0),   # was 1.0
+    "percussion": PitchedCategoryConfig((60,),  _GENERIC_NEG, 2.0,  12, 3, 50, 0.1,   False, 80.0),   # was 0.2
+    "strings":    PitchedCategoryConfig((57,),  _GENERIC_NEG, 8.0,  12, 2, 50, 1.0,   True,  60.0),   # was 2.0
+    "synths":     PitchedCategoryConfig((48,),  _GENERIC_NEG, 5.0,  12, 3, 50, 0.75,  False, 60.0),   # was 1.5
+    "vocals":     PitchedCategoryConfig((57,),  _GENERIC_NEG, 5.0,  12, 2, 50, 0.75,  False, 100.0, variants_per_prompt=20),  # was 1.5
+    "winds":      PitchedCategoryConfig((69,),  _GENERIC_NEG, 5.0,  12, 2, 50, 0.75,  True,  100.0),  # was 1.5
 }
 
 
