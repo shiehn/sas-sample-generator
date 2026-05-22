@@ -100,11 +100,16 @@ def pitch_shift(y: np.ndarray, sr: int, semitones: float, preserve_formants: boo
         print(f"[enrich] pyrubberband unavailable; skipping shift {semitones:+.1f} ST", file=sys.stderr)
         return y.copy()
 
-    # pyrubberband's `rbargs` dict gets joined as CLI flags. R3 engine
-    # ("finer") is the modern high-quality phase-coherent option;
+    # pyrubberband's `rbargs` dict gets joined as CLI flags.
+    # Note: we used to pass `--fine` for R3 ("finer") engine quality,
+    # but that flag only exists in rubberband 3.x. Ubuntu 22.04's apt
+    # package is rubberband 1.9, which rejects --fine with exit status 2.
+    # The default R2 engine in rubberband 1.x/2.x is still fine for
+    # sampler-zone playback; subtle quality difference, not perceptible
+    # over keyboard playthrough.
     # `--formant` preserves formant frequencies during pitch shift (key
     # for vocals/strings/wind where naive shift sounds chipmunky).
-    rbargs: dict = {"--fine": ""}
+    rbargs: dict = {}
     if preserve_formants:
         rbargs["--formant"] = ""
     try:
@@ -272,7 +277,11 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
     metrics = winner.get("metrics", {})
 
     # Load + smart pitch correct + normalize + (maybe) sustain-trim
-    y, sr = sf.read(gate_wav, always_2d=True)
+    # Note: cast to str — older soundfile (which the RunPod image ships) doesn't
+    # recognize pathlib.PosixPath in its _open code path; it falls through to a
+    # `raise TypeError("Invalid file: PosixPath('...')")`. Newer soundfile is
+    # PathLike-aware, but we can't count on that on a fresh pod.
+    y, sr = sf.read(str(gate_wav), always_2d=True)
 
     # ---------------- Smart pitch correction ----------------
     # Goal: every output sample lands EXACTLY on a MIDI semitone, but with
@@ -337,7 +346,7 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
     # Write the source WAV (24-bit, locked to effective_root + normalized)
     source_filename = f"{midi_to_filename(effective_root_midi)}.wav"
     source_path = sources_dir / source_filename
-    sf.write(source_path, y_norm, sr, subtype="PCM_24")
+    sf.write(str(source_path), y_norm, sr, subtype="PCM_24")
 
     # Pre-render zones (FX: skip; everything else: every zone_step_semitones across ±span)
     # Zones now center on effective_root_midi, not target_midi — keeps zone
@@ -347,7 +356,7 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
         # FX: single zone covering full keyboard, no shift
         zone_filename = f"{midi_to_filename(effective_root_midi)}.flac"
         zone_path = zones_dir / zone_filename
-        sf.write(zone_path, y_norm, sr, format="FLAC", subtype="PCM_24")
+        sf.write(str(zone_path), y_norm, sr, format="FLAC", subtype="PCM_24")
         zones.append({
             "sample": f"zones/{zone_filename}",
             "root_midi": effective_root_midi,
@@ -380,10 +389,10 @@ def enrich_sample(gate_wav: Path, gate_json: Path, category_id: str, cfg: Pitche
             zone_path = zones_dir / zone_filename
             if root == effective_root_midi:
                 # The source IS this zone — no pitch shift required
-                sf.write(zone_path, y_norm, sr, format="FLAC", subtype="PCM_24")
+                sf.write(str(zone_path), y_norm, sr, format="FLAC", subtype="PCM_24")
             else:
                 shifted = pitch_shift(y_norm, sr, semitones=root - effective_root_midi, preserve_formants=True)
-                sf.write(zone_path, shifted, sr, format="FLAC", subtype="PCM_24")
+                sf.write(str(zone_path), shifted, sr, format="FLAC", subtype="PCM_24")
             zones.append({
                 "sample": f"zones/{zone_filename}",
                 "root_midi": root,
