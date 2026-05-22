@@ -105,13 +105,15 @@ if [[ -f "${REQ_FILE}" ]]; then
   pip install -r "${REQ_FILE}"
 fi
 
-# stable-audio-tools git main pins PyWavelets==1.4.1 (numpy 1.x ABI). That
-# conflicts with our pywavelets>=1.6.0 (numpy 2.x ABI), so pip's resolver
-# refuses to do them in one pass. Install it AFTER requirements.txt with
-# --no-deps so its outdated pin is ignored; the deps it actually needs are
-# already in requirements.txt.
-echo "[setup] installing stable-audio-tools from git (no-deps)"
-pip install --no-deps --force-reinstall \
+# stable-audio-tools git main has two paranoid constraints we have to bypass:
+#   1. PyWavelets==1.4.1 pin (numpy 1.x ABI) conflicts with our pywavelets>=1.6.0
+#      -> --no-deps drops its dep tree, we install deps ourselves via requirements.txt
+#   2. python_requires '<3.11,>=3.10' rejects 3.11+, but the code runs fine on 3.11
+#      -> --ignore-requires-python bypasses the version check
+# Without both flags, this step fails silently and batch_generate.py later
+# explodes with `ModuleNotFoundError: No module named 'stable_audio_tools'`.
+echo "[setup] installing stable-audio-tools from git (no-deps, ignore-requires-python)"
+pip install --no-deps --force-reinstall --ignore-requires-python \
   git+https://github.com/Stability-AI/stable-audio-tools.git
 
 # stable-audio-tools transitively pulls in OpenAI's `clip` package, which
