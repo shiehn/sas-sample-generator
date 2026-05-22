@@ -347,6 +347,40 @@ def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int
 # Gate 4 — polyphony (Basic Pitch)
 # -----------------------------------------------------------------------------
 
+# Module-level cache for basic-pitch availability. Probed lazily on first
+# call and remembered for the rest of the run, so we don't re-import +
+# re-emit "Coremltools is not installed" etc. on every variant.
+_BASIC_PITCH_PROBED = False
+_BASIC_PITCH_PREDICT = None  # set to callable if available, else stays None
+
+
+def _probe_basic_pitch() -> None:
+    """Try to import + call basic_pitch.inference.predict once. If it works,
+    cache the callable. If it fails (TF/numpy ABI mismatch is the usual cause
+    on RunPod), cache the failure so subsequent calls are silent no-ops."""
+    global _BASIC_PITCH_PROBED, _BASIC_PITCH_PREDICT
+    if _BASIC_PITCH_PROBED:
+        return
+    _BASIC_PITCH_PROBED = True
+    try:
+        # Silence basic-pitch's own runtime-detection warnings before import.
+        import logging
+        logging.getLogger("root").setLevel(logging.ERROR)
+        from basic_pitch.inference import predict
+        # Smoke-test on a tiny silent buffer; if predict explodes (e.g. TF/numpy
+        # ABI mismatch), we want to catch it now, not per variant.
+        _silent = np.zeros(8000, dtype=np.float32)
+        predict(_silent, 8000, onset_threshold=0.5, frame_threshold=0.3, minimum_note_length=58)
+        _BASIC_PITCH_PREDICT = predict
+        print("[gate] basic-pitch: enabled", file=sys.stderr)
+    except Exception as e:
+        print(
+            f"[gate] basic-pitch: DISABLED for this run (polyphony check skipped). "
+            f"Reason: {e}",
+            file=sys.stderr,
+        )
+
+
 def gate_polyphony(mono: np.ndarray, sr: int, pitch_envelope_hz: np.ndarray, frame_rate: float
                    ) -> tuple[Optional[str], str]:
     """Returns (reject_reason, polyphony_check_label).
@@ -358,19 +392,15 @@ def gate_polyphony(mono: np.ndarray, sr: int, pitch_envelope_hz: np.ndarray, fra
     if _detect_vibrato(pitch_envelope_hz, frame_rate):
         return None, "vibrato_bypass"
 
-    try:
-        from basic_pitch.inference import predict
-        from basic_pitch import ICASSP_2022_MODEL_PATH
-    except Exception as e:
-        # If basic-pitch isn't importable on the pod, skip with a warning
-        # rather than failing — better to gate-pass than fail the whole batch.
-        print(f"[gate] basic-pitch unavailable, skipping polyphony check: {e}", file=sys.stderr)
+    _probe_basic_pitch()
+    if _BASIC_PITCH_PREDICT is None:
+        # Cached unavailable — silent fast path.
         return None, "polyphony_skipped"
 
     try:
         # Basic Pitch expects a file path or a numpy array; passing the array
         # avoids a temp-file round trip.
-        _model_output, note_events, _midi = predict(
+        _model_output, note_events, _midi = _BASIC_PITCH_PREDICT(
             mono, sr,
             onset_threshold=0.5,
             frame_threshold=0.3,
@@ -439,8 +469,15 @@ def evaluate_variant(wav_path: Path, cfg: PitchedCategoryConfig, target_pitch: i
         return verdict
 
     # Pitch (also returns the pitch envelope used by vibrato detection)
-    if cfg.skip_pitch_shift or cfg.pitch_tolerance_cents >= 9999:
-        # FX or any category that opts out of pitch validation
+    # NOTE: only skip_pitch_shift (FX) bypasses pitch MEASUREMENT entirely.
+    # A high tolerance (9999) means "don't REJECT on wrong pitch" but we still
+    # need to MEASURE the pitch so enrich can snap each sample to the nearest
+    # integer semitone. gate_pitch() honors the tolerance internally:
+    # `abs(cents) > tolerance_cents` is the wrong_pitch condition, which is
+    # unreachable when tolerance is 9999. (Pre-2026-05-22: this branch also
+    # short-circuited on tolerance >= 9999, killing enrich's pitch correction.)
+    if cfg.skip_pitch_shift:
+        # FX: no pitch handling at all
         measured_midi, cents, confidence = float("nan"), 0.0, 1.0
         pitch_env = np.array([])
     else:
