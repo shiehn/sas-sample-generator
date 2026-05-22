@@ -260,6 +260,27 @@ def trim_to_sustain(y: np.ndarray, sr: int, min_sustain_seconds: float, pad_seco
 # Main: walk gated dir, enrich each, write manifests
 # -----------------------------------------------------------------------------
 
+def _enrich_one(args: tuple) -> tuple[str, str, Optional[int], Optional[str]]:
+    """Worker entry point for ProcessPoolExecutor. Re-resolves args from a
+    plain tuple so they pickle cleanly. Returns (label, status, zone_count, err)
+    so the parent can print + tally without sharing state.
+
+    `status` is 'ok' / 'skipped' / 'failed'.
+    """
+    gate_wav, gate_json, category_id, cfg, out_dir, raw_meta_dir = args
+    if not Path(gate_wav).exists():
+        return (Path(gate_json).name, "skipped", None, "missing matching .wav")
+    try:
+        manifest_path = enrich_sample(
+            Path(gate_wav), Path(gate_json), category_id, cfg,
+            Path(out_dir), Path(raw_meta_dir) if raw_meta_dir else None,
+        )
+        zone_count = len(json.loads(Path(manifest_path).read_text())["zones"])
+        return (Path(manifest_path).parent.name, "ok", zone_count, None)
+    except Exception as e:
+        return (Path(gate_wav).name, "failed", None, str(e))
+
+
 def run_enrich(category_id: str, cfg: PitchedCategoryConfig,
                in_dir: Path, out_dir: Path, raw_meta_dir: Optional[Path]) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
@@ -268,21 +289,61 @@ def run_enrich(category_id: str, cfg: PitchedCategoryConfig,
         print(f"[enrich] no *.gate.json under {in_dir}; nothing to do")
         return
 
-    enriched = 0
-    skipped = 0
+    # Worker count: WORKERS env var, else max(1, cpu_count - 1) so the
+    # machine doesn't lock up. rubberband CLI is single-threaded internally,
+    # so process-level parallelism is the right knob.
+    workers_env = os.environ.get("WORKERS")
+    if workers_env:
+        try:
+            workers = max(1, int(workers_env))
+        except ValueError:
+            workers = max(1, (os.cpu_count() or 2) - 1)
+    else:
+        workers = max(1, (os.cpu_count() or 2) - 1)
+    workers = min(workers, len(gate_jsons))  # don't spawn more than we have work for
+    print(f"[enrich] starting with {workers} workers ({len(gate_jsons)} instruments)")
+
+    # Build the worker-arg tuples ahead of time. Path objects pickle fine
+    # but we coerce to str at the boundary to be safe across older pythons.
+    tasks: list[tuple] = []
     for gj in gate_jsons:
         gate_wav = gj.with_suffix("").with_suffix(".wav")  # strip ".gate.json"
-        if not gate_wav.exists():
-            print(f"[enrich] {gj.name}: missing matching .wav; skipping")
-            skipped += 1
-            continue
-        try:
-            manifest_path = enrich_sample(gate_wav, gj, category_id, cfg, out_dir, raw_meta_dir)
-            enriched += 1
-            print(f"[enrich] {manifest_path.parent.name}: ok ({len(json.loads(manifest_path.read_text())['zones'])} zones)")
-        except Exception as e:
-            print(f"[enrich] {gate_wav.name}: FAILED — {e}", file=sys.stderr)
-            skipped += 1
+        tasks.append((
+            str(gate_wav), str(gj), category_id, cfg,
+            str(out_dir), str(raw_meta_dir) if raw_meta_dir else None,
+        ))
+
+    enriched = 0
+    skipped = 0
+
+    if workers == 1:
+        # Sequential path — preserved for debugging / single-core fallback.
+        for t in tasks:
+            label, status, zones, err = _enrich_one(t)
+            if status == "ok":
+                enriched += 1
+                print(f"[enrich] {label}: ok ({zones} zones)")
+            else:
+                skipped += 1
+                print(f"[enrich] {label}: {status.upper()} — {err}", file=sys.stderr)
+    else:
+        from concurrent.futures import ProcessPoolExecutor, as_completed
+        with ProcessPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(_enrich_one, t): t for t in tasks}
+            for fut in as_completed(futures):
+                try:
+                    label, status, zones, err = fut.result()
+                except Exception as e:  # noqa: BLE001
+                    # Worker process died (segfault, OOM, etc.); count as skipped.
+                    skipped += 1
+                    print(f"[enrich] worker crashed: {e}", file=sys.stderr)
+                    continue
+                if status == "ok":
+                    enriched += 1
+                    print(f"[enrich] {label}: ok ({zones} zones)", flush=True)
+                else:
+                    skipped += 1
+                    print(f"[enrich] {label}: {status.upper()} — {err}", file=sys.stderr, flush=True)
 
     print(f"[enrich] done. enriched={enriched} skipped={skipped}")
 
