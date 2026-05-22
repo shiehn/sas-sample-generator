@@ -355,60 +355,293 @@ sas-sample-generator/
 
 ## Pitched-instrument pipeline (Phase 1.0+)
 
-Sibling pipeline to the drum one above. Same SA3 generator, but adds
-quality gates (CREPE pitch detection, BasicPitch polyphony, librosa
-onset, custom sustain-plateau) and zone pre-rendering (RubberBand R3
-with formant preservation), and emits a richer per-instrument
-`manifest.json` consumed by the `sas-instrument-plugin`.
+Sibling pipeline to the drum one above. Same Stable Audio 3 generator,
+different downstream: adds quality gates (CREPE pitch detection,
+BasicPitch polyphony when TF/numpy ABI is happy, librosa onset, custom
+sustain-plateau), smart pitch correction (snap to nearest semitone or
+shift to target — see "Smart pitch correction" below), and zone
+pre-rendering (RubberBand R3 with formant preservation). Emits a
+per-instrument `manifest.json` consumed by `sas-instrument-plugin`.
 
-### One-time additional setup
+**16 categories ship with the repo, 1,500+ prompts total:**
 
-After your existing pip install, add the pitched-pipeline deps and the
-`rubberband` system binary (pyrubberband shells out to it):
+| Category | Prompts | Target | Duration | Notes |
+|---|---|---|---|---|
+| basses | 95 | E2 (40) | 6.0s | 808 sub, reese, analog, acid, fuzz, electric |
+| bells | 86 | C5 (72) | 4.0s | glockenspiel, FM/DX7, music box |
+| brass | 85 | A3 (57) | 6.0s | analog 80s, trumpet/trombone, sax sections |
+| fx | 96 | A4 (69) | 4.0s | risers, downlifters, impacts, atmospheres |
+| guitars | 95 | E3 (52) | 4.0s | clean electric, nylon, acoustic, slide |
+| keys | 87 | C3 (48) | 5.0s | Rhodes, Wurlitzer, clavinet, DX7 |
+| mallets | 97 | C4 (60) | 3.0s | marimba, vibes, kalimba, steel drum |
+| organs | 93 | C3 (48) | 8.0s | Hammond B3, pipe, combo, theatre |
+| pads | 96 | C3 (48) | 12.0s | warm analog, ethereal, lo-fi, evolving |
+| percussion | 91 | C4 (60) | 2.0s | pitched hits, tonal hand drums |
+| pianos | 98 | C4 (60) | 5.0s | grand, upright, felt, jazz/soul, cinematic |
+| plucks | 101 | C4 (60) | 3.0s | acoustic, electric, world, lo-fi, trap |
+| strings | 104 | A3 (57) | 8.0s | section/solo, synth, cinematic, pizzicato |
+| synths | 101 | C3 (48) | 5.0s | analog mono, supersaw, FM, wavetable, acid |
+| vocals | 99 | A3 (57) | 5.0s | choir, vocal chops, vocoded, world |
+| winds | 104 | A4 (69) | 5.0s | flute, sax, clarinet, shakuhachi |
+
+To **subset** which categories run, edit
+[`scripts/pitched_categories.txt`](scripts/pitched_categories.txt) —
+comment any line with `#` to skip that category.
+
+### Per-pod system prerequisites
+
+`scripts/setup.sh` installs **everything** the pitched pipeline needs:
+
+- All Python deps from `requirements.txt` (librosa, torchcrepe, basic-pitch, pyrubberband, soxr, …)
+- All system packages — `rsync` (transfer to Mac), `tmux` (long sessions survive disconnect), `rubberband-cli` (pyrubberband backend), `ffmpeg` (audio inspection), `zip`/`unzip` (archives)
+- The compiled stable-audio-tools from git main (the PyPI release doesn't support SA3-medium)
+- CUDA-12.8 torch wheels (Blackwell-compatible, also works on older Hopper/Ampere/Ada)
+
+You should **never** need to apt-get or pip install anything on a pod
+after running `setup.sh`. If you do, treat it as a bug in `setup.sh` and
+add it there.
+
+### On your Mac (for the local enrich step)
 
 ```bash
-pip install -r requirements.txt              # picks up new entries
-brew install rubberband                       # macOS local enrich
-# OR
-apt-get install -y rubberband-cli             # pod / ubuntu
+brew install rubberband                          # pitch-shift backend
+cd ~/path/to/sas-sample-generator                # your local repo
+pip install -r requirements.txt                  # one-time, ~5 min
 ```
 
-### Authoring prompts
+---
 
+### EVERY-RUN STEPS (pitched)
+
+Designed to be safely repeatable from a cold start. The whole pipeline:
+**~15 min setup + ~30 min generate + ~10 min gate + ~30 min enrich + transfer**.
+
+#### Step 1 — Deploy a fresh pod
+
+[runpod.io/console/pods](https://www.runpod.io/console/pods) → **Deploy → GPU Pod**:
+
+| Setting | Value | Why |
+|---|---|---|
+| GPU | **RTX A6000 / 4090 / 5090 / L40S / A100** (24+ GB VRAM) | SA3-medium fits in 16 GB; 24 GB gives headroom |
+| Template | most recent **RunPod PyTorch** with CUDA 12.x | matches our cu128 wheels |
+| **Container Disk** | **100 GB** ⚠️ THE IMPORTANT ONE | persistent across pod restart; holds venv + HF model cache + outputs |
+| **Network Volume** | **None** | RunPod's "migrate to new host" flow has been known to attach a tiny 10 GB network volume — don't let it. We use container disk only |
+| Expose | SSH (port 22, default) |  |
+
+**Critical:** the field is named "Container Disk" — the persistent SSD. Do NOT confuse with "Network Volume" or "Volume Disk".
+
+Click **Deploy On-Demand**. Wait ~30 sec for status `RUNNING`.
+
+Copy the SSH command from **Connect → SSH over exposed TCP**. It looks like:
+```text
+ssh root@<POD_IP> -p <POD_PORT> -i ~/.ssh/id_ed25519
 ```
-prompts/pitched/<category>.txt                # one prompt per line, # comments
-scripts/pitched_categories.txt                # which categories to run (comment to skip)
-scripts/pitched_category_config.py            # per-category target pitch, duration, zone span, etc.
-```
 
-The 16 categories are: Plucks, Basses, Bells, Brass, FX, Guitars,
-Keys, Mallets, Organs, Pads, Pianos, Percussion, Strings, Synths,
-Vocals, Winds. Phase 1.0 ships with Plucks enabled; uncomment others
-in `scripts/pitched_categories.txt` once you trust the gate rates.
-
-### Running
-
-End-to-end on a single box with GPU:
+#### Step 2 — SSH in
 
 ```bash
-./scripts/run_pitched.sh
+ssh root@<POD_IP> -p <POD_PORT> -i ~/.ssh/id_ed25519
 ```
 
-Cross-machine flow (gate on GPU pod, enrich on local CPU):
+Type `yes` on first connect. If `Permission denied`: `ssh-add ~/.ssh/id_ed25519`.
+
+#### Step 3 — Clone + bootstrap (~10–15 min, all-in-one)
 
 ```bash
-# On pod (cheap CPU work after the GPU generate+gate)
-STAGES=generate,gate ./scripts/run_pitched.sh
+cd /workspace && \
+git clone https://github.com/shiehn/sas-sample-generator.git && \
+cd /workspace/sas-sample-generator && \
+./scripts/setup.sh 2>&1 | tee /root/setup.log
+```
 
-# Rsync only the survivors back (typically 10-30% of raw)
-rsync -av <pod>:/workspace/outputs/gated/ ./outputs/gated/
+Look for these "OK" markers near the end of setup.log:
+```text
+[setup]   rsync:          rsync version 3.x.x ...
+[setup]   tmux:           tmux 3.x
+[setup]   rubberband:     /usr/bin/rubberband
+[setup]   ffmpeg:         ffmpeg version ...
+[setup] cuda available: True
+[setup] device:         NVIDIA RTX 4090
+[setup] done.
+```
 
-# On local (RubberBand R3 + manifest write — CPU-bound, no GPU needed)
+If `cuda available: False` → you deployed onto a CPU template; terminate, redeploy with PyTorch GPU.
+
+#### Step 4 — HF login + license acceptance
+
+```bash
+source /root/.venv/bin/activate
+hf auth login
+```
+
+Paste your HF read token. Answer `n` to "Add token as git credential".
+
+**First time on a new HF account:** in your browser, visit
+[stabilityai/stable-audio-3-medium](https://huggingface.co/stabilityai/stable-audio-3-medium)
+and accept BOTH the SA3 community license **AND** the underlying Gemma
+terms. Without both, the model download fails with `GatedRepoError`.
+Token IS your account — accept while logged into the same HF account
+your token belongs to.
+
+Verify access (under 5 seconds):
+```bash
+hf download stabilityai/stable-audio-3-medium model_config.json --local-dir /tmp/sa3-test
+ls /tmp/sa3-test/
+```
+If `model_config.json` is listed: cleared.
+
+#### Step 5 — (Optional) Choose which categories to run
+
+The default ships with **all 16** categories enabled. For a quick test
+or a focused run:
+
+```bash
+# Edit scripts/pitched_categories.txt — comment out any category with `#`
+nano scripts/pitched_categories.txt
+```
+
+After the test, restore with `git checkout scripts/pitched_categories.txt`.
+
+#### Step 6 — Kick off the run inside tmux (~30 min generate + ~10 min gate)
+
+```bash
+tmux new -s pitched
+
+# Inside tmux:
+cd /workspace/sas-sample-generator
+source /root/.venv/bin/activate
+source /workspace/.bash_env
+
+STAGES=generate,gate ./scripts/run_pitched.sh 2>&1 | tee /workspace/sas-sample-generator/outputs/run.log
+```
+
+**Detach with `Ctrl-b d`.** The run keeps going even if SSH drops.
+
+**Reattach later** (from any new SSH session — possibly with a new IP/port if migrated):
+```bash
+tmux attach -t pitched
+```
+
+Monitor from outside tmux:
+```bash
+tail -f /workspace/sas-sample-generator/outputs/run.log
+nvidia-smi
+```
+
+Per-prompt cost: ~1 sec generation × 5 variants × ~1500 prompts = ~2 hours of inference at SA3's 8 steps. The gate stage runs on CPU after generation — usually ~5–10 min for 7,500 variants.
+
+#### Step 7 — Sanity-check the gate results
+
+When `STAGES=generate,gate` finishes, before transferring:
+
+```bash
+# Per-category pass rates
+for d in outputs/gated/*/; do
+  cat=$(basename "$d")
+  [[ "$cat" == "_failures" ]] && continue
+  passed=$(ls "$d"*.wav 2>/dev/null | wc -l)
+  failed=$(ls "$d/_failures"/*.json 2>/dev/null | wc -l)
+  total=$((passed + failed))
+  if [[ $total -gt 0 ]]; then
+    rate=$((passed * 100 / total))
+    printf "  %-18s passed=%3d  failed=%3d  pass-rate=%d%%\n" "$cat" "$passed" "$failed" "$rate"
+  fi
+done
+
+echo "Total gated: $(find outputs/gated -name '*.wav' -not -path '*_failures*' | wc -l)"
+du -sh outputs/gated
+```
+
+Expected (with the current thresholds, 2026-05-22): **80–100% pass rate per category**. If a category is below 50%, look in `outputs/gated/<cat>/_failures/<id>.json` to see why prompts are failing.
+
+#### Step 8 — Pull data to your Mac via rsync
+
+The pod has `rsync` installed by `setup.sh`. On your Mac:
+
+```bash
+mkdir -p ~/sas-pitched-out
+rsync -avzP -e "ssh -p <POD_PORT> -i ~/.ssh/id_ed25519" \
+  root@<POD_IP>:/workspace/sas-sample-generator/outputs/gated/ \
+  ~/sas-pitched-out/gated/
+```
+
+For ~4 GB at typical RunPod / home upload speeds, expect 10–20 min.
+`rsync` resumes on interruption — just re-run the same command if SSH drops.
+
+Verify locally:
+```bash
+find ~/sas-pitched-out/gated -name '*.wav' -not -path '*_failures*' | wc -l   # should match step 7
+du -sh ~/sas-pitched-out/gated
+```
+
+#### Step 9 — Run enrich locally (~30–60 min CPU-only)
+
+```bash
+cd ~/path/to/sas-sample-generator
+git pull                                # pick up any threshold updates
+pip install -r requirements.txt         # idempotent
+
+export SAS_OUTPUTS_DIR=~/sas-pitched-out
 STAGES=enrich ./scripts/run_pitched.sh
 ```
 
-Env knobs: `VARIANTS=3` (cheaper test; default 5), `STEPS=4` (faster
-SA3; default 8), `STAGES=generate,gate,enrich` (comma-separated subset).
+Each gated WAV → one instrument folder under `~/sas-pitched-out/enriched/<cat>/<id>/` containing:
+- `sources/<midi>.wav` — root sample, smart-pitch-corrected + LUFS-normalized
+- `zones/<midi>.flac` — pre-rendered chromatic zones (every 2–3 semitones)
+- `manifest.json` — sampler-consumable schema
+- `prompt.txt` — original positive prompt
+
+#### Step 10 — ⚠️ TERMINATE THE POD
+
+[runpod.io/console/pods](https://www.runpod.io/console/pods) → pod card → **Terminate** (NOT Stop). Compute billing stops immediately. Volume billing (if any auto-created Network Volume snuck in) stops only on Terminate.
+
+Then [runpod.io/console/user/storage](https://www.runpod.io/console/user/storage) → **Network Volumes** → check for any `outside_*` orphan from a migration → Delete.
+
+---
+
+### Pod migration recovery (it happens)
+
+RunPod sometimes moves your pod to a different physical host mid-run. Symptoms:
+- SSH connection drops mid-session
+- `Connection refused` when reconnecting on the same IP/port
+- Pod shows "Stopped" briefly, then "Running" again at a new address
+
+**The pod, the venv, the HF cache, and all `outputs/` data persist on the container disk** as long as the pod isn't terminated. You just need fresh connection info.
+
+1. Open RunPod console → click your pod card → check the **Connect → SSH over exposed TCP** panel for the new IP and port (both can change).
+2. Clear the old SSH host key on your Mac:
+   ```bash
+   ssh-keygen -R '[<NEW_IP>]:<NEW_PORT>'
+   ```
+3. SSH back in with the new details. Run `tmux attach -t pitched` — your run is still going.
+4. If you were mid-rsync, just re-run the rsync command with the new `-p <NEW_PORT>` and `root@<NEW_IP>` — it picks up where it stopped.
+
+This bit us twice this session (May 2026). Symptoms are unambiguous; recovery takes 30 seconds.
+
+### Smart pitch correction (what enrich does)
+
+SA3 doesn't reliably hit a target pitch from a text prompt — that's a known limitation of text-to-audio diffusion models. Enrich now compensates intelligently:
+
+| If measured pitch is… | Enrich does… | Result |
+|---|---|---|
+| within `max_correction_semitones` of target (default 3) | shifts all the way to the original target | Sample is at exactly the prompted MIDI note; preserves prompt semantics |
+| further away than that | snaps to the **nearest integer semitone** | Sample is at the closest "logical" MIDI note (always ≤50 cent shift, no audible artifacts) |
+
+Either way: every output sample lands on an **exact MIDI semitone** with the smallest possible pitch shift. The zone rendering loop centers on that effective root, so the sampler always has a clean zone at the sample's actual pitch.
+
+`max_correction_semitones` is per-category in `scripts/pitched_category_config.py`. Set to `0` to always snap to nearest semitone (never shift to target). Set to a large value (24+) to always shift to target.
+
+### Gate stages explained
+
+| Stage | What it checks | What rejection means |
+|---|---|---|
+| `prefilter` | Clipping, dead channels, all-silent buffers | Sample is broken at the file level |
+| `onset` | Time from buffer start to first transient | `slow_onset` → SA3 added a fade-in / silence preamble (>300ms) |
+| `sustain` | Longest plateau within 12 dB of peak RMS | `short_stab` → audio decays too fast or has no held region |
+| `pitch` | CREPE periodicity + measured-vs-target | `no_voiced_frames` / `unconfident` → unpitched output; **`wrong_pitch` is OFF by default** (tolerance 9999) so enrich's snap-to-nearest-semitone can do its job |
+| `polyphony` | BasicPitch note count after vibrato bypass | Disabled when TF/numpy ABI mismatches (common on RunPod) — gate prints one warning at start, then runs without it |
+
+The gate scores winners by `confidence² × exp(-|cents|/50) × sus_quality`. With `wrong_pitch` disabled, the pitch term collapses to ~0 for far-off samples, so all variants of a prompt can tie at score=0.000 — the picker just grabs v00 by default in that case. Acceptable for now.
 
 ### Output layout
 
@@ -416,38 +649,70 @@ SA3; default 8), `STAGES=generate,gate,enrich` (comma-separated subset).
 outputs/
 ├── raw/<category>/                                  ← SA3 generations (5 variants per prompt)
 │   ├── <id>_v00.wav, <id>_v01.wav, ...
-│   └── _metadata/<id>_v0N.json                      ← seed, model, generation_seconds, …
+│   └── _metadata/<id>_v0N.json                      ← seed, model, generation_seconds
 ├── gated/<category>/                                ← gate winners only
 │   ├── <id>.wav                                     ← chosen variant
-│   ├── <id>.gate.json                               ← per-gate scores + verdicts
+│   ├── <id>.gate.json                               ← per-gate scores + measured pitch
 │   └── _failures/<id>.json                          ← prompts where ALL variants rejected
-└── instruments/<category>/<instrument-id>/          ← final library, plugin-consumable
-    ├── sources/<midi>.wav                           ← target-pitched, LUFS-normalized
-    ├── zones/<midi>.flac                            ← pre-rendered chromatic zones (every 2-3 ST)
-    ├── manifest.json                                ← v1 schema, sas-instrument-plugin reads this
+└── enriched/<category>/<instrument-id>/             ← final library, sampler-consumable
+    ├── sources/<midi>.wav                           ← effective-root-pitched, LUFS-normalized
+    ├── zones/<midi>.flac                            ← pre-rendered chromatic zones
+    ├── manifest.json                                ← v1 schema
     └── prompt.txt                                   ← original positive prompt
 ```
 
-### Expected gate reject rates
+### Cost estimate (May 2026 prices)
 
-With SA3 + the current prompt sets, plan for ~50-70% gate rejection.
-`outputs/gated/<cat>/_failures/<id>.json` accumulates one entry per
-fully-failed prompt so you can iterate on prompt wording. Common
-reject reasons by category:
+For a full 16-category run with default 5 variants per prompt:
 
-- **Plucks/Keys/Mallets** — `short_stab` (SA3 emits a percussive hit instead of a sustained note); reword to "long natural decay, sustained pitch"
-- **Basses** — `subbass_disagreement` (CREPE struggles below ~50 Hz; raise the target an octave if your prompt is ambitious)
-- **Pads/Strings** — `slow_onset` (SA3 fades in instead of starting clean); add "immediate attack, no fade-in"
-- **Vocals** — high rejection across all gates; SA3's model card says vocals are weak. `variants_per_prompt=20` for vocals only
+| Component | Time | Cost (RTX 4090 @ ~$0.34/hr) |
+|---|---|---|
+| Pod boot + setup.sh | ~10 min | $0.06 |
+| HF model download (first call only) | ~3 min | $0.02 |
+| Generate (~7,500 variants at ~1 sec each) | ~2 hr | $0.68 |
+| Gate (CPU after generation) | ~10 min | $0.06 |
+| Transfer + terminate | ~15 min | $0.09 |
+| **Total on pod** | **~3 hr** | **~$0.91** |
+| Local enrich | ~30–60 min on Mac | $0 |
+
+Same on RTX A6000 (~$0.49/hr) → ~$1.30. On A100 (~$1.89/hr) → ~$5.00. The 4090 is the cheapest workable option.
+
+### Authoring / iterating prompts
+
+```
+prompts/pitched/<category>.txt                # one prompt per line, # comments
+scripts/pitched_categories.txt                # which categories to run (comment to skip)
+scripts/pitched_category_config.py            # per-category target pitch, duration, sustain thresholds, etc.
+```
+
+Fast iteration on a single category:
+```bash
+# 1. Comment out 15 of 16 categories in scripts/pitched_categories.txt
+# 2. Edit prompts/pitched/<cat>.txt
+# 3. Re-run end-to-end
+STAGES=generate,gate ./scripts/run_pitched.sh
+# 4. Listen to outputs/gated/<cat>/*.wav, adjust prompts, re-run
+```
+
+`--skip-existing` in `batch_generate.py` means re-running won't regenerate samples you already have — only new prompt lines hit the GPU.
+
+### Env knobs
+
+- `STAGES=generate,gate,enrich` — comma-separated subset (default: all three)
+- `STEPS=8` — diffusion steps (default 8; SA3 converges fast)
+- `VARIANTS=5` — variants per prompt (default 5; vocals is bumped to 20 internally)
+- `SAS_OUTPUTS_DIR=/some/path` — override outputs location (default `/workspace/outputs` on pod, `./outputs` local)
 
 ### What the plugin reads
 
-The `sas-instrument-plugin` walks `outputs/instruments/<cat>/<id>/`,
-parses each `manifest.json`, and uses the `zones[]` array to call
-`host.setTrackInstrumentSampler` on the chosen track. Disjoint
-zones + per-zone `root_midi` mean the engine pitch-shifts the
-nearest pre-rendered zone for any played MIDI note, with the
-target-pitch sample as the unshifted root.
+The `sas-instrument-plugin` walks `outputs/enriched/<cat>/<id>/`, parses
+each `manifest.json`, and uses the `zones[]` array to call
+`host.setTrackInstrumentSampler` on the chosen track. Disjoint zones +
+per-zone `root_midi` mean the engine pitch-shifts the nearest
+pre-rendered zone for any played MIDI note, with the smart-corrected
+sample as the unshifted root. Since enrich locks every sample to an
+integer MIDI semitone, the sampler never has to deal with off-pitch
+sources.
 
 ---
 

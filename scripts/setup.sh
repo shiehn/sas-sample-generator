@@ -62,6 +62,31 @@ fi
 
 mkdir -p "${PROJECT_DIR}" "${HF_CACHE}" "${VOLUME_ROOT}/outputs"
 
+# ---------------------------------------------------------------------------
+# System packages — install everything we've needed at any point during this
+# pipeline's history. Cheap on a fresh pod (~30 seconds), saves the
+# "X not found" debugging dance later.
+#
+#   rsync           — bulk transfer to / from Mac with resume support
+#   tmux            — persistent sessions for multi-hour gate / enrich runs
+#   rubberband-cli  — pyrubberband shells out to this for pitch shift in enrich
+#   ffmpeg          — audio inspection + format conversion
+#   zip + unzip     — sometimes more convenient than tar
+# ---------------------------------------------------------------------------
+echo "[setup] installing system packages: rsync tmux rubberband-cli ffmpeg zip"
+if command -v apt-get >/dev/null 2>&1; then
+  export DEBIAN_FRONTEND=noninteractive
+  apt-get update -qq
+  apt-get install -y --no-install-recommends \
+    rsync tmux rubberband-cli ffmpeg zip unzip >/dev/null
+  echo "[setup]   rsync:          $(rsync --version 2>/dev/null | head -1 || echo MISSING)"
+  echo "[setup]   tmux:           $(tmux -V 2>/dev/null || echo MISSING)"
+  echo "[setup]   rubberband:     $(which rubberband 2>/dev/null || echo MISSING)"
+  echo "[setup]   ffmpeg:         $(ffmpeg -version 2>/dev/null | head -1 || echo MISSING)"
+else
+  echo "[setup] WARN: apt-get not found; install rsync/tmux/rubberband-cli/ffmpeg manually"
+fi
+
 # Persist HF cache + outputs paths across shells.
 PROFILE="${VOLUME_ROOT}/.bash_env"
 cat > "${PROFILE}" <<EOF
