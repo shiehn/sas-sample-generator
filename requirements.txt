@@ -9,6 +9,15 @@ torchsde
 # Manually on a fresh shell:
 #   pip install --no-deps git+https://github.com/Stability-AI/stable-audio-tools.git
 
+# stable-audio-tools' transitive deps that --no-deps skipped during the
+# install in setup.sh. Listed here so pip resolves them alongside the rest
+# of the env and we don't hit ModuleNotFoundError mid-load.
+alias-free-torch==0.0.6
+dill
+einops-exts
+importlib-resources==5.12.0
+nnAudio
+
 # pytorch_lightning is imported by stable-audio-tools/.../lora/callbacks.py
 # but not declared in their package metadata. Pull it ourselves.
 pytorch-lightning
