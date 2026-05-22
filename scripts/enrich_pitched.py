@@ -83,40 +83,61 @@ def amp_to_db(a: float) -> float:
 # -----------------------------------------------------------------------------
 
 def pitch_shift(y: np.ndarray, sr: int, semitones: float, preserve_formants: bool = True) -> np.ndarray:
-    """Render a pitched copy of `y` at `semitones` offset via RubberBand R3.
+    """Render a pitched copy of `y` at `semitones` offset via rubberband CLI.
 
-    Returns a same-length-ish array (RubberBand may add a few samples of
-    edge buffering; we don't trim because the manifest plays the whole
-    rendered zone WAV through the sampler anyway).
+    Direct subprocess to `rubberband` instead of going through pyrubberband.
+    pyrubberband's `rbargs` dict-to-CLI serializer emits an empty positional
+    arg for value-less flags like `--formant` (it stores them as
+    `{"--formant": ""}` and stringifies both key and value), which
+    rubberband 1.9 (Ubuntu 22.04 default) rejects with exit status 2.
+    Going direct also means we never accidentally pass --fine (the R3
+    engine flag that only rubberband 3.x understands).
 
-    If pyrubberband / rubberband-cli isn't installed, falls back to no-op
-    with a warning — the unshifted source still ships as the root zone.
+    If rubberband-cli isn't installed, falls back to no-op with a
+    warning — the unshifted source still ships as the root zone.
     """
     if semitones == 0:
         return y.copy()
-    try:
-        import pyrubberband as pyrb
-    except ImportError:
-        print(f"[enrich] pyrubberband unavailable; skipping shift {semitones:+.1f} ST", file=sys.stderr)
+
+    import shutil
+    import subprocess
+    import tempfile
+
+    if shutil.which("rubberband") is None:
+        print(f"[enrich] rubberband-cli unavailable; skipping shift {semitones:+.1f} ST", file=sys.stderr)
         return y.copy()
 
-    # pyrubberband's `rbargs` dict gets joined as CLI flags.
-    # Note: we used to pass `--fine` for R3 ("finer") engine quality,
-    # but that flag only exists in rubberband 3.x. Ubuntu 22.04's apt
-    # package is rubberband 1.9, which rejects --fine with exit status 2.
-    # The default R2 engine in rubberband 1.x/2.x is still fine for
-    # sampler-zone playback; subtle quality difference, not perceptible
-    # over keyboard playthrough.
-    # `--formant` preserves formant frequencies during pitch shift (key
-    # for vocals/strings/wind where naive shift sounds chipmunky).
-    rbargs: dict = {}
-    if preserve_formants:
-        rbargs["--formant"] = ""
+    in_fd, in_path = tempfile.mkstemp(suffix=".wav")
+    out_fd, out_path = tempfile.mkstemp(suffix=".wav")
+    os.close(in_fd)
+    os.close(out_fd)
     try:
-        return pyrb.pitch_shift(y, sr, n_steps=semitones, rbargs=rbargs)
+        sf.write(in_path, y, sr, subtype="PCM_24")
+        cmd = ["rubberband", "-q", "--pitch", f"{semitones}"]
+        if preserve_formants:
+            cmd.append("--formant")
+        cmd += [in_path, out_path]
+        result = subprocess.run(cmd, capture_output=True, text=True)
+        if result.returncode != 0:
+            stderr_snippet = (result.stderr or result.stdout or "").strip().splitlines()
+            tail = stderr_snippet[-1] if stderr_snippet else "no stderr"
+            print(
+                f"[enrich] rubberband failed (exit {result.returncode}): {tail}; "
+                f"skipping {semitones:+.1f} ST",
+                file=sys.stderr,
+            )
+            return y.copy()
+        shifted, _ = sf.read(out_path, always_2d=True)
+        return shifted
     except Exception as e:
-        print(f"[enrich] pyrubberband.pitch_shift failed ({e}); skipping {semitones:+.1f} ST", file=sys.stderr)
+        print(f"[enrich] pitch_shift failed ({e}); skipping {semitones:+.1f} ST", file=sys.stderr)
         return y.copy()
+    finally:
+        for p in (in_path, out_path):
+            try:
+                os.unlink(p)
+            except OSError:
+                pass
 
 
 # -----------------------------------------------------------------------------
