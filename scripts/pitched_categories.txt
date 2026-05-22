@@ -1,0 +1,23 @@
+# Categories to include in run_pitched.sh (pitched-instrument pipeline).
+# Comment out (#) any line to skip that category for a run. Order is preserved.
+#
+# Phase 1.0 ships single-source for every category except FX. Start with
+# Plucks alone for the first real batch since SA3 quality varies; once
+# the gate reject rate is acceptable, enable the rest progressively.
+
+plucks
+# basses
+# bells
+# brass
+# fx
+# guitars
+# keys
+# mallets
+# organs
+# pads
+# pianos
+# percussion
+# strings
+# synths
+# vocals
+# winds

@@ -23,3 +23,15 @@ pywavelets>=1.6.0
 pandas
 tqdm
 huggingface_hub
+
+# Pitched-instrument pipeline (Phase 1.0+): quality gates + zone pre-rendering.
+# Gate runs on GPU pod; enrich runs on local CPU.
+librosa>=0.10
+torchcrepe          # primary pitch detection, GPU-accelerated
+basic-pitch         # polyphony detection (Spotify, also GPU-friendly)
+pyrubberband        # pitch shift with formant preservation (calls rubberband-cli)
+soxr                # high-quality resampling backend for librosa
+# NOTE: pyrubberband shells out to `rubberband` (a.k.a. rubberband-cli).
+# Install separately:
+#   macOS:  brew install rubberband
+#   ubuntu: apt-get install -y rubberband-cli

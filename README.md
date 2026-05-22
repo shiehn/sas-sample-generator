@@ -353,6 +353,104 @@ sas-sample-generator/
 
 ---
 
+## Pitched-instrument pipeline (Phase 1.0+)
+
+Sibling pipeline to the drum one above. Same SA3 generator, but adds
+quality gates (CREPE pitch detection, BasicPitch polyphony, librosa
+onset, custom sustain-plateau) and zone pre-rendering (RubberBand R3
+with formant preservation), and emits a richer per-instrument
+`manifest.json` consumed by the `sas-instrument-plugin`.
+
+### One-time additional setup
+
+After your existing pip install, add the pitched-pipeline deps and the
+`rubberband` system binary (pyrubberband shells out to it):
+
+```bash
+pip install -r requirements.txt              # picks up new entries
+brew install rubberband                       # macOS local enrich
+# OR
+apt-get install -y rubberband-cli             # pod / ubuntu
+```
+
+### Authoring prompts
+
+```
+prompts/pitched/<category>.txt                # one prompt per line, # comments
+scripts/pitched_categories.txt                # which categories to run (comment to skip)
+scripts/pitched_category_config.py            # per-category target pitch, duration, zone span, etc.
+```
+
+The 16 categories are: Plucks, Basses, Bells, Brass, FX, Guitars,
+Keys, Mallets, Organs, Pads, Pianos, Percussion, Strings, Synths,
+Vocals, Winds. Phase 1.0 ships with Plucks enabled; uncomment others
+in `scripts/pitched_categories.txt` once you trust the gate rates.
+
+### Running
+
+End-to-end on a single box with GPU:
+
+```bash
+./scripts/run_pitched.sh
+```
+
+Cross-machine flow (gate on GPU pod, enrich on local CPU):
+
+```bash
+# On pod (cheap CPU work after the GPU generate+gate)
+STAGES=generate,gate ./scripts/run_pitched.sh
+
+# Rsync only the survivors back (typically 10-30% of raw)
+rsync -av <pod>:/workspace/outputs/gated/ ./outputs/gated/
+
+# On local (RubberBand R3 + manifest write — CPU-bound, no GPU needed)
+STAGES=enrich ./scripts/run_pitched.sh
+```
+
+Env knobs: `VARIANTS=3` (cheaper test; default 5), `STEPS=4` (faster
+SA3; default 8), `STAGES=generate,gate,enrich` (comma-separated subset).
+
+### Output layout
+
+```
+outputs/
+├── raw/<category>/                                  ← SA3 generations (5 variants per prompt)
+│   ├── <id>_v00.wav, <id>_v01.wav, ...
+│   └── _metadata/<id>_v0N.json                      ← seed, model, generation_seconds, …
+├── gated/<category>/                                ← gate winners only
+│   ├── <id>.wav                                     ← chosen variant
+│   ├── <id>.gate.json                               ← per-gate scores + verdicts
+│   └── _failures/<id>.json                          ← prompts where ALL variants rejected
+└── instruments/<category>/<instrument-id>/          ← final library, plugin-consumable
+    ├── sources/<midi>.wav                           ← target-pitched, LUFS-normalized
+    ├── zones/<midi>.flac                            ← pre-rendered chromatic zones (every 2-3 ST)
+    ├── manifest.json                                ← v1 schema, sas-instrument-plugin reads this
+    └── prompt.txt                                   ← original positive prompt
+```
+
+### Expected gate reject rates
+
+With SA3 + the current prompt sets, plan for ~50-70% gate rejection.
+`outputs/gated/<cat>/_failures/<id>.json` accumulates one entry per
+fully-failed prompt so you can iterate on prompt wording. Common
+reject reasons by category:
+
+- **Plucks/Keys/Mallets** — `short_stab` (SA3 emits a percussive hit instead of a sustained note); reword to "long natural decay, sustained pitch"
+- **Basses** — `subbass_disagreement` (CREPE struggles below ~50 Hz; raise the target an octave if your prompt is ambitious)
+- **Pads/Strings** — `slow_onset` (SA3 fades in instead of starting clean); add "immediate attack, no fade-in"
+- **Vocals** — high rejection across all gates; SA3's model card says vocals are weak. `variants_per_prompt=20` for vocals only
+
+### What the plugin reads
+
+The `sas-instrument-plugin` walks `outputs/instruments/<cat>/<id>/`,
+parses each `manifest.json`, and uses the `zones[]` array to call
+`host.setTrackInstrumentSampler` on the chosen track. Disjoint
+zones + per-zone `root_midi` mean the engine pitch-shifts the
+nearest pre-rendered zone for any played MIDI note, with the
+target-pitch sample as the unshifted root.
+
+---
+
 ## When something breaks
 
 | Symptom | Most likely cause | Fix |
