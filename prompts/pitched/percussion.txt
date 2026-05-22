@@ -1,0 +1,124 @@
+# =========================================================================
+# Pitched-percussion one-shots — tonal hits, tom-like, bongo-pitched.
+# (Unpitched percussion stays in the drums pipeline. This is for pitched
+# struck content the LLM might call for in melodic contexts.)
+# Bias: hip-hop, trap, afrobeats, latin, dance, world.
+# Target pitch C4 (MIDI 60).
+# =========================================================================
+
+# --- Pitched hits / stabs (hip-hop staples) ---
+pitched hit one shot, sharp percussive tonal stab, short controlled decay, dry, no chord, no loop
+synth stab one shot, sharp percussive synthesized hit, dry, no loop, no melody
+brass stab one shot, sharp punchy brass section hit, dry, no chord
+orchestral hit one shot, classic 90s hip-hop orchestra stab, dry, no loop, no melody
+ravers stab one shot, classic rave chord stab, bright punchy, dry, no chord, no loop
+piano stab one shot, sharp percussive piano chord, dry, no loop
+organ stab one shot, sharp organ chord hit, dry, no melody, no loop
+guitar stab one shot, sharp percussive guitar hit, dry, no chord
+
+# --- Tonal hand drums (bongo, conga, tabla pitched) ---
+high tonal bongo one shot, sharp bright pitched hand drum, dry, no chord, no loop
+low tonal bongo one shot, warm deep pitched hand drum, dry, no loop, no melody
+high conga one shot, sharp bright slap, pitched tone, dry, no chord
+low conga one shot, deep warm hand drum tone, dry, no loop, no melody
+quinto pitched one shot, high bright cuban conga tone, dry, no chord, no loop
+tumba pitched one shot, deep warm cuban conga tone, dry, no loop
+djembe pitched one shot, sharp bright african hand drum tone, dry, no melody, no loop
+djembe bass one shot, deep warm african hand drum tone, dry, no chord
+talking drum one shot, pitched tonal african drum, dry, no loop, no melody
+tabla high one shot, bright indian hand drum tone, dry, no chord, no loop
+tabla low one shot, deep warm indian hand drum tone, dry, no loop
+dholak one shot, indian double-headed drum pitched tone, dry, no melody, no loop
+darbuka one shot, middle eastern goblet drum pitched, dry, no chord, no loop
+udu pitched one shot, clay pot drum tonal hit, dry, no loop
+
+# --- Tom-like pitched percussion ---
+tonal tom one shot, pitched drum tone, controlled decay, dry, no chord, no loop
+melodic tom one shot, pitched tom-tom drum tone, sustained, dry, no loop, no melody
+ethnic tom one shot, world music pitched tom tone, dry, no chord
+deep tonal tom one shot, low warm pitched drum tone, dry, no loop
+high tonal tom one shot, bright pitched drum tone, fast decay, dry, no melody, no loop
+processed tom one shot, modern pitched tom with effects, dry, no chord, no loop
+
+# --- Synth / FM percussion (tonal hits) ---
+synth perc hit one shot, percussive synth tonal stab, dry, no chord, no loop
+fm perc one shot, FM synthesis pitched percussion, dry, no loop, no melody
+electric tom one shot, vintage electronic drum machine tom, dry, no chord
+909 tom one shot, classic TR-909 pitched tom tone, dry, no loop, no melody
+808 tom one shot, classic TR-808 deep pitched tom, dry, no chord, no loop
+808 cowbell one shot, classic TR-808 pitched percussion, dry, no loop
+linn drum tom one shot, classic linn drum pitched tom, dry, no melody, no loop
+SP-1200 perc one shot, vintage sampler pitched percussion, dry, no chord
+MPC perc one shot, classic sampler pitched hit, dry, no loop, no melody
+
+# --- World pitched percussion ---
+balafon one shot, african wooden xylophone pitched tone, dry, no chord, no loop
+mbira one shot, african thumb piano pitched pluck, dry, no loop
+agogo bell pitched one shot, brazilian double-bell pitched tone, dry, no melody, no loop
+cowbell pitched one shot, sharp pitched cowbell tone, dry, no chord
+woodblock pitched one shot, sharp wooden tonal click, dry, no loop, no melody
+slit drum one shot, hollow wooden pitched percussion, dry, no chord
+clave pitched one shot, sharp wooden tonal click, dry, no loop, no melody
+guiro pitched one shot, scraped wooden percussion tone, dry, no chord
+caxixi pitched one shot, woven basket shaker pitched tone, dry, no loop, no melody
+shaker pitched one shot, soft pitched shaker tone, dry, no chord
+maracas pitched one shot, sharp pitched maraca shake, dry, no loop, no melody
+
+# --- Steel drum / pan ---
+steel drum hit one shot, bright caribbean pan tone, percussive attack, dry, no chord, no loop
+steel pan tonal one shot, melodic caribbean tonal hit, dry, no loop
+high steel pan one shot, bright high register tonal pan, dry, no melody, no loop
+low steel pan one shot, deep warm tonal pan, dry, no chord
+soft steel pan one shot, gentle pitched pan hit, dry, no loop, no melody
+
+# --- Tuned bottle / glass percussion ---
+glass bottle pitched one shot, tonal glass percussion, dry, no chord, no loop
+struck glass one shot, bright pitched glass tone, dry, no loop, no melody
+bottle pitched hit one shot, hollow tonal glass strike, dry, no chord
+wine glass pitched one shot, ringing crystal tone, dry, no loop, no melody
+crystal pitched one shot, bright clear glass tone, dry, no chord, no loop
+
+# --- Sound design tonal percussion ---
+processed tonal hit one shot, processed percussive synth stab, dry, no chord, no loop
+distorted hit one shot, gritty saturated tonal percussion, dry, no loop, no melody
+reverb hit one shot, atmospheric pitched percussion, no dry hit only, dry, no chord
+filtered tonal hit one shot, filtered percussive tonal stab, dry, no loop, no melody
+warped hit one shot, pitch-bent tonal percussion hit, dry, no chord
+
+# --- Cinematic pitched hits ---
+cinematic pitched hit one shot, dramatic tonal percussive impact, dry, no chord, no loop
+braam pitched one shot, deep dramatic tonal synth hit, dry, no loop, no melody
+hybrid pitched hit one shot, synth and percussion tonal blend, dry, no chord
+epic tonal hit one shot, dramatic pitched impact, sustained, dry, no loop, no melody
+
+# --- Vintage / lo-fi pitched percussion ---
+vintage drum machine tom one shot, classic 80s pitched tom, dry, no chord, no loop
+lo-fi pitched perc one shot, dusty muffled tonal hit, vinyl character, dry, no loop, no melody
+boom bap perc one shot, sampled vintage pitched percussion, dry, no chord
+hip hop perc one shot, sampled tonal percussion hit, dry, no loop, no melody
+dusty pitched perc one shot, lo-fi vintage tonal tone, dry, no chord, no loop
+chillhop pitched perc one shot, mellow warm pitched percussion, dry, no loop
+
+# --- Modern producer styles ---
+trap pitched perc one shot, modern dark tonal stab, dry, no chord, no loop
+drill pitched perc one shot, dark melodic tonal hit, atmospheric, dry, no loop, no melody
+phonk pitched perc one shot, distorted memphis pitched percussion, dry, no chord
+afrobeats pitched perc one shot, bright tonal percussion, modern character, dry, no loop, no melody
+amapiano pitched perc one shot, log drum pitched percussion, soft, dry, no chord
+dancehall pitched perc one shot, sharp tonal hit, jamaican character, dry, no loop
+reggaeton pitched perc one shot, dembow-style tonal percussion, dry, no chord, no loop
+
+# --- Hybrid / experimental ---
+glitch pitched one shot, fragmented digital tonal hit, dry, no chord, no loop
+modular pitched perc one shot, complex synth tonal percussion, dry, no loop, no melody
+granular pitched hit one shot, fragmented tonal texture, dry, no chord
+spectral pitched one shot, complex pitched percussion tone, dry, no loop, no melody
+weirded pitched one shot, experimental tonal hit, modern character, dry, no chord
+abstract pitched perc one shot, sound-design tonal stab, dry, no loop, no melody
+
+# --- Whistle / pitched effects (often used in hip-hop / trap) ---
+police whistle pitched one shot, sharp whistle tone, controlled, dry, no chord, no loop
+referee whistle pitched one shot, sharp bright whistle tone, dry, no loop, no melody
+pitched whistle one shot, tonal whistle note, sustained, dry, no chord
+slide whistle pitched one shot, pitch-bent whistle tone, dry, no loop
+ocarina pitched percussion one shot, soft tonal whistle, dry, no melody, no loop

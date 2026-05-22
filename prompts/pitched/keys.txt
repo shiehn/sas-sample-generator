@@ -1,0 +1,120 @@
+# =========================================================================
+# Keys one-shots — electric pianos, clavs, wurlitzers, vintage keyboards.
+# Bias: hip-hop, neo-soul, lo-fi, jazz, R&B, chillhop, funk, soul.
+# Target pitch C3 (MIDI 48) — keys mid-low register.
+# =========================================================================
+
+# --- Fender Rhodes (the iconic neo-soul / hip-hop key) ---
+warm rhodes piano one shot, classic mark 1 tone, mellow round attack, dry, no chord, no loop
+bright rhodes one shot, mark 2 stage tone, focused bell-like attack, dry, no loop
+dirty rhodes one shot, overdriven warm tone, gritty character, dry, no melody, no loop
+mellow rhodes one shot, soft tine attack, jazz character, dry, no chord, no loop
+neo soul rhodes one shot, lush warm tone, smooth sustain, dry, no loop
+chillhop rhodes one shot, mellow dusty warm tone, lo-fi character, dry, no chord
+suitcase rhodes one shot, classic tremolo-ready tone, warm round, dry, no loop, no melody
+dyno rhodes one shot, modified bright rhodes tone, focused attack, dry, no chord
+phased rhodes one shot, swirling modulated rhodes tone, dry, no loop, no melody
+vintage rhodes one shot, dusty 70s tone, soft tine attack, dry, no chord, no loop
+
+# --- Wurlitzer ---
+warm wurlitzer one shot, classic reed tone, bright tine character, dry, no chord, no loop
+crunchy wurlitzer one shot, slight overdrive, vintage 70s tone, dry, no loop, no melody
+mellow wurlitzer one shot, soft warm reed tone, smooth attack, dry, no chord
+bright wurli one shot, sharp focused attack, classic stage tone, dry, no loop
+funk wurlitzer one shot, punchy reed tone, percussive attack, dry, no chord, no loop
+ray charles wurli one shot, soulful warm tone, classic character, dry, no loop, no melody
+classic wurli one shot, vintage electric piano tone, warm sustain, dry, no chord
+70s wurli one shot, dusty warm reed tone, lo-fi character, dry, no loop, no melody
+
+# --- Clavinet ---
+funky clavinet one shot, sharp percussive attack, bright tone, dry, no chord, no loop
+clav one shot, classic hohner clavinet, sharp pluck, dry, no loop, no melody
+wah clavinet one shot, single note with wah envelope, funky, dry, no chord
+muted clavinet one shot, dampened percussive tone, short decay, dry, no loop
+stevie wonder clav one shot, classic funk clav tone, sharp bright, dry, no melody, no loop
+clavinet pluck one shot, sharp staccato attack, hollow tone, dry, no chord
+dusty clavinet one shot, lo-fi sampled clav tone, vintage character, dry, no loop, no melody
+phased clavinet one shot, swirling modulated funk clav, dry, no chord, no loop
+
+# --- DX7 electric piano (FM-based 80s sound) ---
+DX7 electric piano one shot, classic FM tine sound, glassy attack, dry, no chord, no loop
+80s electric piano one shot, bright FM EP tone, smooth sustain, dry, no loop
+FM electric piano one shot, metallic bell-like attack, modern character, dry, no chord
+ballad electric piano one shot, mellow FM tone, soft attack, dry, no loop, no melody
+glassy DX7 ep one shot, bright digital electric piano, dry, no chord, no loop
+yamaha DX7 ep one shot, classic 80s FM bass character, dry, no loop, no melody
+modern FM piano one shot, polished bright electric piano, dry, no chord
+synthwave electric piano one shot, retro 80s FM EP tone, dry, no loop
+
+# --- Hohner / pianet / vintage electromechanical ---
+hohner pianet one shot, gritty vintage reed tone, sharp attack, dry, no chord, no loop
+electric piano reed one shot, warm reed-based vintage EP, dry, no loop, no melody
+vintage EP one shot, classic 70s electric piano tone, dry, no chord
+pianet one shot, sharp bright reed pluck, vintage character, dry, no loop, no melody
+
+# --- Lo-fi / chopped / sampled keys ---
+lofi electric piano one shot, dusty warm rhodes tone, vinyl character, dry, no chord, no loop
+chopped EP sample one shot, hip-hop pitched electric piano, dry, no loop, no melody
+boom bap keys one shot, sampled jazz EP, vintage warmth, dry, no chord
+dusty keys one shot, lo-fi muffled electric piano, warm tone, dry, no loop, no melody
+hip hop EP one shot, sampled vintage electric piano, warm character, dry, no chord, no loop
+chillhop keys one shot, mellow warm EP tone, jazzy character, dry, no loop
+sampled rhodes one shot, vintage rhodes sample, lo-fi character, dry, no melody, no loop
+nujabes-style keys one shot, soft mellow rhodes tone, peaceful character, dry, no chord
+J Dilla keys one shot, dusty warm sampled keys, vintage character, dry, no loop, no melody
+
+# --- Mellotron / vintage sampler keys ---
+mellotron one shot, vintage tape-based sample, wobbly warm tone, dry, no chord, no loop
+chamberlin one shot, vintage tape sampler, warm round tone, dry, no loop, no melody
+tape keys one shot, vintage tape-based EP, soft warm character, dry, no chord
+70s tape keys one shot, mellotron-style sustained tone, dry, no loop, no melody
+
+# --- Toy / cheap / lo-fi ---
+toy piano one shot, bright bell-like attack, lo-fi character, dry, no chord, no loop
+miniature piano one shot, small bright key tone, sharp attack, dry, no loop, no melody
+toy keyboard one shot, cheap plastic key tone, vintage character, dry, no chord
+casiotone one shot, lo-fi 80s preset tone, simple character, dry, no loop, no melody
+melodica one shot, breathy reed key tone, warm sustain, dry, no chord, no loop
+accordion one shot, bellows-driven reed tone, sustained, dry, no loop, no melody
+harmonica one shot, single reed note, breathy character, dry, no chord
+
+# --- Hammond / B3-style organ (listed in organs but a few mid-pitched here) ---
+hammond electric piano one shot, organ-flavored EP tone, dry, no loop, no melody
+b3 organ pluck one shot, sharp percussive organ attack, dry, no chord
+jazz organ pluck one shot, mellow b3 organ note, vintage tone, dry, no loop
+
+# --- Honky tonk / saloon ---
+honky tonk piano one shot, slightly out of tune upright, vintage tone, dry, no loop
+saloon piano one shot, dusty out of tune piano, vintage western, dry, no chord, no loop
+
+# --- Modern / processed keys ---
+hyperpop keys one shot, bright saturated electric piano, dry, no loop, no melody
+plugg keys one shot, atmospheric trap-style EP, dreamy character, dry, no chord
+drill keys one shot, dark melodic electric piano, atmospheric, dry, no loop, no melody
+phonk keys one shot, distorted vintage EP sample, gritty, dry, no chord
+underground rap keys one shot, dusty dark EP tone, melancholic, dry, no loop, no melody
+opium keys one shot, dark dreamy electric piano tone, dry, no chord, no loop
+ambient electric piano one shot, washy sustained EP, ethereal tail, dry, no loop, no melody
+
+# --- Stage / studio classics ---
+stage piano one shot, polished modern EP tone, controlled attack, dry, no chord, no loop
+studio rhodes one shot, professional rhodes tone, balanced mix, dry, no loop, no melody
+gospel keys one shot, soulful warm EP tone, smooth attack, dry, no chord
+funk keys one shot, sharp percussive EP attack, vintage character, dry, no loop
+soul keys one shot, warm vibrant EP tone, smooth sustain, dry, no chord, no loop
+R&B keys one shot, smooth round EP tone, mellow character, dry, no loop, no melody
+jazz EP one shot, smooth round rhodes tone, sophisticated character, dry, no chord
+
+# --- Bell piano / glass key hybrids ---
+bell piano one shot, hybrid bell and electric piano, bright glassy, dry, no loop, no melody
+glass piano one shot, crystalline bell-like EP tone, dry, no chord, no loop
+music box piano one shot, delicate bell-like tone, vintage character, dry, no loop
+chime piano one shot, bright struck bell-piano tone, dry, no chord, no loop
+celesta one shot, bright bell-like percussive key, dry, no loop, no melody
+
+# --- Specific producer / era inspired ---
+flying lotus keys one shot, dusty modern EP tone, experimental character, dry, no chord
+madlib keys one shot, lo-fi sampled vintage EP, warm character, dry, no loop, no melody
+9th wonder keys one shot, soulful sampled EP, hip-hop character, dry, no chord
+dilla keys one shot, dusty warm sampled EP, vintage character, dry, no loop, no melody
+9th wonder soul keys one shot, warm vintage EP sample, dry, no chord, no loop

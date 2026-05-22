@@ -1,0 +1,132 @@
+# =========================================================================
+# Guitar one-shots — single plucked / struck guitar notes.
+# Bias: hip-hop / lo-fi / soul / neo-soul / jazz / R&B / chillhop / boom bap.
+# Target pitch E3 (MIDI 52) — guitar mid register, around 5th-fret G string.
+# =========================================================================
+
+# --- Clean electric (jazz, neo-soul, lo-fi hip-hop) ---
+clean electric guitar one shot, bright clear single note, soft attack, dry, no chord, no loop
+warm jazz guitar one shot, mellow hollow body tone, soft sustain, dry, no melody, no loop
+neo soul guitar one shot, warm round single note, smooth decay, dry, no chord, no loop
+chillhop guitar one shot, soft mellow electric guitar, lo-fi character, dry, no loop
+lo-fi electric guitar one shot, dusty muffled tone, vinyl character, dry, no chord, no loop
+boom bap guitar one shot, sampled jazz guitar note, vintage warmth, dry, no loop, no melody
+dusty electric guitar one shot, vintage lo-fi tone, soft attack, dry, no chord
+hollow body guitar one shot, warm jazz tone, smooth sustain, dry, no loop, no melody
+hip hop guitar one shot, sampled clean electric, mellow tone, dry, no chord, no loop
+mellow guitar one shot, soft warm round tone, gentle attack, dry, no loop
+
+# --- Nylon / classical / acoustic ---
+nylon string classical guitar one shot, warm woody tone, natural decay, dry, no chord, no loop
+spanish guitar one shot, bright nylon string note, sharp attack, dry, no loop, no melody
+fingerpicked nylon guitar one shot, soft warm tone, gentle pluck, dry, no chord
+classical guitar pluck one shot, mellow nylon tone, natural sustain, dry, no loop
+bossa nova guitar one shot, warm nylon string note, jazz character, dry, no chord, no loop
+flamenco guitar one shot, sharp bright nylon note, percussive attack, dry, no loop, no melody
+soft nylon guitar one shot, gentle warm tone, slow natural decay, dry, no chord
+classical guitar single note one shot, traditional warm tone, dry, no loop, no melody
+
+# --- Steel string acoustic ---
+steel string acoustic guitar one shot, bright clear single note, natural decay, dry, no chord
+fingerpicked acoustic guitar one shot, soft warm tone, gentle pluck, dry, no loop, no melody
+strummed acoustic single note one shot, bright punchy attack, controlled, dry, no chord, no loop
+soft acoustic guitar one shot, mellow round tone, gentle attack, dry, no loop
+folk guitar one shot, warm acoustic single note, natural sustain, dry, no chord, no loop
+indie acoustic guitar one shot, soft mellow tone, vintage character, dry, no loop, no melody
+country acoustic guitar one shot, bright twangy single note, dry, no chord
+
+# --- Dirty / distorted / overdrive ---
+overdriven electric guitar one shot, warm tube saturation, sustained note, dry, no chord
+distorted electric guitar one shot, gritty mid-gain tone, controlled sustain, dry, no loop
+fuzz guitar one shot, heavy fuzz pedal tone, sustained note, dry, no melody, no loop
+crunchy guitar one shot, mid-gain rock tone, punchy attack, dry, no chord, no loop
+metalcore guitar one shot, high-gain distorted note, tight attack, dry, no loop
+desert rock guitar one shot, fuzzy warm distortion, sustained tone, dry, no chord
+shoegaze guitar one shot, washed out distortion, ambient tail, dry, no loop, no melody
+grunge guitar one shot, dirty mid-gain tone, controlled feedback, dry, no chord, no loop
+
+# --- Muted / palm mute / chuggy ---
+palm muted electric guitar one shot, tight percussive tone, fast decay, dry, no chord, no loop
+muted guitar one shot, dampened bright note, short decay, dry, no loop, no melody
+chugga guitar one shot, palm muted low note, percussive attack, dry, no chord
+funk muted guitar one shot, sharp percussive single note, dry, no loop, no melody
+ska guitar mute one shot, sharp staccato muted note, dry, no chord, no loop
+reggae guitar mute one shot, percussive single note, controlled tone, dry, no loop
+
+# --- 12-string / harp-like ---
+12 string guitar one shot, shimmery doubled note, bright sustain, dry, no chord, no loop
+12 string acoustic one shot, lush bright pluck, natural decay, dry, no loop, no melody
+jingle jangle guitar one shot, bright shimmery 12-string tone, dry, no chord
+
+# --- Wah / pedal / processed ---
+wah guitar one shot, single note with wah envelope, funky character, dry, no loop, no melody
+phased guitar one shot, swirling modulation single note, dry, no chord, no loop
+chorus guitar one shot, lush modulated clean tone, dry, no loop, no melody
+flanged guitar one shot, jet-like modulation single note, dry, no chord
+tremolo guitar one shot, pulsing amplitude single note, dry, no loop, no melody
+
+# --- Slide / lap steel / weeping ---
+slide guitar one shot, bottleneck slide single note, expressive bend, dry, no chord, no loop
+lap steel guitar one shot, smooth gliding single note, country character, dry, no loop
+hawaiian slide guitar one shot, dreamy gliding note, soft tone, dry, no melody, no loop
+weissenborn one shot, hollow lap steel tone, warm sustain, dry, no chord
+pedal steel one shot, country single note with bend, soft sustain, dry, no loop, no melody
+
+# --- Bass guitar (categorized in basses but a few hybrids here) ---
+electric bass-like guitar one shot, low warm pluck, sustained tone, dry, no chord, no loop
+baritone guitar one shot, deep round low note, sustained tone, dry, no loop, no melody
+8 string guitar one shot, extended range low note, sustained, dry, no chord
+
+# --- Synth guitar / hybrid ---
+synth guitar one shot, synthesized guitar timbre, single note, dry, no loop, no melody
+guitar synth one shot, modeled electric guitar tone, soft attack, dry, no chord
+hybrid guitar one shot, sample-modeled note, modern character, dry, no loop, no melody
+
+# --- Dub / reggae / island ---
+dub guitar one shot, warm clean single note, dub reggae vibe, dry, no chord, no loop
+reggae guitar one shot, clean single note, ska upbeat character, dry, no loop
+island guitar one shot, bright clean tone, tropical vibe, dry, no melody, no loop
+ukulele one shot, bright nylon string pluck, warm tone, dry, no chord, no loop
+mandolin one shot, bright doubled string pluck, fast decay, dry, no loop, no melody
+banjo one shot, bright twangy pluck, sharp attack, dry, no chord
+
+# --- Surf / vintage / retro ---
+surf guitar one shot, bright spring reverb single note, twangy, dry, no chord, no loop
+vintage guitar one shot, dusty warm electric tone, lo-fi character, dry, no loop, no melody
+60s guitar one shot, bright clean vintage tone, smooth sustain, dry, no chord
+70s funk guitar one shot, sharp clean attack, controlled tone, dry, no loop, no melody
+80s rock guitar one shot, bright chorused electric tone, dry, no chord, no loop
+
+# --- World / experimental ---
+oud one shot, middle eastern lute pluck, warm woody tone, dry, no chord, no loop
+sitar one shot, drone-rich indian string pluck, ringing harmonics, dry, no loop, no melody
+shamisen one shot, sharp percussive japanese pluck, dry, no chord, no loop
+kora one shot, bright african harp pluck, natural decay, dry, no loop, no melody
+balalaika one shot, bright triangular russian pluck, dry, no chord
+charango one shot, bright andean string pluck, fast decay, dry, no loop, no melody
+guitarrón one shot, deep mexican bass guitar, warm low tone, dry, no chord
+tres one shot, bright cuban guitar pluck, warm tone, dry, no loop, no melody
+
+# --- Modern / processed / hyperpop ---
+hyperpop guitar one shot, bright saturated processed guitar, dry, no chord, no loop
+plugg guitar one shot, atmospheric modern trap guitar, dry, no loop, no melody
+drill guitar one shot, dark melodic guitar tone, atmospheric, dry, no chord
+phonk guitar one shot, distorted lo-fi guitar sample, gritty, dry, no loop, no melody
+opium guitar one shot, dark atmospheric guitar tone, modern character, dry, no chord
+emo rap guitar one shot, melancholic clean guitar, mellow tone, dry, no loop, no melody
+chopped guitar sample one shot, hip-hop style pitched guitar, dry, no chord
+sampled guitar lick one shot, vintage hip-hop guitar sample, dry, no loop, no melody
+
+# --- Plucked harmonic / clean characters ---
+guitar harmonic one shot, bell-like harmonic ping, bright clear tone, dry, no chord
+artificial harmonic guitar one shot, pinch harmonic chime, bright, dry, no loop, no melody
+natural harmonic one shot, open string harmonic, ringing bell tone, dry, no chord, no loop
+tapped harmonic one shot, bright touched harmonic, controlled, dry, no loop
+flageolet harmonic one shot, soft bell-like harmonic tone, dry, no melody, no loop
+
+# --- Ambient / atmospheric ---
+ambient guitar one shot, washy long sustain, ethereal tone, dry, no chord, no loop
+post rock guitar one shot, sustained clean tone, ambient tail, dry, no loop, no melody
+cinematic guitar one shot, dramatic sustained note, dramatic atmosphere, dry, no chord
+dreamy guitar one shot, soft washed-out tone, ethereal sustain, dry, no loop, no melody
+ethereal guitar one shot, soft ambient single note, otherworldly, dry, no chord

@@ -1,0 +1,120 @@
+# =========================================================================
+# Bass one-shots — single sustained low pitched notes.
+# Bias: hip-hop, trap, lo-fi, house, techno, dubstep, drill.
+# Target pitch ~E2 (MIDI 40); enrich pitch-shifts each into a chromatic
+# zone range. Pipeline gate is sub-bass-aware (CREPE + pyin + autocorr
+# 3-way agreement) so detection works below 50 Hz.
+# =========================================================================
+
+# --- 808-style sub bass (the canonical trap / hip-hop bass) ---
+deep 808 sub bass one shot, fundamental sine wave, long natural decay, dry, no melody, no loop
+distorted 808 bass one shot, gritty saturated low end, slow decay, dry, no chord, no loop
+clean 808 bass one shot, pure sub frequencies, smooth long sustain, dry, no melody, no loop
+boomy 808 bass one shot, massive low end, slight saturation, slow decay, dry, no loop
+modern trap 808 bass one shot, tight controlled low end, clean sub, dry, no melody
+vintage 808 drum machine bass one shot, classic analog sub, natural decay, dry, no loop
+detuned 808 bass one shot, slight pitch wobble, deep warm tone, dry, no chord, no loop
+punchy 808 bass one shot, fast attack, controlled body, deep sub fundamental, dry, no loop
+hard hitting 808 bass one shot, aggressive low end, distorted texture, dry, no melody
+ultra deep 808 sub bass one shot, room-shaking low frequencies, smooth tail, dry, no loop
+filtered 808 bass one shot, slight high cut, pure low end emphasis, dry, no chord
+clipped 808 bass one shot, hot saturated transient, deep tone, dry, no loop, no melody
+glassy 808 sub bass one shot, clean fundamental, ringing harmonic, dry, no chord, no loop
+muffled 808 bass one shot, dampened attack, deep warm body, dry, no melody, no loop
+warm 808 sub bass one shot, vintage analog character, natural decay, dry, no chord
+
+# --- Reese / dubstep / wobble bass (movement and modulation) ---
+reese bass one shot, detuned saws, growling movement, mid-low register, dry, no loop
+classic reese bass one shot, dual detuned saw waves, dark and wide, dry, no chord
+dubstep wobble bass one shot, filter movement, gritty texture, mid-bass focus, dry, no loop
+deep reese bass one shot, slow LFO filter sweep, thick mid bass, dry, no melody
+modulated reese bass one shot, evolving timbre, distorted saws, dry, no chord, no loop
+neuro bass one shot, complex FM movement, aggressive texture, mid range, dry, no loop
+growl bass one shot, formant filter sweep, dirty character, dry, no melody, no loop
+wobble bass one shot, slow filter modulation, fat saw tone, dry, no chord
+filthy dubstep bass one shot, heavily processed, distorted reese, dry, no loop
+clean reese bass one shot, smooth detuned saws, subtle movement, dry, no chord
+
+# --- Synth bass (saw, square, FM — house, techno, electronic) ---
+saw wave synth bass one shot, classic analog tone, fat warm body, dry, no chord, no loop
+square wave synth bass one shot, hollow analog tone, punchy attack, dry, no melody
+pulse wave bass one shot, narrow PWM tone, retro 80s flavor, dry, no chord, no loop
+FM synthesis bass one shot, metallic harmonic content, percussive attack, dry, no loop
+moog style synth bass one shot, warm analog filter, smooth decay, dry, no chord, no loop
+analog mono bass one shot, vintage synthesizer character, fat low end, dry, no melody
+juno synth bass one shot, classic polysynth bass tone, lush warm body, dry, no loop
+prophet synth bass one shot, rich analog character, deep round tone, dry, no chord
+SH-101 style bass one shot, gritty analog mono synth, punchy attack, dry, no loop
+TB-303 style acid bass one shot, squelchy filter resonance, narrow pulse, dry, no melody
+acid bass one shot, resonant filter sweep, aggressive analog texture, dry, no chord, no loop
+deep house bass one shot, smooth analog sub, jazzy round tone, dry, no melody, no loop
+techno bass one shot, driving analog mono synth, mid-bass punch, dry, no chord, no loop
+dub bass one shot, deep dubby synth bass, warm round low end, dry, no melody, no loop
+detroit techno bass one shot, classic analog mono, deep grungy tone, dry, no loop
+
+# --- Pluck / mid-bass / dance ---
+plucked synth bass one shot, sharp attack, fast decay, mid bass register, dry, no chord
+nu-disco pluck bass one shot, tight bouncy attack, plucky decay, dry, no melody, no loop
+deep house pluck bass one shot, sub-saturated plucky tone, dry, no chord, no loop
+afrobeats bass one shot, smooth round mid bass, plucky natural decay, dry, no loop
+amapiano bass one shot, warm pluck character, log drum flavor, dry, no chord
+log drum bass one shot, pitched percussive bass, deep round tone, dry, no melody, no loop
+balearic bass one shot, smooth plucky mid bass, warm 90s vibe, dry, no chord, no loop
+chicago house bass one shot, classic plucked synth bass, warm analog, dry, no loop
+garage bass one shot, smooth syncopated pluck character, mid bass, dry, no chord
+two-step bass one shot, plucky synth tone, tight controlled, dry, no melody
+
+# --- Distorted / fuzz / aggressive ---
+fuzz bass one shot, heavily distorted saw, gritty character, dry, no chord, no loop
+overdriven synth bass one shot, saturated analog warmth, aggressive tone, dry, no loop
+clipped distortion bass one shot, hard saturated low end, mid emphasis, dry, no chord
+bitcrushed bass one shot, lo-fi digital crunch, low fidelity tone, dry, no melody, no loop
+drill bass one shot, slidey 808 character, gritty saturated, dry, no chord, no loop
+phonk bass one shot, dirty saturated 808, distorted memphis flavor, dry, no loop
+metalcore synth bass one shot, aggressive distortion, mid-bass crunch, dry, no melody
+industrial bass one shot, harsh distorted analog synth, dry, no chord, no loop
+
+# --- Filtered / sub / minimal ---
+sub bass sine one shot, pure low frequency tone, no harmonics, smooth decay, dry, no loop
+filtered sub bass one shot, low-pass filtered analog synth, warm round, dry, no chord
+minimal techno sub one shot, clean fundamental, deep round low end, dry, no melody, no loop
+ambient sub bass one shot, soft attack, very deep tone, slow decay, dry, no loop
+cinematic sub bass one shot, dramatic low frequency, smooth tail, dry, no chord, no loop
+dub sub bass one shot, smooth round low end, dub reggae vibe, slow decay, dry, no loop
+trap minimal sub one shot, clean pure low end, tight controlled body, dry, no melody
+lofi sub bass one shot, muffled warm low end, vinyl character, dry, no chord, no loop
+deep dub sub one shot, vast low frequency, smooth natural decay, dry, no loop
+
+# --- Electric / acoustic bass guitar ---
+electric bass guitar one shot, finger plucked round tone, warm low end, dry, no chord
+picked electric bass one shot, sharp attack, controlled decay, classic tone, dry, no loop
+slap bass one shot, percussive thumb attack, funky character, dry, no melody, no loop
+upright bass one shot, jazz double bass pluck, warm woody tone, dry, no chord, no loop
+muted bass guitar one shot, palm muted percussive tone, tight decay, dry, no loop
+fretless bass one shot, smooth singing tone, slight portamento character, dry, no chord
+J-bass one shot, classic single coil bass tone, bright punchy attack, dry, no melody
+P-bass one shot, classic split coil bass tone, warm round body, dry, no loop, no chord
+synth bass with bass guitar character one shot, hybrid tone, plucky warm, dry, no loop
+fingerstyle bass one shot, soft pluck attack, smooth sustain, mellow tone, dry, no chord
+
+# --- Vintage / lofi / dusty character ---
+dusty vintage bass one shot, lo-fi tape character, warm low end, dry, no melody, no loop
+lofi hip hop bass one shot, muffled warm tone, vinyl crackle character, dry, no loop
+vintage analog bass one shot, classic 70s synth tone, warm round, dry, no chord, no loop
+warm vinyl bass one shot, dusty mellow low end, tape compression, dry, no loop, no melody
+old school hip hop bass one shot, classic 808 vibe, warm sub, dry, no chord, no loop
+boom bap bass one shot, sampled vintage bass character, warm tone, dry, no loop, no chord
+neo soul bass one shot, smooth warm electric bass tone, jazzy character, dry, no melody
+chillhop bass one shot, mellow warm rounded tone, lofi character, dry, no chord, no loop
+
+# --- Genre-specific / experimental ---
+drum and bass sub one shot, deep reese bass tone, mid-bass growl, dry, no melody, no loop
+jungle sub bass one shot, vintage sampler bass, smooth low end, dry, no chord
+uk garage bass one shot, plucky syncopated synth bass, dry, no melody, no loop
+phonk 808 one shot, distorted slidey memphis bass, dirty tone, dry, no chord
+hyperpop bass one shot, bright saturated detuned synth, mid bass focus, dry, no loop
+glitch bass one shot, fragmented digital character, mid-bass tone, dry, no chord, no loop
+breakbeat bass one shot, smooth round reese bass tone, dry, no melody, no loop
+synthwave bass one shot, retro 80s analog mono synth bass, dry, no chord, no loop
+vaporwave bass one shot, washed out warm sub, retro chillwave feel, dry, no loop
+future bass one shot, bright punchy mid bass with sub, dry, no melody, no loop

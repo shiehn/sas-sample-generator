@@ -1,0 +1,125 @@
+# =========================================================================
+# Organ one-shots — sustained organ notes (Hammond, pipe, combo, synth).
+# Bias: hip-hop, soul, gospel, funk, reggae, indie, lo-fi, R&B.
+# Target pitch C3 (MIDI 48) — organ mid-low register.
+# open_ended=True (sustaining); enrich trims to steady-state plateau.
+# =========================================================================
+
+# --- Hammond B3 (the iconic soul / gospel / hip-hop organ) ---
+hammond b3 organ one shot, classic drawbar warm tone, sustained, dry, no chord, no loop
+gospel hammond one shot, full drawbar gospel organ, warm rich tone, dry, no loop
+jazz hammond one shot, mellow drawbar settings, warm sustained, dry, no chord
+funk hammond one shot, percussive attack drawbar tone, sharp, dry, no loop, no melody
+soul hammond one shot, warm round drawbar tone, vintage character, dry, no chord
+leslie cabinet hammond one shot, swirling rotary speaker, sustained tone, dry, no loop
+fast leslie hammond one shot, fast rotary swirl, organ sustain, dry, no melody, no loop
+slow leslie hammond one shot, slow rotary movement, warm sustain, dry, no chord
+dirty hammond one shot, overdriven b3 tone, gritty character, dry, no loop, no melody
+clean hammond one shot, polished drawbar tone, smooth sustain, dry, no chord, no loop
+percussion hammond one shot, b3 with percussion drawbar, sharp attack, dry, no loop
+vintage hammond one shot, dusty 60s b3 tone, lo-fi character, dry, no melody, no loop
+hammond bass one shot, low drawbar setting, deep organ tone, dry, no chord
+high register hammond one shot, bright drawbar setting, sustained, dry, no loop, no melody
+
+# --- Pipe organ (cathedral, ambient, cinematic) ---
+cathedral pipe organ one shot, deep majestic pipe tone, long sustain, dry, no chord, no loop
+church organ one shot, classic flute pipe tone, warm sustained, dry, no loop
+small pipe organ one shot, soft mellow pipe tone, gentle sustain, dry, no chord
+baroque organ one shot, period pipe organ tone, sustained, dry, no loop, no melody
+dramatic pipe organ one shot, full ensemble pipe tone, dramatic sustain, dry, no chord
+soft pipe organ one shot, gentle warm flute-stop, sustained, dry, no loop, no melody
+reed pipe organ one shot, sharp reed pipe tone, bright sustained, dry, no chord
+diapason pipe organ one shot, principal stop pipe tone, traditional, dry, no loop
+horror pipe organ one shot, ominous dark pipe tone, sustained menace, dry, no chord, no loop
+gothic pipe organ one shot, dark dramatic pipe tone, sustained, dry, no loop, no melody
+
+# --- Combo / transistor (Vox, Farfisa) ---
+farfisa combo organ one shot, classic 60s combo tone, sharp bright, dry, no chord, no loop
+vox combo organ one shot, classic british combo organ, bright tone, dry, no loop
+60s combo organ one shot, vintage transistor organ tone, sustained, dry, no chord
+psychedelic organ one shot, warbly vintage combo organ, dry, no loop, no melody
+mod organ one shot, sharp bright combo organ tone, retro, dry, no chord, no loop
+reggae organ one shot, bright punchy combo organ, jamaican tone, dry, no loop
+ska organ one shot, sharp staccato combo organ note, dry, no melody, no loop
+indie organ one shot, vintage combo organ tone, warm character, dry, no chord
+
+# --- Theatre / Wurlitzer organ ---
+wurlitzer theatre organ one shot, rich orchestral organ tone, sustained, dry, no chord, no loop
+mighty wurlitzer one shot, dramatic theatre organ, full ensemble tone, dry, no loop
+silent movie organ one shot, vintage theatre tone, sustained, dry, no melody, no loop
+ballpark organ one shot, bright theatre organ tone, sustained, dry, no chord
+ice rink organ one shot, classic theatre organ tone, sustained, dry, no loop, no melody
+
+# --- Synth organ / digital ---
+synth organ one shot, synthesized organ tone, sustained warm pad, dry, no chord, no loop
+digital organ one shot, modern digital organ patch, sustained, dry, no loop
+analog organ patch one shot, warm analog synth organ tone, dry, no melody, no loop
+hybrid organ one shot, synth and sample organ blend, dry, no chord
+modeled organ one shot, virtual hammond model tone, polished, dry, no loop
+8bit organ one shot, retro chiptune organ tone, dry, no chord, no loop
+chiptune organ one shot, NES style square wave organ, dry, no loop, no melody
+
+# --- Reggae / dub organ ---
+reggae bubble organ one shot, plucky percussive organ tone, dry, no chord, no loop
+dub organ one shot, warm round organ tone, dub reggae vibe, dry, no loop, no melody
+rocksteady organ one shot, bright punchy reggae organ tone, dry, no chord
+ska upbeat organ one shot, sharp staccato organ note, dry, no loop, no melody
+dancehall organ one shot, percussive bright organ note, dry, no chord, no loop
+roots reggae organ one shot, warm sustained organ tone, dry, no loop
+
+# --- Lo-fi / dusty / sampled ---
+lofi organ one shot, dusty muffled hammond tone, vinyl character, dry, no chord, no loop
+chopped organ sample one shot, hip-hop pitched organ sample, dry, no loop, no melody
+boom bap organ one shot, sampled vintage jazz organ, dry, no chord
+dusty organ one shot, lo-fi sampled organ tone, vintage character, dry, no loop, no melody
+hip hop organ one shot, sampled hammond, warm character, dry, no chord, no loop
+chillhop organ one shot, mellow warm organ tone, jazz character, dry, no loop
+sampled gospel organ one shot, soulful warm organ sample, dry, no melody, no loop
+jay-z style organ one shot, sampled dramatic organ tone, dry, no chord, no loop
+
+# --- Cinematic / atmospheric ---
+cinematic organ one shot, dramatic deep organ tone, sustained, dry, no chord, no loop
+horror organ one shot, ominous dark sustained organ, dry, no loop, no melody
+ambient organ one shot, soft ethereal organ pad, sustained warm, dry, no chord
+swelling organ one shot, slow attack crescendo organ tone, dry, no loop, no melody
+deep cinematic organ one shot, low rich organ tone, dramatic, dry, no chord, no loop
+mysterious organ one shot, dreamy ethereal organ tone, dry, no loop
+dark organ one shot, ominous low organ tone, sustained, dry, no melody, no loop
+warm organ pad one shot, mellow sustained organ tone, soft attack, dry, no chord
+bright organ pad one shot, ethereal high register organ pad, dry, no loop, no melody
+
+# --- Genre-specific modern ---
+trap organ one shot, modern dark melodic organ tone, dry, no chord, no loop
+drill organ one shot, dark melodic organ, atmospheric, dry, no loop, no melody
+phonk organ one shot, distorted vintage organ sample, gritty, dry, no chord
+drill organ pad one shot, dark sustained organ atmosphere, dry, no loop
+plugg organ one shot, atmospheric trap-style organ, dreamy, dry, no chord, no loop
+hyperpop organ one shot, bright saturated organ tone, dry, no loop, no melody
+underground rap organ one shot, dusty dark organ tone, melancholic, dry, no chord
+opium organ one shot, dark dreamy organ tone, atmospheric, dry, no loop, no melody
+
+# --- Reed organ / harmonium ---
+harmonium one shot, indian reed organ tone, warm sustained, dry, no chord, no loop
+pump organ one shot, vintage reed organ tone, warm sustain, dry, no loop, no melody
+shruti box one shot, indian drone reed organ, sustained, dry, no chord
+melodica organ one shot, soft reed organ blow, sustained, dry, no loop
+reed organ one shot, warm sustained reed tone, traditional, dry, no melody, no loop
+
+# --- Bandoneon / accordion ---
+accordion one shot, bellows-driven reed organ tone, sustained, dry, no chord, no loop
+bandoneon one shot, tango-style reed organ tone, dry, no loop, no melody
+piano accordion one shot, warm bellows reed tone, sustained, dry, no chord
+folk accordion one shot, traditional reed organ tone, dry, no loop
+
+# --- Toy / lo-fi organ ---
+toy organ one shot, lo-fi plastic organ tone, simple character, dry, no chord, no loop
+miniature organ one shot, cheap mini organ tone, vintage character, dry, no loop, no melody
+hot rod cheap organ one shot, gritty cheap organ sound, dry, no chord
+casiotone organ one shot, lo-fi 80s preset organ tone, dry, no loop
+
+# --- Specific producer / era inspired ---
+booker t style organ one shot, classic stax-records hammond, dry, no chord, no loop
+jimmy smith style organ one shot, jazz hammond percussive tone, dry, no loop
+brian auger style organ one shot, soulful hammond character, dry, no melody, no loop
+funkadelic organ one shot, psychedelic funk hammond tone, dry, no chord
+P-funk organ one shot, parliament-funkadelic-style hammond, dry, no loop, no melody

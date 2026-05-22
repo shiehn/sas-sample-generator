@@ -1,0 +1,131 @@
+# =========================================================================
+# Piano one-shots — acoustic piano (grand, upright, prepared, lo-fi).
+# Bias: hip-hop, lo-fi, neo-soul, chillhop, boom bap, R&B, ballad.
+# Target pitch C4 / middle C (MIDI 60). Tight zone spacing (2 ST) since
+# piano inharmonicity is touchy to pitch-shift far. Phase 1.2 multi-source
+# (C2 + C4) lined up but not enabled yet.
+# =========================================================================
+
+# --- Grand piano (concert hall, ballad, classical) ---
+warm grand piano one shot, mellow round tone, soft attack, dry, no chord, no loop
+bright grand piano one shot, sharp focused tone, classical character, dry, no loop, no melody
+soft grand piano one shot, gentle pp dynamic, mellow attack, dry, no chord
+concert grand piano one shot, full rich resonance, classical tone, dry, no loop, no melody
+romantic grand piano one shot, lush warm tone, expressive sustain, dry, no chord
+steinway grand piano one shot, classic concert hall tone, dry, no loop, no melody
+yamaha grand piano one shot, bright clear concert tone, dry, no chord
+fazioli grand piano one shot, lush warm classical tone, dry, no loop, no melody
+bechstein grand piano one shot, characterful warm tone, dry, no chord, no loop
+ballad piano one shot, soft expressive tone, gentle attack, dry, no loop
+
+# --- Upright piano (smaller, more character, popular in lo-fi) ---
+upright piano one shot, characterful smaller piano tone, dry, no chord, no loop
+old upright piano one shot, dusty vintage character, slightly out of tune, dry, no loop
+honky tonk piano one shot, detuned saloon-style piano, vintage, dry, no melody, no loop
+saloon piano one shot, dusty western upright tone, dry, no chord
+parlor piano one shot, warm intimate upright tone, dry, no loop, no melody
+home upright piano one shot, mellow domestic piano tone, dry, no chord, no loop
+bar piano one shot, warm slightly worn upright tone, dry, no loop
+yamaha upright one shot, bright clear upright tone, dry, no melody, no loop
+
+# --- Felt piano / muted / soft (lo-fi staple) ---
+felt piano one shot, soft muffled hammer tone, intimate character, dry, no chord, no loop
+muted piano one shot, dampened soft attack piano, dry, no loop, no melody
+mellow felt piano one shot, gentle warm muffled tone, dry, no chord
+soft piano one shot, intimate pp dynamic, gentle attack, dry, no loop, no melody
+contemplative piano one shot, soft thoughtful tone, gentle, dry, no chord
+intimate piano one shot, close-miked soft piano tone, dry, no loop, no melody
+una corda piano one shot, soft pedal piano tone, dampened, dry, no chord
+muffled piano one shot, fabric-dampened gentle tone, dry, no loop
+
+# --- Lo-fi / dusty / sampled hip-hop piano ---
+lofi piano one shot, dusty muffled vintage piano, vinyl character, dry, no chord, no loop
+chopped piano sample one shot, hip-hop pitched piano sample, dry, no loop, no melody
+boom bap piano one shot, sampled jazz piano note, vintage warmth, dry, no chord
+dusty piano one shot, lo-fi sampled piano tone, vintage character, dry, no loop, no melody
+chillhop piano one shot, mellow warm piano tone, jazzy character, dry, no chord, no loop
+hip hop piano one shot, sampled grand piano, dusty warmth, dry, no loop
+vinyl piano one shot, washed out warm piano tone, dusty character, dry, no melody
+sampled vintage piano one shot, lo-fi grand piano sample, dry, no chord
+nujabes piano one shot, soft mellow jazz piano tone, peaceful, dry, no loop, no melody
+J Dilla piano one shot, dusty warm sampled piano, vintage character, dry, no chord
+9th wonder piano one shot, soulful sampled piano, hip-hop character, dry, no loop, no melody
+
+# --- Prepared piano / experimental ---
+prepared piano one shot, objects on strings, percussive metallic tone, dry, no chord, no loop
+prepared piano with screws one shot, gritty altered piano tone, dry, no loop, no melody
+john cage piano one shot, experimental prepared piano, dry, no chord
+muted string piano one shot, dampened percussive piano tone, dry, no loop
+hammer-on string piano one shot, percussive struck string tone, dry, no melody, no loop
+plucked piano string one shot, harp-like inside-piano pluck, dry, no chord
+
+# --- Jazz / soul piano character ---
+jazz piano one shot, warm mellow jazz tone, smooth attack, dry, no chord, no loop
+neo soul piano one shot, smooth warm piano tone, jazzy character, dry, no loop
+ballad jazz piano one shot, soft expressive jazz tone, gentle, dry, no chord
+bebop piano one shot, sharp bright jazz attack, controlled, dry, no loop, no melody
+gospel piano one shot, soulful warm full tone, expressive, dry, no chord, no loop
+soul piano one shot, warm vibrant expressive tone, dry, no loop, no melody
+ragtime piano one shot, vintage detuned upright character, dry, no chord
+stride piano one shot, sharp jazz attack, vintage stride character, dry, no loop, no melody
+swing piano one shot, sharp jazz attack, mellow tone, dry, no chord
+montuno piano one shot, sharp percussive afro-cuban piano, dry, no loop, no melody
+
+# --- Dirty / aggressive / processed ---
+distorted piano one shot, overdriven gritty piano tone, dry, no chord, no loop
+bitcrushed piano one shot, lo-fi digital piano tone, dry, no loop, no melody
+saturated piano one shot, warm tape-saturated piano, vintage, dry, no chord
+gritty piano one shot, dirty piano sample with processing, dry, no loop, no melody
+broken piano one shot, out of tune detuned piano tone, dry, no chord
+detuned piano one shot, slightly out of tune piano character, dry, no loop
+overdriven piano one shot, mid-gain saturated piano tone, dry, no melody, no loop
+
+# --- Toy piano / lo-fi alternatives ---
+toy piano one shot, bright bell-like tone, lo-fi character, dry, no chord, no loop
+miniature piano one shot, small bright piano tone, fast attack, dry, no loop, no melody
+plastic toy piano one shot, cheap bell-like tone, dry, no chord
+schoenhut toy piano one shot, classic vintage toy piano tone, dry, no loop
+celesta-like piano one shot, bright bell-like piano tone, dry, no melody, no loop
+
+# --- Cinematic / dramatic / film piano ---
+cinematic piano one shot, dramatic sustained piano tone, dry, no chord, no loop
+film piano one shot, emotional warm piano tone, sustained, dry, no loop, no melody
+ambient piano one shot, soft washy sustained piano, ethereal tail, dry, no chord
+dreamy piano one shot, soft mellow sustained piano tone, dry, no loop, no melody
+post rock piano one shot, sustained clean piano tone, atmospheric, dry, no chord, no loop
+modern classical piano one shot, contemporary minimalist tone, dry, no loop
+ludovico einaudi style piano one shot, soft contemplative tone, dry, no melody, no loop
+nils frahm style piano one shot, soft felt piano character, dry, no chord
+
+# --- Cinematic dark / atmospheric ---
+dark piano one shot, ominous low warm piano tone, dry, no chord, no loop
+horror piano one shot, dissonant dark piano tone, dramatic, dry, no loop, no melody
+mysterious piano one shot, dreamy haunting piano tone, dry, no chord
+melancholic piano one shot, sad expressive piano tone, dry, no loop, no melody
+suspense piano one shot, tense building piano tone, dry, no chord, no loop
+gothic piano one shot, dark dramatic piano character, dry, no loop
+
+# --- Specific eras / producer references ---
+70s piano one shot, warm vintage 70s upright tone, dry, no chord, no loop
+80s pop piano one shot, bright polished 80s piano, dry, no loop, no melody
+classic R&B piano one shot, smooth warm R&B piano tone, dry, no chord
+Stevie Wonder piano one shot, soulful warm piano character, dry, no loop, no melody
+Marvin Gaye piano one shot, warm soulful sustained piano, dry, no chord
+Bill Evans piano one shot, jazz piano with warm voicing character, dry, no loop
+Thelonious Monk piano one shot, characterful jazz piano tone, dry, no melody, no loop
+
+# --- Modern hip-hop trap / drill piano ---
+trap piano one shot, dark melodic modern piano tone, dry, no chord, no loop
+drill piano one shot, dark melancholic piano tone, atmospheric, dry, no loop, no melody
+phonk piano one shot, distorted vintage piano sample, dry, no chord
+plugg piano one shot, atmospheric modern piano, dreamy character, dry, no loop, no melody
+opium piano one shot, dark dreamy piano tone, atmospheric, dry, no chord
+hyperpop piano one shot, bright saturated piano tone, dry, no loop, no melody
+emo rap piano one shot, melancholic soft piano tone, dry, no chord, no loop
+underground rap piano one shot, dusty dark piano tone, melancholic, dry, no loop
+cloud rap piano one shot, dreamy washed out piano tone, dry, no melody, no loop
+
+# --- Reverb / ambient piano variants (note: prompts still say "dry" — we want no reverb baked in) ---
+hall piano one shot, large room piano tone, dry, no chord, no loop
+chamber piano one shot, medium room natural piano, dry, no loop, no melody
+intimate close piano one shot, dry studio piano tone, no reverb, dry, no chord

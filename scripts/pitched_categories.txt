@@ -1,23 +1,38 @@
 # Categories to include in run_pitched.sh (pitched-instrument pipeline).
 # Comment out (#) any line to skip that category for a run. Order is preserved.
 #
-# Phase 1.0 ships single-source for every category except FX. Start with
-# Plucks alone for the first real batch since SA3 quality varies; once
-# the gate reject rate is acceptable, enable the rest progressively.
+# COST AWARENESS — full corpus is ~1,500 prompts. At VARIANTS=5 that's
+# ~7,500 SA3 generations. Rough GPU runtime per pod GPU type:
+#   H100 80GB:  ~3-5 hours generate + ~1-2 hours gate
+#   A100 80GB:  ~5-8 hours generate + ~2-3 hours gate
+#   L40S 48GB:  ~8-12 hours generate + ~3-4 hours gate
+# Add ~30-60 min local enrich after rsync of survivors.
+#
+# Vocals' variants_per_prompt is 20 (4x default) since SA3 vocals are weak —
+# that one category alone is ~2,000 generations of the ~7,500 total.
+#
+# Recommended progression — enable categories in waves so you can monitor
+# gate-reject rates and iterate prompts before committing more GPU time:
+#   Wave 1 (test the pipeline):    plucks (already done)
+#   Wave 2 (workhorse pitched):    basses, pads, keys, synths
+#   Wave 3 (cinematic / textures): strings, organs, brass, bells, mallets
+#   Wave 4 (acoustic / world):     guitars, pianos, winds, percussion
+#   Wave 5 (highest reject risk):  vocals, fx
+# Or run everything at once if you've got the GPU budget — go for it.
 
 plucks
-# basses
-# bells
-# brass
-# fx
-# guitars
-# keys
-# mallets
-# organs
-# pads
-# pianos
-# percussion
-# strings
-# synths
-# vocals
-# winds
+basses
+pads
+keys
+synths
+strings
+organs
+brass
+bells
+mallets
+guitars
+pianos
+winds
+percussion
+vocals
+fx

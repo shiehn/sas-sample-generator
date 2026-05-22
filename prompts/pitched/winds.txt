@@ -1,0 +1,140 @@
+# =========================================================================
+# Wind one-shots — sustained woodwind notes (flute, sax, clarinet, etc).
+# Bias: hip-hop, trap, jazz, lo-fi, neo-soul, R&B, ethnic / world.
+# Target pitch A4 (MIDI 69) — woodwind mid-upper register.
+# open_ended=True (sustaining); tight zone spacing (2 ST).
+# =========================================================================
+
+# --- Concert flute (lo-fi hip-hop, trap "flute drops", melodic trap) ---
+warm concert flute one shot, mellow sustained tone, soft attack, dry, no chord, no loop
+bright concert flute one shot, focused sustained tone, classical character, dry, no loop, no melody
+breathy flute one shot, airy sustained flute tone, intimate, dry, no chord
+classical flute one shot, traditional warm sustained tone, dry, no loop
+soft flute one shot, gentle pp dynamic, mellow tone, dry, no chord, no loop
+solo flute one shot, focused sustained classical tone, dry, no loop, no melody
+modern flute one shot, polished bright sustained tone, dry, no chord
+silver flute one shot, bright clear sustained tone, classical, dry, no loop, no melody
+romantic flute one shot, expressive sustained flute tone, dry, no chord
+ballad flute one shot, soft expressive sustained tone, dry, no loop, no melody
+
+# --- Trap flute / hip-hop flute ---
+trap flute one shot, modern bright flute sample, sustained, dry, no chord, no loop
+melodic trap flute one shot, atmospheric flute tone, sustained, dry, no loop, no melody
+future style trap flute one shot, polished modern flute tone, dry, no chord
+hip hop flute sample one shot, sampled warm flute, dusty character, dry, no loop, no melody
+sampled flute one shot, vintage flute sample, lo-fi character, dry, no chord
+chopped flute sample one shot, hip-hop pitched flute sample, dry, no loop, no melody
+modern trap flute one shot, polished bright flute tone, sustained, dry, no chord, no loop
+
+# --- World / ethnic flutes ---
+pan flute one shot, breathy bamboo pan flute tone, sustained, dry, no chord, no loop
+shakuhachi one shot, japanese bamboo flute, breathy sustained tone, dry, no loop, no melody
+ney flute one shot, middle eastern bamboo flute, sustained, dry, no chord
+indian bansuri one shot, classical bamboo flute, sustained warm tone, dry, no loop
+native american flute one shot, breathy wooden flute tone, sustained, dry, no melody, no loop
+irish tin whistle one shot, bright traditional folk whistle, sustained, dry, no chord
+recorder one shot, simple wooden flute tone, sustained, dry, no loop, no melody
+bansuri one shot, indian bamboo flute, traditional sustained tone, dry, no chord, no loop
+dizi one shot, chinese bamboo flute, bright sustained tone, dry, no loop
+xiao one shot, chinese vertical flute, breathy sustained tone, dry, no melody, no loop
+quena one shot, andean bamboo flute, breathy sustained tone, dry, no chord
+fujara one shot, slovakian overtone flute, sustained, dry, no loop, no melody
+
+# --- Piccolo / alto flute / bass flute ---
+piccolo one shot, bright high register flute, sustained, dry, no chord, no loop
+alto flute one shot, warm darker low register flute, sustained, dry, no loop, no melody
+bass flute one shot, deep warm low flute tone, sustained, dry, no chord
+contrabass flute one shot, very low warm sustained flute, dry, no loop
+
+# --- Saxophone (also in brass; a few here for completeness) ---
+tenor saxophone one shot, warm jazz mid-register sustained, dry, no chord, no loop
+alto saxophone one shot, bright focused sustained tone, dry, no loop, no melody
+soprano saxophone one shot, bright high register sustained, dry, no chord
+baritone saxophone one shot, deep gritty low sustained tone, dry, no loop
+breathy saxophone one shot, soft airy sustained tone, dry, no melody, no loop
+smooth jazz sax one shot, lush warm sustained tone, dry, no chord
+soul saxophone one shot, vibrant warm sustained sax tone, dry, no loop, no melody
+neo soul saxophone one shot, mellow round sustained tone, dry, no chord
+hip hop saxophone one shot, sampled vintage warm sax, dry, no loop, no melody
+dusty saxophone one shot, lo-fi sampled saxophone, dry, no chord
+
+# --- Clarinet ---
+warm clarinet one shot, mellow round sustained tone, dry, no chord, no loop
+bright clarinet one shot, focused sustained tone, classical character, dry, no loop, no melody
+soft clarinet one shot, gentle pp dynamic, sustained, dry, no chord
+classical clarinet one shot, traditional warm sustained tone, dry, no loop, no melody
+jazz clarinet one shot, expressive warm sustained tone, dry, no chord
+bass clarinet one shot, deep rich low sustained tone, dry, no loop, no melody
+soprano clarinet one shot, bright high register sustained, dry, no chord
+breathy clarinet one shot, soft airy sustained tone, dry, no loop
+
+# --- Oboe / english horn ---
+oboe one shot, focused nasal sustained tone, classical, dry, no chord, no loop
+warm oboe one shot, mellow sustained oboe tone, dry, no loop, no melody
+soft oboe one shot, gentle pp dynamic sustained, dry, no chord
+english horn one shot, warm deeper double-reed sustained tone, dry, no loop, no melody
+oriental oboe one shot, ethnic nasal sustained reed tone, dry, no chord
+
+# --- Bassoon ---
+bassoon one shot, deep warm sustained bass reed tone, dry, no chord, no loop
+contrabassoon one shot, very deep sustained bass reed, dry, no loop, no melody
+soft bassoon one shot, mellow sustained bassoon tone, dry, no chord
+melodic bassoon one shot, expressive warm sustained tone, dry, no loop, no melody
+
+# --- Ocarina / whistle / pipe ---
+ocarina one shot, breathy ceramic whistle tone, sustained, dry, no chord, no loop
+soft ocarina one shot, gentle sustained ceramic tone, dry, no loop, no melody
+high ocarina one shot, bright high register ocarina, dry, no chord
+zelda ocarina one shot, classic warm ocarina tone, sustained, dry, no loop, no melody
+police whistle pitched one shot, sharp sustained whistle tone, dry, no chord
+slide whistle one shot, gliding pitched whistle tone, dry, no loop, no melody
+pitched whistle one shot, tonal sustained whistle, dry, no chord
+synth whistle one shot, sine wave whistle synth tone, sustained, dry, no loop, no melody
+
+# --- Harmonica ---
+harmonica one shot, single reed sustained tone, breathy, dry, no chord, no loop
+blues harmonica one shot, warm bend-friendly sustained tone, dry, no loop, no melody
+diatonic harmonica one shot, single note sustained reed tone, dry, no chord
+chromatic harmonica one shot, focused sustained reed tone, dry, no loop
+
+# --- Pitched wind effects ---
+breath sample one shot, vocal inhale exhale, atmospheric texture, dry, no chord, no loop
+wind sample one shot, natural wind atmospheric texture, dry, no loop, no melody
+howling wind one shot, atmospheric pitched wind texture, dry, no chord
+synth wind one shot, synthesized wind texture, sustained, dry, no loop, no melody
+modeled flute one shot, physical modeling flute synthesis, dry, no chord
+
+# --- Vintage / lo-fi / sampled winds ---
+lofi flute one shot, dusty muffled vintage flute sample, vinyl character, dry, no chord, no loop
+chillhop flute one shot, mellow warm flute tone, jazz character, dry, no loop, no melody
+boom bap flute one shot, sampled jazz flute, vintage warmth, dry, no chord
+dusty flute one shot, lo-fi sampled flute tone, dry, no loop, no melody
+70s flute one shot, vintage sampled flute character, dry, no chord, no loop
+70s sax one shot, vintage sampled saxophone, dusty character, dry, no loop
+J Dilla flute one shot, dusty warm sampled flute, vintage character, dry, no chord
+nujabes flute one shot, soft mellow flute tone, peaceful character, dry, no loop, no melody
+flying lotus winds one shot, dusty experimental wind sample, dry, no chord
+
+# --- Trap / drill / modern hip-hop winds ---
+drill flute one shot, dark melodic flute tone, atmospheric, dry, no chord, no loop
+phonk flute one shot, distorted vintage flute sample, dry, no loop, no melody
+opium flute one shot, dark dreamy atmospheric flute, dry, no chord
+plugg flute one shot, atmospheric modern trap flute, dreamy, dry, no loop, no melody
+hyperpop flute one shot, bright saturated flute tone, dry, no chord, no loop
+underground rap flute one shot, dusty dark flute tone, melancholic, dry, no loop, no melody
+cloud rap flute one shot, dreamy washed out flute tone, dry, no chord
+
+# --- Cinematic / atmospheric winds ---
+cinematic flute one shot, dramatic sustained flute tone, dry, no chord, no loop
+ambient flute one shot, soft ethereal sustained flute, washy tail, dry, no loop, no melody
+dreamy flute one shot, soft mellow sustained flute, dry, no chord
+mysterious flute one shot, dreamy haunting flute tone, dry, no loop, no melody
+ancient flute one shot, breathy primitive flute character, dry, no chord, no loop
+mystical flute one shot, ethereal magical sustained tone, dry, no loop
+
+# --- Pipes / bagpipes ---
+bagpipes one shot, sustained drone with chanter, traditional, dry, no chord, no loop
+uilleann pipes one shot, irish bagpipe sustained tone, dry, no loop, no melody
+highland pipes one shot, scottish bagpipe sustained tone, dry, no chord
+small pipes one shot, scottish smaller bagpipes, sustained, dry, no loop
+gaita one shot, galician bagpipe sustained tone, dry, no melody, no loop

@@ -1,7 +1,8 @@
 # =========================================================================
 # Pluck one-shots — single pitched notes from plucked / struck strings or
 # pitched mallets. Sharp attack, decaying tone.
-# Small starter set (~30 prompts) — enough for a low-cost test run.
+# Bias: hip-hop, trap, lo-fi, neo-soul, future bass, electronic.
+# Target pitch C4 (MIDI 60).
 # =========================================================================
 
 # --- Acoustic guitar ---
@@ -51,3 +52,96 @@ digital synth pluck one shot, bright modern single tone, controlled decay, dry, 
 fm synth pluck one shot, metallic bright tone, sharp attack, dry, no melody
 bell synth pluck one shot, bright ringing single tone, natural decay, dry, no loop
 percussive synth pluck one shot, short bright single note, fast decay, dry, no chord
+
+# --- Future bass / dance plucks ---
+future bass pluck one shot, bright lush polysynth pluck, controlled decay, dry, no chord, no loop
+flume style pluck one shot, bright wavetable pluck, dry, no loop, no melody
+melodic dubstep pluck one shot, bright synth pluck with shimmer, dry, no chord
+edm pluck one shot, bright modern dance pluck, sharp attack, dry, no loop, no melody
+big room pluck one shot, bright punchy festival pluck, dry, no chord
+trance pluck one shot, bright supersaw-like pluck tone, dry, no loop, no melody
+house pluck one shot, classic deep house pluck, plucky decay, dry, no chord, no loop
+deep house pluck one shot, mellow round house pluck, dry, no loop
+tropical house pluck one shot, bright tropical pluck tone, dry, no melody, no loop
+chillstep pluck one shot, soft melodic pluck tone, dreamy character, dry, no chord
+
+# --- Trap / hip-hop plucks ---
+trap pluck one shot, dark melodic modern pluck, atmospheric, dry, no chord, no loop
+drill pluck one shot, dark melancholic synth pluck, atmospheric, dry, no loop, no melody
+phonk pluck one shot, distorted vintage pluck sample, dry, no chord
+opium pluck one shot, dark dreamy atmospheric pluck, dry, no loop, no melody
+plugg pluck one shot, atmospheric modern trap pluck, dreamy, dry, no chord
+hyperpop pluck one shot, bright saturated pluck tone, dry, no loop, no melody
+underground rap pluck one shot, dusty dark pluck tone, melancholic, dry, no chord
+emo rap pluck one shot, melancholic soft pluck tone, dry, no loop, no melody
+cloud rap pluck one shot, dreamy washed out pluck tone, dry, no chord, no loop
+modern hip hop pluck one shot, polished bright pluck tone, dry, no loop
+
+# --- Lo-fi / dusty plucks ---
+lofi pluck one shot, dusty muffled pluck tone, vinyl character, dry, no chord, no loop
+chillhop pluck one shot, mellow warm pluck tone, jazzy character, dry, no loop, no melody
+boom bap pluck one shot, sampled vintage pluck, warm tone, dry, no chord
+dusty pluck one shot, lo-fi sampled pluck tone, vintage character, dry, no loop, no melody
+hip hop pluck one shot, sampled clean pluck, mellow tone, dry, no chord, no loop
+nujabes pluck one shot, soft mellow pluck tone, peaceful character, dry, no loop
+J Dilla pluck one shot, dusty warm sampled pluck, vintage character, dry, no chord, no loop
+chopped sample pluck one shot, hip-hop pitched pluck sample, dry, no loop, no melody
+
+# --- Synthwave / 80s plucks ---
+synthwave pluck one shot, retro 80s polysynth pluck, sharp attack, dry, no chord, no loop
+80s pluck one shot, classic 80s polysynth pluck, bright character, dry, no loop, no melody
+retrowave pluck one shot, vintage 80s analog pluck, warm sustained, dry, no chord
+vaporwave pluck one shot, washed out warm pluck, retro feel, dry, no loop, no melody
+miami vice pluck one shot, classic 80s warm pluck, dry, no chord
+
+# --- Acid / wobble / aggressive ---
+acid pluck one shot, squelchy filter resonance pluck, dry, no chord, no loop
+303 acid pluck one shot, classic TB-303 pluck character, dry, no loop, no melody
+distorted pluck one shot, gritty saturated pluck tone, dry, no chord
+fuzz pluck one shot, heavily distorted pluck tone, dry, no loop, no melody
+crunchy pluck one shot, mid-gain distorted pluck, dry, no chord, no loop
+
+# --- World / ethnic additions ---
+oud pluck one shot, middle eastern lute pluck, warm tone, dry, no chord, no loop
+shamisen pluck one shot, sharp percussive japanese pluck, dry, no loop, no melody
+balalaika pluck one shot, bright russian triangular pluck, dry, no chord
+charango pluck one shot, bright andean pluck, fast decay, dry, no loop, no melody
+domra pluck one shot, bright russian string pluck, dry, no chord
+saz pluck one shot, turkish long-necked lute pluck, dry, no loop, no melody
+qanun pluck one shot, middle eastern zither pluck, bright shimmer, dry, no chord, no loop
+guqin pluck one shot, chinese zither pluck, warm resonant tone, dry, no loop
+
+# --- Bell / FM / digital plucks ---
+DX7 pluck one shot, classic FM bell pluck tone, dry, no chord, no loop
+wavetable pluck one shot, complex evolving pluck tone, dry, no loop, no melody
+spectral pluck one shot, complex spectral pluck tone, dry, no chord
+glitchy pluck one shot, fragmented digital pluck, dry, no loop, no melody
+hybrid pluck one shot, synth and acoustic pluck blend, dry, no chord
+modular pluck one shot, complex modular synth pluck tone, dry, no loop
+
+# --- Specific producer / era ---
+flying lotus pluck one shot, dusty experimental modern pluck, dry, no chord, no loop
+james blake pluck one shot, soft minimal pluck tone, dry, no loop, no melody
+SBTRKT pluck one shot, soft electronic pluck, dreamy character, dry, no chord
+mount kimbie pluck one shot, mellow textural pluck, dry, no loop, no melody
+clams casino pluck one shot, dreamy cloud rap pluck tone, dry, no chord
+metro boomin pluck one shot, dark melodic modern trap pluck, dry, no loop
+
+# --- Cinematic / ambient plucks ---
+cinematic pluck one shot, dramatic sustained pluck tone, dry, no chord, no loop
+ambient pluck one shot, soft ethereal pluck, washy tail, dry, no loop, no melody
+dreamy pluck one shot, soft ethereal pluck with shimmer, dry, no chord
+dark pluck one shot, ominous low pluck tone, dry, no loop, no melody
+mysterious pluck one shot, dreamy haunting pluck tone, dry, no chord
+
+# --- Toy / lo-fi plucks ---
+toy pluck one shot, lo-fi plastic toy instrument pluck, dry, no chord, no loop
+music box pluck one shot, delicate mechanical pluck tone, dry, no loop, no melody
+8bit pluck one shot, chiptune square wave pluck, dry, no chord
+NES pluck one shot, retro game console pluck tone, dry, no loop, no melody
+
+# --- Karplus-Strong / physical modeling ---
+karplus strong pluck one shot, physical modeled string pluck, dry, no chord, no loop
+modeled string pluck one shot, physical synthesis pluck tone, dry, no loop, no melody
+plucked string model one shot, virtual string pluck, controlled decay, dry, no chord
+nylon model pluck one shot, modeled nylon string pluck tone, dry, no loop, no melody

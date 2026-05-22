@@ -1,0 +1,127 @@
+# =========================================================================
+# Pad one-shots — sustained, atmospheric, slow-evolving textures.
+# Bias: hip-hop, lo-fi, trap, ambient, electronic, dark ambient, synthwave.
+# Target pitch C3 (MIDI 48) — pad mid-low register.
+# Longest duration (12s) and tightest zone spacing (2 ST) since pad
+# spectra are easily distorted by aggressive pitch shifts; open_ended=True.
+# =========================================================================
+
+# --- Warm vintage analog pads (the workhorse) ---
+warm analog pad one shot, vintage juno-style polysynth, lush sustained tone, dry, no chord, no loop
+prophet pad one shot, classic prophet-5 string pad, warm sustained, dry, no loop, no melody
+oberheim pad one shot, classic OB-X warm pad, lush sustained tone, dry, no chord
+moog pad one shot, fat analog polysynth pad, warm sustained, dry, no loop
+roland jupiter pad one shot, classic JP-8 lush pad, warm sustained tone, dry, no chord, no loop
+synthstrings pad one shot, classic 80s string synth pad, lush, dry, no loop, no melody
+korg ms20 pad one shot, gritty analog synth pad, sustained, dry, no chord
+arp odyssey pad one shot, vintage duophonic synth pad, dry, no loop, no melody
+yamaha CS80 pad one shot, lush polysynth pad with character, dry, no chord
+roland D-50 pad one shot, classic late 80s PCM-hybrid pad, dry, no loop, no melody
+
+# --- Dark / cinematic / horror pads ---
+dark ambient pad one shot, ominous evolving texture, sustained drone, dry, no chord, no loop
+cinematic pad one shot, dramatic sustained synth pad, slow attack, dry, no loop, no melody
+horror pad one shot, ominous dark texture, dissonant sustained tone, dry, no chord
+suspense pad one shot, tense building sustained tone, dramatic, dry, no loop, no melody
+deep dark pad one shot, low rich sustained tone, ominous atmosphere, dry, no chord, no loop
+gothic pad one shot, dark dramatic sustained pad, atmospheric, dry, no loop, no melody
+sinister pad one shot, evil dark sustained drone, dry, no chord
+dystopian pad one shot, cold dark futuristic pad tone, dry, no loop, no melody
+mysterious pad one shot, dreamy evolving dark texture, dry, no chord, no loop
+ethereal dark pad one shot, soft dark ambient texture, dry, no loop, no melody
+
+# --- Bright / sparkly / ethereal pads ---
+bright ethereal pad one shot, shimmery sustained synth pad, dry, no chord, no loop
+sparkly pad one shot, bright sustained shimmer, ethereal texture, dry, no loop, no melody
+dreamy pad one shot, soft washy ethereal sustained tone, dry, no chord
+ambient bright pad one shot, lush bright sustained texture, dry, no loop, no melody
+glass pad one shot, crystalline bright sustained tone, dry, no chord, no loop
+sparkly digital pad one shot, bright FM-based pad shimmer, dry, no loop
+high ethereal pad one shot, bright high register sustained pad, dry, no melody, no loop
+celestial pad one shot, dreamy bright atmospheric pad, dry, no chord
+heaven pad one shot, ethereal bright sustained tone, soft attack, dry, no loop, no melody
+
+# --- Lo-fi / dusty / vintage pads ---
+lofi pad one shot, dusty muffled vintage synth pad, vinyl character, dry, no chord, no loop
+chillhop pad one shot, mellow warm sustained pad, jazzy character, dry, no loop, no melody
+vinyl pad one shot, washed out warm sustained tone, dusty character, dry, no chord
+boom bap pad one shot, sampled vintage pad sound, warm tone, dry, no loop, no melody
+hip hop pad one shot, sampled warm sustained pad, vintage character, dry, no chord, no loop
+nujabes pad one shot, soft warm sustained pad, peaceful character, dry, no loop
+dilla pad one shot, dusty warm sampled pad tone, dry, no chord, no loop
+mellow dusty pad one shot, soft warm vintage sustained tone, dry, no loop, no melody
+
+# --- Choir / vocal pads ---
+choir pad one shot, ethereal sustained vocal ensemble, soft attack, dry, no chord, no loop
+female choir pad one shot, lush soprano sustained ahh, dry, no loop
+male choir pad one shot, warm bass-baritone sustained ahh, dry, no melody, no loop
+mixed choir pad one shot, ethereal full choral sustained tone, dry, no chord
+gospel choir pad one shot, soulful sustained vocal ensemble, dry, no loop, no melody
+synthetic choir one shot, vocal synthesizer pad tone, sustained, dry, no chord
+vox humana pad one shot, classic vocal-style synth pad, sustained, dry, no loop, no melody
+ahh choir pad one shot, sustained open vowel choir tone, dry, no chord, no loop
+gregorian chant pad one shot, monastic sustained vocal tone, dry, no loop
+
+# --- Synthwave / 80s retro pads ---
+synthwave pad one shot, retro 80s lush polysynth pad, sustained, dry, no chord, no loop
+80s movie pad one shot, classic film-score lush pad, sustained, dry, no loop, no melody
+retrowave pad one shot, vintage 80s analog pad, warm sustained, dry, no chord
+neon pad one shot, bright 80s lush pad, sustained sparkle, dry, no loop, no melody
+miami vice pad one shot, classic 80s warm pad, sustained, dry, no chord
+glittery 80s pad one shot, shimmery vintage polysynth pad, dry, no loop, no melody
+
+# --- Evolving / textural / modular ---
+evolving pad one shot, slow morphing sustained texture, complex, dry, no chord, no loop
+modular pad one shot, complex sustained synth texture, evolving, dry, no loop, no melody
+granular pad one shot, fragmented sustained texture, evolving timbre, dry, no chord
+wavetable pad one shot, complex evolving wavetable sustained tone, dry, no loop, no melody
+spectral pad one shot, complex sustained spectral texture, dry, no chord, no loop
+glitchy pad one shot, fragmented evolving texture, sustained, dry, no loop, no melody
+generative pad one shot, evolving algorithmic sustained tone, dry, no chord
+drone pad one shot, sustained complex evolving tone, atmospheric, dry, no loop, no melody
+
+# --- Pad with movement / rhythm / pulsing ---
+pulsing pad one shot, rhythmic gated sustained pad, dry, no chord, no loop
+gated pad one shot, sustained tone with rhythmic gate effect, dry, no loop, no melody
+tremolo pad one shot, amplitude-modulated sustained pad, dry, no chord
+arpeggiated pad one shot, sustained pad with arp character, dry, no loop, no melody
+filter swept pad one shot, evolving filter movement, sustained tone, dry, no chord, no loop
+chorused pad one shot, lush chorus-modulated sustained pad, dry, no loop
+
+# --- Atmospheric / ambient (Brian Eno style) ---
+ambient pad one shot, soft ethereal sustained drone, dry, no chord, no loop
+eno-style pad one shot, classic ambient sustained drone tone, dry, no loop, no melody
+brian eno pad one shot, soft sustained ambient drone, ethereal, dry, no chord
+cinematic ambient pad one shot, slow evolving atmospheric pad, dry, no loop, no melody
+landscape pad one shot, vast sustained atmospheric tone, dry, no chord
+underwater pad one shot, submerged ethereal sustained tone, dry, no loop, no melody
+nature ambient pad one shot, organic atmospheric sustained tone, dry, no chord
+zen pad one shot, peaceful sustained meditation drone, dry, no loop, no melody
+yoga pad one shot, soft warm meditation sustained tone, dry, no chord, no loop
+
+# --- Cosmic / space / sci-fi pads ---
+space pad one shot, cosmic atmospheric sustained drone, dry, no chord, no loop
+nebula pad one shot, swirling cosmic ambient pad, dry, no loop, no melody
+sci-fi pad one shot, futuristic atmospheric sustained tone, dry, no chord
+alien pad one shot, otherworldly evolving sustained drone, dry, no loop, no melody
+stellar pad one shot, vast cosmic ethereal pad, dry, no chord, no loop
+deep space pad one shot, dark cosmic sustained drone, dry, no loop, no melody
+cyberpunk pad one shot, dark futuristic synth pad, sustained, dry, no chord
+
+# --- Warm bass pads / sub pads ---
+sub pad one shot, deep warm low frequency pad, sustained, dry, no chord, no loop
+warm bass pad one shot, low rich sustained pad tone, dry, no loop, no melody
+deep pad one shot, low warm sustained synth pad, dry, no chord
+sub bass pad one shot, low pure sustained tone, atmospheric, dry, no loop, no melody
+
+# --- Trap / drill / modern hip-hop pads ---
+trap pad one shot, dark atmospheric sustained pad, modern character, dry, no chord, no loop
+drill pad one shot, dark melodic sustained pad, dramatic, dry, no loop, no melody
+phonk pad one shot, distorted dark sustained pad, gritty, dry, no chord
+opium pad one shot, dark dreamy sustained atmospheric pad, dry, no loop, no melody
+plugg pad one shot, atmospheric modern trap pad, dreamy character, dry, no chord
+underground rap pad one shot, dusty dark sustained pad, melancholic, dry, no loop
+emo rap pad one shot, melancholic warm sustained pad, dry, no chord, no loop
+cloud rap pad one shot, dreamy washed out sustained pad, dry, no loop, no melody
+hyperpop pad one shot, bright saturated sustained pad, dry, no chord
+ambient hip hop pad one shot, soft warm sustained pad, peaceful, dry, no loop, no melody

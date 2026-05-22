@@ -1,0 +1,113 @@
+# =========================================================================
+# Brass one-shots — single sustained brass notes (synth + acoustic style).
+# Bias: hip-hop, soul, funk, neo-soul, trap, electronic, synthwave.
+# Target pitch A3 (MIDI 57) — brass mid register.
+# open_ended=True (sustaining); enrich trims to plateau region.
+# =========================================================================
+
+# --- Synth brass (analog 80s, synthwave, retro) ---
+analog synth brass one shot, classic OB-X tone, warm punchy attack, dry, no chord, no loop
+80s synth brass one shot, vintage polysynth brass, lush sustained tone, dry, no loop
+juno synth brass one shot, classic juno-60 brass patch, warm pad-like tone, dry, no chord
+prophet synth brass one shot, vintage analog brass, fat sustained tone, dry, no melody
+synthwave brass one shot, retro 80s polysynth brass, bright sustained, dry, no chord, no loop
+moog synth brass one shot, fat analog synth brass, warm punchy attack, dry, no loop
+DX7 brass one shot, classic 80s FM brass tone, bright sustained, dry, no chord
+roland D-50 brass one shot, classic ROM-based brass tone, lush pad, dry, no loop, no melody
+korg M1 brass one shot, classic 90s polysynth brass, controlled attack, dry, no chord
+vintage analog brass synth one shot, fat warm sustained tone, dry, no loop, no melody
+
+# --- Trumpet (jazz, hip-hop sampled, soul) ---
+muted jazz trumpet one shot, warm mid-register single note, smooth sustain, dry, no melody, no loop
+bright jazz trumpet one shot, clear focused tone, controlled vibrato, dry, no chord, no loop
+soft trumpet one shot, mellow round tone, gentle attack, jazz character, dry, no loop
+piercing trumpet one shot, bright forte tone, controlled sustain, dry, no melody, no loop
+warm trumpet one shot, classic golden tone, smooth sustained note, dry, no chord, no loop
+hip hop trumpet one shot, sampled trumpet stab, bright punchy attack, dry, no loop
+soul trumpet one shot, warm round trumpet tone, jazz vibrato, dry, no melody, no loop
+classical trumpet one shot, pure focused tone, traditional brass character, dry, no chord
+funk trumpet one shot, sharp bright attack, controlled mid-register, dry, no loop, no melody
+brass trumpet one shot, traditional orchestral trumpet, warm sustained, dry, no chord
+
+# --- Trombone (jazz, neo-soul, hip-hop) ---
+warm trombone one shot, mellow tenor tone, smooth sustained note, dry, no chord, no loop
+jazz trombone one shot, soft round tone, smooth attack, dry, no melody, no loop
+muted trombone one shot, dampened mellow tone, gentle sustain, dry, no chord
+bright trombone one shot, focused mid-low brass, controlled tone, dry, no loop
+bass trombone one shot, deep rich brass tone, sustained low note, dry, no melody, no loop
+funky trombone one shot, sharp attack, controlled mid sustain, dry, no chord, no loop
+soulful trombone one shot, warm vibrant tone, smooth attack, dry, no loop
+neo soul trombone one shot, mellow rounded tone, jazzy character, dry, no melody, no loop
+
+# --- French horn / tuba / low brass ---
+french horn one shot, warm round mellow tone, soft attack, sustained, dry, no chord
+soft french horn one shot, gentle pp dynamic, distant character, dry, no loop, no melody
+heroic french horn one shot, bold sustained tone, controlled vibrato, dry, no chord, no loop
+cinematic french horn one shot, dramatic noble tone, slow attack, dry, no loop
+deep tuba one shot, low rich brass tone, smooth sustained, dry, no melody, no loop
+mellow tuba one shot, warm round low brass, soft attack, dry, no chord, no loop
+brass ensemble low one shot, deep rich brass section tone, dry, no melody
+sousaphone one shot, marching band low brass, bright sustained tone, dry, no loop, no chord
+
+# --- Saxophone (categorized as brass for this category; alto/tenor/bari) ---
+warm tenor saxophone one shot, smooth jazzy mid-register, soft attack, dry, no chord
+bright alto saxophone one shot, focused soulful tone, controlled vibrato, dry, no loop
+breathy saxophone one shot, soft airy tone, gentle sustain, dry, no melody, no loop
+soulful saxophone one shot, warm vibrant mid-register, jazz character, dry, no chord
+neo soul saxophone one shot, mellow round tone, smooth sustained note, dry, no loop
+hip hop saxophone one shot, sampled jazz sax tone, vintage warmth, dry, no melody
+smooth jazz saxophone one shot, lush warm tone, controlled vibrato, dry, no chord, no loop
+honking baritone sax one shot, deep gritty low brass, sustained note, dry, no loop
+funk saxophone one shot, sharp punchy attack, mid-register sustained, dry, no melody
+dusty sampled saxophone one shot, lo-fi vintage character, warm tone, dry, no chord
+
+# --- Horn section / orchestra brass ---
+brass section one shot, full ensemble unison note, bright sustained tone, dry, no chord
+horn stab one shot, sharp punchy brass section, short controlled note, dry, no loop, no melody
+funk horn section one shot, tight bright brass stab, vintage character, dry, no chord, no loop
+soul horn section one shot, warm rich ensemble tone, jazz character, dry, no melody
+james brown horn section one shot, sharp punchy brass stab, funk tight, dry, no loop
+hip hop horn section one shot, sampled brass ensemble, dusty vintage warmth, dry, no chord
+big band brass one shot, full ensemble sustained note, bright lush tone, dry, no loop, no melody
+mariachi brass one shot, bright traditional ensemble, warm tone, dry, no chord
+ska horn section one shot, sharp upbeat brass stab, bright tone, dry, no loop, no melody
+
+# --- Synth brass FM / digital / modern ---
+FM brass one shot, classic DX7 brass tone, bright metallic character, dry, no chord
+digital brass one shot, modern synth brass timbre, controlled attack, dry, no loop, no melody
+wavetable brass one shot, complex brass-like synth tone, evolving timbre, dry, no chord
+hybrid brass one shot, synth and sample blend, sustained warm tone, dry, no loop
+chip brass one shot, retro game console brass, square wave tone, dry, no melody, no loop
+modern synth brass one shot, polished bright brass patch, controlled attack, dry, no chord
+
+# --- Cinematic / epic / dramatic ---
+cinematic brass one shot, dramatic deep brass section, slow sustained tone, dry, no chord
+epic brass one shot, bold heroic ensemble note, sustained, dry, no melody, no loop
+hollywood brass one shot, lush orchestral brass section, bright sustained, dry, no chord
+dark brass one shot, ominous low brass tone, sustained menace, dry, no loop, no melody
+fanfare brass one shot, bright triumphant brass section, sustained, dry, no chord, no loop
+movie trailer brass one shot, dramatic punchy hit, sustained, dry, no loop, no melody
+
+# --- Vintage / lo-fi / dusty ---
+vintage brass one shot, dusty warm sampled brass, vinyl character, dry, no chord, no loop
+lofi hip hop brass one shot, muffled jazz brass tone, dusty character, dry, no loop
+boom bap brass one shot, classic sampled jazz brass, warm vintage tone, dry, no melody
+dusty trumpet sample one shot, lo-fi character, warm mid-register, dry, no chord
+70s funk brass one shot, sampled vintage horn, sharp punchy attack, dry, no loop
+old school hip hop brass one shot, jazz brass sample, warm tone, dry, no chord, no loop
+
+# --- Genre-specific modern ---
+trap brass one shot, modern synthesized brass tone, bright attack, dry, no melody, no loop
+drill brass one shot, dark melodic brass synth, sustained tone, dry, no chord
+phonk brass one shot, distorted sampled brass, gritty character, dry, no loop, no melody
+afrobeats brass one shot, bright punchy modern brass section, dry, no chord, no loop
+dancehall brass one shot, sharp bright brass stab, controlled sustain, dry, no loop
+reggaeton brass one shot, sampled bright horn section, dry, no melody, no loop
+dembow brass one shot, sharp punchy brass tone, mid-register, dry, no chord, no loop
+
+# --- Atmospheric / pad-like brass ---
+brass pad one shot, sustained ensemble tone, lush warm character, dry, no chord, no loop
+ambient brass one shot, soft swelling horn tone, ethereal sustain, dry, no loop, no melody
+warm brass pad one shot, mellow sustained ensemble, smooth attack, dry, no chord
+dark brass pad one shot, low rich sustained tone, ominous character, dry, no loop, no melody
+swelling brass one shot, slow attack crescendo brass, sustained tone, dry, no chord

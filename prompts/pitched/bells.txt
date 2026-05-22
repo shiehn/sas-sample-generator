@@ -1,0 +1,113 @@
+# =========================================================================
+# Bell one-shots — bright, percussive, pitched metallic tones.
+# Bias: hip-hop, trap, lofi, ambient, melodic dubstep.
+# Target pitch C5 (MIDI 72) — bells sit in the upper register.
+# =========================================================================
+
+# --- Glockenspiel / orchestral bells (clean, bright, melodic) ---
+clean glockenspiel bell one shot, bright clear metallic tone, fast decay, dry, no loop
+soft glockenspiel one shot, gentle bright bell tone, natural decay, dry, no chord, no loop
+struck glockenspiel one shot, sharp metallic attack, ringing sustain, dry, no melody
+orchestral bell one shot, deep tubular tone, long natural decay, dry, no chord, no loop
+tubular bell one shot, hollow metallic ring, slow decay, dry, no melody, no loop
+church bell one shot, deep resonant bell, long sustained ring, dry, no chord, no loop
+sleigh bell pitched one shot, bright crystalline tone, short decay, dry, no loop, no melody
+hand bell one shot, warm round metallic tone, controlled decay, dry, no chord
+struck cup bell one shot, ringing high pitched bell, fast attack, dry, no melody
+soft bell one shot, mellow round bell tone, gentle sustain, dry, no chord, no loop
+
+# --- FM bell / digital DX7 / synthesized ---
+FM bell one shot, classic DX7 digital bell tone, bright metallic, dry, no chord, no loop
+electric bell one shot, FM synthesis tone, crystalline timbre, fast decay, dry, no loop
+DX7 bell one shot, classic 80s digital bell, bright shimmer, dry, no melody, no loop
+digital bell one shot, FM bell timbre, ringing high frequency, dry, no chord
+synthetic bell one shot, additive synthesis tone, harmonic shimmer, dry, no loop, no melody
+electric piano bell one shot, FM tine character, percussive attack, dry, no chord, no loop
+crystalline bell one shot, pure digital tone, bright clear ring, dry, no melody
+glassy synthetic bell one shot, smooth FM tone, dreamy decay, dry, no chord
+8bit bell one shot, chiptune bell timbre, square wave shimmer, dry, no loop, no chord
+NES bell one shot, retro game console bell, sharp pixelated tone, dry, no melody
+
+# --- Music box / mechanical bell ---
+music box bell one shot, delicate mechanical tine, soft attack, dry, no chord, no loop
+toy music box one shot, sparse high pitched bell, lo-fi charm, dry, no melody, no loop
+antique music box one shot, dusty vintage bell tone, soft natural decay, dry, no chord
+fairy music box one shot, magical tinkling bell, ethereal tone, dry, no loop, no melody
+wind-up music box one shot, mechanical pluck tone, vintage character, dry, no chord
+delicate music box one shot, soft bright bell tone, gentle sustain, dry, no loop
+chimes music box one shot, layered bell harmonics, sparkly tone, dry, no chord, no loop
+
+# --- Chimes / wind chimes / pitched percussion ---
+wind chime one shot, bright metallic chime tone, natural decay, dry, no loop, no melody
+metal chime one shot, sharp bright ring, harmonic shimmer, dry, no chord, no loop
+bamboo chime one shot, warm woody chime tone, soft attack, dry, no loop, no melody
+pitched chime one shot, melodic bright tone, fast decay, dry, no chord, no loop
+crystal chime one shot, glassy bright tone, ringing sustain, dry, no loop, no melody
+brass chime one shot, warm metallic tone, smooth decay, dry, no chord, no loop
+silver chime one shot, bright silvery ring, soft attack, dry, no loop, no melody
+
+# --- Plucked / chopped / hip-hop bell ---
+chopped sample bell one shot, hip-hop style pitched bell, dusty vinyl character, dry, no loop
+boom bap bell one shot, vintage sampled bell, lo-fi warm tone, dry, no chord, no melody
+trap bell one shot, bright modern bell tone, tight controlled decay, dry, no loop
+melodic trap bell one shot, atmospheric bell tone, soft attack, dry, no chord, no loop
+lofi bell one shot, dusty vintage bell, vinyl crackle character, dry, no melody, no loop
+chillhop bell one shot, mellow warm bell tone, jazzy character, dry, no chord, no loop
+phonk bell one shot, distorted memphis bell sample, gritty texture, dry, no loop, no chord
+drill bell one shot, dark melodic bell, dramatic atmosphere, dry, no melody, no loop
+
+# --- Bell synth / hybrid ---
+bell synth one shot, hybrid bell and synth tone, evolving timbre, dry, no chord, no loop
+pluck bell synth one shot, plucky bell with FM character, sparkly, dry, no loop
+synthetic chime one shot, bright bell-like synth tone, ethereal pad, dry, no chord
+bell pad one shot, sustained bell tone with synth shimmer, dry, no melody, no loop
+analog bell one shot, warm analog synth bell tone, smooth attack, dry, no chord, no loop
+wave bell one shot, wavetable bell synthesis, complex harmonics, dry, no loop, no chord
+fm bell synth one shot, modern FM bell tone, controlled decay, dry, no melody
+gritty bell synth one shot, lo-fi processed bell tone, distorted character, dry, no chord
+
+# --- Bell mallet / vibe / pitched ---
+struck metal bell one shot, hard mallet strike, ringing high frequency, dry, no loop
+hammered bell one shot, dense metallic strike, sustained ring, dry, no melody, no loop
+gentle bell strike one shot, soft mallet attack, mellow bell tone, dry, no chord, no loop
+brass mallet bell one shot, warm bright metallic tone, smooth decay, dry, no loop
+ceramic bell one shot, hollow pitched tone, soft warm character, dry, no chord, no loop
+porcelain bell one shot, delicate high pitched ring, soft attack, dry, no loop, no melody
+
+# --- Atmospheric / cinematic / experimental ---
+cinematic bell one shot, dramatic resonant bell tone, slow decay, dry, no chord, no loop
+ambient bell one shot, soft ethereal bell, washy long sustain, dry, no loop, no melody
+deep cinematic bell one shot, low rich bell tone, dramatic atmosphere, dry, no chord
+mystic bell one shot, magical bright bell, sparkly ethereal tone, dry, no loop, no chord
+dark bell one shot, ominous deep bell tone, slow decay, dry, no melody, no loop
+icy bell one shot, cold crystalline tone, glassy bright character, dry, no chord, no loop
+warm bell one shot, soft mellow bell tone, gentle sustain, dry, no loop, no melody
+dreamy bell one shot, soft washy bell with ambient tail, dry, no chord, no loop
+ghostly bell one shot, distant haunting bell tone, slow decay, dry, no melody, no loop
+sparkly bell one shot, bright sparkling bell with shimmer, dry, no chord, no loop
+
+# --- Asian / world bells ---
+japanese temple bell one shot, deep resonant gong-like bell, long decay, dry, no loop
+chinese temple bell one shot, warm round bell tone, sustained ring, dry, no chord
+tibetan singing bowl one shot, sustained bell drone, harmonic shimmer, dry, no loop, no melody
+gamelan bell one shot, bronze metallic tone, complex harmonics, dry, no chord, no loop
+asian temple bell one shot, deep meditative tone, slow natural decay, dry, no loop
+thai temple bell one shot, warm low bell tone, sustained ring, dry, no melody
+
+# --- Hyperpop / future / experimental ---
+hyperpop bell one shot, bright saturated bell synth, high register, dry, no chord, no loop
+plugg bell one shot, modern trap bell tone, mellow dreamy character, dry, no loop
+sigilkore bell one shot, distorted high pitched bell, glitchy texture, dry, no chord
+opium bell one shot, dark atmospheric bell, melodic trap vibe, dry, no melody, no loop
+underground rap bell one shot, dusty melodic bell, dark mood, dry, no chord, no loop
+emo rap bell one shot, melancholic bell tone, atmospheric tail, dry, no loop, no melody
+cloud rap bell one shot, dreamy washed out bell, ethereal pad, dry, no chord, no loop
+modern hip hop bell one shot, polished bright bell tone, controlled decay, dry, no loop
+
+# --- Carnival / playful ---
+carnival bell one shot, playful bright bell tone, mid pitch, dry, no chord, no loop
+calliope bell one shot, circus-style bright bell, sharp attack, dry, no loop, no melody
+fairground bell one shot, playful melodic bell, bright bouncy tone, dry, no chord
+nostalgic bell one shot, childhood music box character, warm tone, dry, no loop, no melody
+toy bell one shot, plastic playful bell tone, sharp attack, dry, no chord, no loop
+ice cream truck bell one shot, distant nostalgic chime, bright tone, dry, no loop

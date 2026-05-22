@@ -1,0 +1,129 @@
+# =========================================================================
+# Vocal one-shots — single sustained vocal tones (no words, no melody).
+# Bias: hip-hop, trap, lo-fi, gospel, soul, R&B, electronic, ambient.
+# Target pitch A3 (MIDI 57) — vocal mid register.
+# variants_per_prompt=20 (vs 5 default) — SA3's model card says vocals
+# are weak; we generate more candidates so the gate can find usable ones.
+# Expect higher reject rate than other categories.
+# =========================================================================
+
+# --- Female ahh / oh / vowels (gospel, soul, R&B staples) ---
+female ahh vocal one shot, sustained open vowel, soft attack, warm tone, dry, no chord, no loop
+female oh vocal one shot, sustained round vowel, soft attack, mellow tone, dry, no loop
+female ooh vocal one shot, sustained closed vowel, breathy tone, dry, no melody, no loop
+soprano ahh one shot, bright sustained vowel, classical character, dry, no chord, no loop
+alto ahh one shot, warm sustained vowel, gospel character, dry, no loop
+breathy female vocal one shot, airy sustained ahh, intimate tone, dry, no chord
+soulful female ahh one shot, vibrant sustained vocal tone, dry, no loop, no melody
+gospel female ahh one shot, soulful warm sustained vowel, dry, no chord, no loop
+opera soprano ahh one shot, dramatic sustained classical vowel, dry, no loop
+choral female ahh one shot, ensemble vocal sustained, ethereal, dry, no melody, no loop
+
+# --- Male ahh / oh / vowels ---
+male ahh vocal one shot, warm sustained open vowel, baritone character, dry, no chord, no loop
+male oh vocal one shot, deep sustained round vowel, dry, no loop, no melody
+male ooh vocal one shot, warm closed vowel, baritone character, dry, no chord
+tenor ahh one shot, focused sustained tenor vowel, dry, no loop
+baritone ahh one shot, warm rich sustained baritone vowel, dry, no chord, no loop
+bass ahh one shot, deep sustained bass vowel, dry, no loop, no melody
+breathy male vocal one shot, airy sustained ahh, intimate tone, dry, no chord
+soulful male vocal one shot, vibrant warm sustained tone, dry, no loop
+gospel male ahh one shot, soulful warm sustained vowel, dry, no chord, no loop
+opera tenor ahh one shot, dramatic sustained classical vowel, dry, no loop
+
+# --- Choir / ensemble vocals ---
+female choir ahh one shot, soprano ensemble sustained vowel, ethereal, dry, no chord, no loop
+male choir ahh one shot, baritone ensemble sustained vowel, warm, dry, no loop
+mixed choir ahh one shot, ethereal full choir sustained, dry, no melody, no loop
+gospel choir ahh one shot, soulful sustained ensemble, dry, no chord
+boys choir one shot, ethereal high-pitched ensemble, sustained, dry, no loop, no melody
+classical choir one shot, traditional ensemble sustained vowel, dry, no chord, no loop
+contemporary choir one shot, modern ensemble sustained vowel, dry, no loop
+small ensemble vocals one shot, intimate choir sustained vowel, dry, no melody, no loop
+
+# --- Vocal chops / pitched chops ---
+vocal chop one shot, sliced pitched vocal sample, sharp transient, dry, no chord, no loop
+female vocal chop one shot, pitched female vocal slice, dry, no loop, no melody
+male vocal chop one shot, pitched male vocal slice, dry, no chord
+chipmunk vocal chop one shot, pitched-up vocal sample, hip-hop character, dry, no loop
+pitched vocal one shot, pitch-shifted vocal sample, sustained, dry, no melody, no loop
+chopped sample vocal one shot, hip-hop pitched vocal chop, dry, no chord
+sliced vocal one shot, transient-sliced vocal sample, dry, no loop, no melody
+diva vocal chop one shot, soulful pitched female vocal slice, dry, no chord, no loop
+trap vocal chop one shot, modern dark vocal slice, atmospheric, dry, no loop
+drill vocal chop one shot, dark melodic vocal slice, dry, no melody
+
+# --- Vocoded / processed / robotic ---
+vocoder ahh one shot, robotic processed vocal tone, sustained, dry, no chord, no loop
+talkbox ahh one shot, formant-filtered processed vocal, sustained, dry, no loop, no melody
+autotuned vocal one shot, pitch-corrected vocal tone, modern character, dry, no chord
+robotic vocal one shot, processed vocoder-style voice, sustained, dry, no loop
+T-Pain style vocal one shot, autotuned smooth vocal tone, dry, no melody, no loop
+Daft Punk vocal one shot, vocoder robot voice character, dry, no chord
+chrome vocal one shot, processed metallic vocal tone, dry, no loop, no melody
+glitchy vocal one shot, granular processed vocal tone, dry, no chord, no loop
+formant vocal one shot, formant-shifted vocal tone, sustained, dry, no loop
+
+# --- Whisper / breath / texture vocals ---
+whisper vocal one shot, soft hushed vocal tone, intimate texture, dry, no chord, no loop
+breathy whisper one shot, airy soft vocal texture, dry, no loop, no melody
+vocal breath one shot, inhale exhale texture, atmospheric, dry, no chord
+sigh vocal one shot, soft expressive vocal exhale, dry, no loop, no melody
+gasp vocal one shot, sharp inhale vocal texture, dry, no chord
+shout vocal one shot, loud sustained vocal exclamation, dry, no loop, no melody
+yell vocal one shot, aggressive sustained vocal, dry, no chord
+hum vocal one shot, soft closed mouth hum, sustained, dry, no loop, no melody
+mmm vocal one shot, soft closed mouth sustained hum, dry, no chord, no loop
+
+# --- Synthetic / synth vocal pads ---
+vox humana one shot, classic synth vocal pad tone, sustained, dry, no chord, no loop
+choir synth one shot, synthetic ensemble vowel tone, sustained, dry, no loop, no melody
+vocal pad one shot, sustained ethereal vocal pad tone, dry, no chord
+synth ahh one shot, synthesized vowel sustained tone, dry, no loop
+modeled choir one shot, synthesized ensemble vowel tone, sustained, dry, no melody, no loop
+ambient choir one shot, soft sustained vocal pad, ethereal, dry, no chord
+dark choir one shot, ominous sustained vocal ensemble, dry, no loop, no melody
+bright choir one shot, ethereal high sustained ensemble, dry, no chord
+
+# --- Lo-fi / dusty / sampled vocals ---
+lofi vocal one shot, dusty muffled vintage vocal sample, vinyl character, dry, no chord, no loop
+chopped vocal sample one shot, hip-hop pitched vocal sample, dry, no loop, no melody
+boom bap vocal one shot, sampled vintage soul vocal, dry, no chord
+dusty vocal one shot, lo-fi sampled vocal tone, vintage character, dry, no loop, no melody
+hip hop vocal sample one shot, sampled vintage vocal, dusty warmth, dry, no chord, no loop
+nujabes vocal one shot, soft mellow sampled vocal, peaceful character, dry, no loop
+J Dilla vocal one shot, dusty warm sampled vocal, vintage character, dry, no chord
+chillhop vocal one shot, mellow warm vocal sample, jazzy character, dry, no loop, no melody
+soul vocal sample one shot, sampled 70s soul vocal, warm vintage, dry, no chord
+disco vocal sample one shot, sampled 70s disco vocal, dry, no loop, no melody
+
+# --- World / ethnic vocals ---
+gregorian chant one shot, monastic sustained vocal tone, dry, no chord, no loop
+indian vocal one shot, classical raga sustained vocal tone, dry, no loop, no melody
+tuvan throat singing one shot, sustained overtone vocal, dry, no chord
+qawwali vocal one shot, sustained sufi vocal tone, dry, no loop, no melody
+mongolian vocal one shot, sustained throat sing vocal tone, dry, no chord
+african chant vocal one shot, traditional sustained vocal tone, dry, no loop, no melody
+arabic vocal one shot, melismatic middle eastern vocal tone, sustained, dry, no chord
+spanish vocal flamenco one shot, expressive sustained vocal, dry, no loop, no melody
+bulgarian voice one shot, distinctive harmonic vocal ensemble, dry, no chord, no loop
+
+# --- Modern hip-hop / R&B / trap vocals ---
+trap vocal one shot, modern dark atmospheric vocal tone, dry, no chord, no loop
+drill vocal one shot, dark melodic vocal tone, sustained, dry, no loop, no melody
+phonk vocal one shot, distorted dark vocal sample, gritty, dry, no chord
+plugg vocal one shot, atmospheric modern trap vocal, dreamy, dry, no loop, no melody
+opium vocal one shot, dark dreamy atmospheric vocal, dry, no chord
+hyperpop vocal one shot, bright saturated vocal tone, dry, no loop, no melody
+underground rap vocal one shot, dusty dark vocal tone, melancholic, dry, no chord
+emo rap vocal one shot, melancholic soft vocal tone, dry, no loop, no melody
+cloud rap vocal one shot, dreamy washed out vocal tone, dry, no chord, no loop
+
+# --- Specific vocal techniques ---
+vibrato vocal one shot, sustained vocal tone with vibrato, dry, no chord, no loop
+straight tone vocal one shot, sustained pure vocal without vibrato, dry, no loop, no melody
+falsetto vocal one shot, high register male vocal, sustained, dry, no chord
+head voice vocal one shot, high focused female vocal, sustained, dry, no loop, no melody
+chest voice vocal one shot, low rich vocal tone, sustained, dry, no chord
+yodel vocal one shot, alternating register vocal tone, dry, no loop, no melody
+melisma vocal one shot, ornamented sustained vocal, dry, no chord, no loop

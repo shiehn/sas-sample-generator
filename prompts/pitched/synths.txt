@@ -1,0 +1,138 @@
+# =========================================================================
+# Synth lead one-shots — single sustained synthesizer notes.
+# Bias: hip-hop, trap, drill, house, techno, EDM, future bass, synthwave.
+# Target pitch C3 (MIDI 48) — synth mid register, lead-friendly.
+# =========================================================================
+
+# --- Analog mono leads ---
+moog mono lead one shot, fat warm analog synth lead, sustained tone, dry, no chord, no loop
+minimoog lead one shot, classic mono synth lead, warm sustained, dry, no loop, no melody
+SH-101 lead one shot, classic mono analog lead, gritty character, dry, no chord
+prophet mono lead one shot, fat analog mono lead tone, sustained, dry, no loop
+juno mono lead one shot, classic juno-60 lead patch, sustained, dry, no melody, no loop
+arp odyssey lead one shot, vintage duophonic synth lead, dry, no chord
+oberheim mono lead one shot, fat warm analog lead, sustained, dry, no loop, no melody
+roland SH-1 lead one shot, classic mono lead character, dry, no chord
+korg ms-20 lead one shot, gritty analog lead tone, sustained, dry, no loop
+arp 2600 lead one shot, classic modular lead character, dry, no melody, no loop
+
+# --- Saw / supersaw / EDM leads ---
+saw wave lead one shot, classic sawtooth lead tone, bright, sustained, dry, no chord, no loop
+supersaw lead one shot, lush detuned saw lead, bright sustained, dry, no loop, no melody
+trance lead one shot, bright supersaw trance lead, sustained, dry, no chord
+big room lead one shot, festival-style supersaw lead, bright, dry, no loop, no melody
+edm lead one shot, polished modern saw lead, sustained, dry, no chord
+hardstyle lead one shot, aggressive distorted saw lead, dry, no loop, no melody
+festival lead one shot, big anthemic saw lead, sustained, dry, no chord, no loop
+psytrance lead one shot, evolving acid lead tone, sustained, dry, no loop
+goa lead one shot, modulated psy lead tone, sustained, dry, no melody, no loop
+
+# --- Square / pulse leads ---
+square wave lead one shot, hollow square lead tone, sustained, dry, no chord, no loop
+pulse wave lead one shot, narrow PWM lead tone, retro character, dry, no loop, no melody
+chiptune square lead one shot, 8bit square wave lead, dry, no chord
+8bit square lead one shot, retro game console lead tone, dry, no loop, no melody
+NES lead one shot, retro nintendo square wave lead, dry, no chord
+gameboy lead one shot, lo-fi 4-bit pulse lead, dry, no loop, no melody
+
+# --- FM leads (DX7 era, modern) ---
+DX7 lead one shot, classic 80s FM lead tone, bright metallic, sustained, dry, no chord, no loop
+FM lead one shot, modern FM synthesis lead, complex harmonics, dry, no loop, no melody
+FM bass lead one shot, deep FM lead with bass character, dry, no chord
+FM bell lead one shot, bright bell-like FM lead, dry, no loop
+yamaha DX7 lead one shot, classic 80s digital lead character, dry, no melody, no loop
+operator FM lead one shot, complex FM operator lead, dry, no chord, no loop
+serum FM lead one shot, modern wavetable FM lead, dry, no loop
+
+# --- Pluck leads ---
+pluck lead one shot, sharp attack synth lead, plucky character, dry, no chord, no loop
+percussive lead one shot, sharp percussive synth lead, dry, no loop, no melody
+short lead one shot, plucky controlled lead tone, dry, no chord
+synth plectrum one shot, plectrum-like synth lead tone, dry, no loop, no melody
+
+# --- Wavetable / digital leads ---
+wavetable lead one shot, complex evolving wavetable lead, sustained, dry, no chord, no loop
+serum lead one shot, modern wavetable lead, polished tone, dry, no loop, no melody
+massive lead one shot, classic native instruments lead, sustained, dry, no chord
+sylenth lead one shot, classic modern soft-synth lead, dry, no loop, no melody
+spire lead one shot, modern wavetable lead, polished character, dry, no chord
+phase plant lead one shot, modern complex wavetable lead, dry, no loop, no melody
+hyperpop wavetable lead one shot, bright saturated wavetable, dry, no chord, no loop
+
+# --- Acid / 303 leads ---
+acid lead one shot, squelchy resonant filter lead, dry, no chord, no loop
+303 acid lead one shot, classic TB-303 acid character, dry, no loop, no melody
+detroit techno lead one shot, gritty analog techno lead, dry, no chord
+chicago house lead one shot, classic plucky house lead, dry, no loop
+techno lead one shot, mechanical driving lead tone, sustained, dry, no melody, no loop
+minimal techno lead one shot, sparse stripped lead tone, dry, no chord
+acid house lead one shot, squelchy 303 character lead, sustained, dry, no loop, no melody
+
+# --- Trap / hip-hop synth leads ---
+trap lead one shot, dark melodic modern lead, atmospheric, dry, no chord, no loop
+drill lead one shot, dark melancholic synth lead, atmospheric, dry, no loop, no melody
+phonk lead one shot, distorted dark synth lead, gritty, dry, no chord
+opium lead one shot, dark dreamy atmospheric lead, dry, no loop, no melody
+plugg lead one shot, atmospheric modern trap lead, dreamy, dry, no chord
+hyperpop lead one shot, bright saturated lead tone, dry, no loop, no melody
+underground rap lead one shot, dusty dark lead tone, melancholic, dry, no chord
+emo rap lead one shot, melancholic soft lead tone, dry, no loop, no melody
+cloud rap lead one shot, dreamy washed out lead tone, dry, no chord, no loop
+modern hip hop lead one shot, polished bright lead tone, sustained, dry, no loop
+
+# --- Synthwave / 80s leads ---
+synthwave lead one shot, retro 80s polysynth lead, sustained, dry, no chord, no loop
+80s movie lead one shot, classic film-score lead tone, sustained, dry, no loop, no melody
+retrowave lead one shot, vintage 80s analog lead, sustained, dry, no chord
+neon lead one shot, bright 80s synth lead, sustained shimmer, dry, no loop, no melody
+miami vice lead one shot, classic 80s warm lead, sustained, dry, no chord
+vaporwave lead one shot, washed out warm lead, retro feel, dry, no loop, no melody
+italo disco lead one shot, classic 80s italo lead, sustained, dry, no chord, no loop
+cyberpunk lead one shot, futuristic dark synth lead, dry, no loop
+
+# --- Future bass / dance leads ---
+future bass lead one shot, bright lush wavetable lead, dry, no chord, no loop
+flume lead one shot, bright modern wavetable lead, dry, no loop, no melody
+melodic dubstep lead one shot, bright lead with shimmer, dry, no chord
+chillstep lead one shot, soft melodic lead tone, dry, no loop, no melody
+future trance lead one shot, bright modern trance lead, dry, no chord, no loop
+deep house lead one shot, mellow plucky house lead, dry, no loop
+tropical house lead one shot, bright tropical synth lead, dry, no melody, no loop
+
+# --- Dirty / aggressive ---
+distorted lead one shot, gritty saturated synth lead, dry, no chord, no loop
+overdriven synth lead one shot, mid-gain saturated lead, dry, no loop, no melody
+fuzz lead one shot, heavily distorted synth lead, dry, no chord
+bitcrushed lead one shot, lo-fi digital crunch lead, dry, no loop, no melody
+glitch lead one shot, fragmented digital lead tone, dry, no chord
+broken lead one shot, malfunctioning synth lead character, dry, no loop, no melody
+
+# --- Soft / mellow / ambient leads ---
+soft synth lead one shot, mellow round sustained lead, dry, no chord, no loop
+ambient lead one shot, soft ethereal sustained lead, dry, no loop, no melody
+dreamy lead one shot, soft washy sustained lead, dry, no chord
+mellow lead one shot, warm round soft lead tone, dry, no loop, no melody
+sustained lead one shot, smooth sustained synth lead, dry, no chord, no loop
+
+# --- Brass-like / horn-like synth leads ---
+synth brass lead one shot, bright punchy brass-like synth lead, dry, no chord, no loop
+horn lead one shot, fat brass-like synth lead, sustained, dry, no loop, no melody
+synth horn one shot, modeled horn synth lead, sustained, dry, no chord
+fat brass lead one shot, lush polysynth brass lead, dry, no loop, no melody
+
+# --- Whistle / pipe leads ---
+synth whistle one shot, bright sine wave whistle lead, sustained, dry, no chord, no loop
+ocarina lead one shot, soft whistle synth lead, dry, no loop, no melody
+flute lead one shot, breathy synth flute lead, sustained, dry, no chord
+
+# --- Vintage drum machine pitched leads ---
+TR-808 cowbell tonal one shot, classic 808 pitched cowbell, dry, no loop, no melody
+TR-909 ride tonal one shot, classic 909 pitched cymbal, dry, no chord
+LinnDrum pitched one shot, classic 80s drum machine pitched tone, dry, no loop, no melody
+
+# --- Modular / experimental ---
+modular synth lead one shot, complex patch lead tone, evolving, dry, no chord, no loop
+buchla lead one shot, west-coast modular lead character, dry, no loop, no melody
+serge lead one shot, modular complex lead tone, dry, no chord
+make noise lead one shot, modern modular lead character, dry, no loop, no melody
+experimental synth lead one shot, abstract synth lead tone, dry, no chord

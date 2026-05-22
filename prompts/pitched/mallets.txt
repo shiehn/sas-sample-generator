@@ -1,0 +1,136 @@
+# =========================================================================
+# Mallet one-shots — struck pitched percussion (marimba, kalimba, vibes).
+# Bias: hip-hop, trap, lo-fi, chillhop, world / afrobeats / amapiano.
+# Target pitch C4 (MIDI 60) — mallet mid register.
+# =========================================================================
+
+# --- Marimba (wooden bars, warm, popular in trap and afrobeats) ---
+warm marimba one shot, soft mallet attack, mellow wooden tone, dry, no chord, no loop
+struck marimba one shot, sharp wooden attack, fast decay, dry, no loop, no melody
+soft marimba one shot, gentle warm wooden tone, soft sustain, dry, no chord
+trap marimba one shot, modern bright marimba sample, dry, no melody, no loop
+afrobeats marimba one shot, warm wooden tone, percussive attack, dry, no chord
+amapiano marimba one shot, soft mellow log-drum-like marimba, dry, no loop
+bass marimba one shot, deep low wooden tone, slow natural decay, dry, no chord, no loop
+high marimba one shot, bright high register wooden tone, fast attack, dry, no loop, no melody
+soft mallet marimba one shot, gentle attack warm tone, dry, no chord, no loop
+hard mallet marimba one shot, sharp wooden percussive attack, dry, no loop, no melody
+mellow marimba one shot, soft round wooden tone, jazz character, dry, no chord
+dusty marimba one shot, lo-fi vintage wooden tone, vinyl character, dry, no loop, no melody
+sampled marimba one shot, hip-hop pitched marimba sample, dry, no chord, no loop
+
+# --- Vibraphone (vibes, jazz, ambient) ---
+vibraphone one shot, soft mallet vibes, sustained bell tone, dry, no chord, no loop
+soft vibraphone one shot, gentle warm metallic tone, smooth attack, dry, no loop
+bright vibraphone one shot, sharp metallic attack, sustained sustain, dry, no melody, no loop
+hard mallet vibes one shot, sharp metallic strike, ringing sustain, dry, no chord
+soft mallet vibes one shot, gentle warm metallic tone, smooth attack, dry, no loop, no melody
+jazz vibraphone one shot, warm bossa nova vibes tone, smooth, dry, no chord, no loop
+ambient vibraphone one shot, sustained washy vibes tone, dreamy, dry, no loop
+dreamy vibraphone one shot, soft ethereal vibes tone, dry, no chord
+dusty vibraphone one shot, lo-fi sampled vibes, vintage character, dry, no loop, no melody
+modern vibes one shot, polished bright metallic vibes tone, dry, no chord
+chillhop vibraphone one shot, mellow warm vibes, jazzy character, dry, no loop, no melody
+neo soul vibes one shot, warm round vibes tone, smooth attack, dry, no chord, no loop
+
+# --- Xylophone (wooden, bright, sharp) ---
+xylophone one shot, bright sharp wooden tone, fast decay, dry, no chord, no loop
+struck xylophone one shot, hard wooden strike, percussive attack, dry, no loop, no melody
+hard mallet xylophone one shot, sharp punchy wooden tone, dry, no chord
+soft xylophone one shot, mellow wooden tone, gentle attack, dry, no loop, no melody
+classical xylophone one shot, traditional bright wooden tone, dry, no chord, no loop
+toy xylophone one shot, lo-fi plastic toy mallet tone, vintage, dry, no loop, no melody
+modern xylophone one shot, polished bright wooden tone, sharp attack, dry, no chord
+
+# --- Kalimba / thumb piano (lo-fi, chillhop, dreamy) ---
+kalimba one shot, soft thumb piano pluck, warm mellow tone, dry, no chord, no loop
+african kalimba one shot, traditional thumb piano, warm pluck tone, dry, no loop
+electric kalimba one shot, amplified thumb piano tone, sustained, dry, no melody, no loop
+modern kalimba one shot, polished bright thumb piano, dry, no chord
+chillhop kalimba one shot, mellow lo-fi kalimba tone, dry, no loop, no melody
+lo-fi kalimba one shot, dusty vintage thumb piano, vinyl character, dry, no chord
+trap kalimba one shot, modern bright kalimba sample, dry, no loop, no melody
+dreamy kalimba one shot, soft ethereal thumb piano tone, dry, no chord, no loop
+deep kalimba one shot, low warm thumb piano tone, dry, no loop, no melody
+high kalimba one shot, bright high register kalimba pluck, dry, no chord
+
+# --- Mbira (zimbabwean thumb piano) ---
+mbira one shot, traditional zimbabwean thumb piano, warm tone, dry, no chord, no loop
+metal mbira one shot, bright metallic thumb piano tone, dry, no loop, no melody
+deep mbira one shot, low warm thumb piano pluck, dry, no chord
+
+# --- Steel drum / pan ---
+steel drum one shot, bright caribbean steel pan, warm tone, dry, no chord, no loop
+soft steel pan one shot, gentle melodic steel drum tone, dry, no loop, no melody
+calypso steel drum one shot, bright tropical pan tone, percussive, dry, no chord
+deep steel drum one shot, low warm steel pan tone, sustained, dry, no loop
+high steel drum one shot, bright high register pan tone, fast decay, dry, no melody, no loop
+trinidadian steel pan one shot, traditional caribbean tone, dry, no chord
+
+# --- Glockenspiel / orchestra bells (overlap with bells but mallet-struck) ---
+glockenspiel one shot, bright sharp bell tone, fast decay, dry, no chord, no loop
+orchestra bells one shot, bright tuned metallic tone, ringing, dry, no loop, no melody
+soft glockenspiel one shot, gentle bright bell tone, dry, no chord
+struck glockenspiel one shot, hard metallic strike, ringing sustain, dry, no loop
+
+# --- Balafon (african wooden mallet, gourd resonators) ---
+balafon one shot, african wooden xylophone, warm buzzy tone, dry, no chord, no loop
+traditional balafon one shot, gourd resonator wooden tone, dry, no loop, no melody
+deep balafon one shot, low warm buzzy wooden tone, dry, no chord
+soft balafon one shot, gentle warm wooden tone, traditional character, dry, no loop
+
+# --- Tubular bells ---
+tubular bells one shot, deep metallic bell tone, long sustain, dry, no chord, no loop
+soft tubular bell one shot, gentle bell tone, slow decay, dry, no loop, no melody
+struck tubular bells one shot, hard metallic ring, sustained, dry, no chord
+orchestral tubular bells one shot, classical bell tone, dramatic, dry, no loop
+
+# --- Crotales (small antique cymbals, pitched) ---
+crotales one shot, bright pitched antique cymbal, ringing sustain, dry, no chord, no loop
+bowed crotales one shot, sustained ethereal high pitched tone, dry, no loop
+struck crotales one shot, sharp bright cymbal-like tone, dry, no melody, no loop
+
+# --- Celesta ---
+celesta one shot, bright bell-like keyboard percussion, dry, no chord, no loop
+soft celesta one shot, gentle celesta tone, mellow attack, dry, no loop, no melody
+struck celesta one shot, bright bell tone, controlled decay, dry, no chord
+toy celesta one shot, lo-fi celesta tone, vintage character, dry, no loop, no melody
+
+# --- Dulcimer (hammered strings) ---
+hammered dulcimer one shot, bright struck string tone, ringing sustain, dry, no chord, no loop
+appalachian dulcimer one shot, warm fretted dulcimer pluck, dry, no loop
+soft dulcimer one shot, gentle warm string tone, dry, no chord
+traditional dulcimer one shot, folk hammered string tone, dry, no loop, no melody
+
+# --- Cimbalom (eastern european hammered dulcimer) ---
+cimbalom one shot, bright struck string tone, ringing sustain, dry, no chord, no loop
+eastern european cimbalom one shot, warm fretted tone, traditional, dry, no loop, no melody
+
+# --- Wood / log drum (pitched percussion, amapiano staple) ---
+log drum one shot, deep wooden pitched percussion, percussive attack, dry, no chord, no loop
+amapiano log drum one shot, soft warm pitched percussion, plucky, dry, no loop
+wooden log drum one shot, mellow warm pitched percussion, dry, no chord
+slit drum one shot, hollow wooden tone, percussive attack, dry, no loop, no melody
+traditional log drum one shot, african wooden pitched percussion, dry, no chord
+deep log drum one shot, low warm wooden pitched tone, dry, no loop
+
+# --- Music box ---
+music box one shot, soft delicate metallic tine, vintage character, dry, no chord, no loop
+toy music box one shot, lo-fi mechanical bell tone, dry, no loop, no melody
+antique music box one shot, dusty vintage delicate tone, dry, no chord
+fairy music box one shot, magical sparkly tine tone, dry, no loop
+
+# --- Hyperpop / experimental ---
+hyperpop marimba one shot, bright saturated mallet tone, dry, no chord, no loop
+plugg vibes one shot, atmospheric modern vibes sample, dreamy, dry, no loop, no melody
+drill kalimba one shot, dark melodic kalimba tone, atmospheric, dry, no chord
+phonk mallets one shot, distorted vintage mallet sample, dry, no loop, no melody
+opium mallets one shot, dark atmospheric mallet tone, modern character, dry, no chord
+underground rap mallets one shot, dusty dark mallet tone, dry, no loop, no melody
+ambient mallets one shot, washy sustained mallet tone, ethereal tail, dry, no chord, no loop
+
+# --- Cinematic ---
+cinematic marimba one shot, dramatic bold mallet tone, sustained, dry, no chord, no loop
+epic vibraphone one shot, dramatic vibes tone, sustained, dry, no loop, no melody
+dark mallet one shot, ominous low pitched mallet tone, dry, no chord
+mysterious mallet one shot, dreamy ethereal mallet tone, dry, no loop, no melody
