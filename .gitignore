@@ -12,3 +12,5 @@ outputs/manifests/
 .env.*
 *.token
 *.secret
+# throwaway run logs (build-pack / repair / upload)
+*.log

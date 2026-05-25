@@ -72,6 +72,122 @@ def cents_between(hz_a: float, hz_b: float) -> float:
     return 1200.0 * math.log2(hz_a / hz_b)
 
 
+# -----------------------------------------------------------------------------
+# Spectral fundamental (monophonic one-shots) — the robust pitch NUMBER
+# -----------------------------------------------------------------------------
+#
+# torchcrepe is excellent at VOICING ("is this a clearly pitched note?") but its
+# per-frame pitch *median* is fragile on harmonically-rich sustains: the track
+# straddles the fundamental and its partials, and `np.median` settles on a
+# phantom value BETWEEN them. A C3 (130.8 Hz) synth whose frames split across
+# C3 / G3 / C4 medians to ~170 Hz (≈F3) — a perfect 4th sharp — which then
+# mislabels every sampler zone. (This shipped the entire synth library a 4th
+# out of tune; see tests/test_pitch_detection.py for the reproduction.)
+#
+# These samples are MONOPHONIC single notes, so a harmonic-sum over the averaged
+# magnitude spectrum is both simpler and far more reliable. Validated on the
+# full instrument library: pitch-class accuracy 15% -> 70%.
+
+def _avg_magnitude_spectrum(mono: np.ndarray, sr: int, fft_size: int = 1 << 15,
+                            max_windows: int = 10) -> tuple[np.ndarray, np.ndarray]:
+    """Magnitude spectrum averaged over several sustain windows (skips ~100 ms
+    of attack). Averaging stabilises the harmonic structure vs a single frame."""
+    y = np.asarray(mono, dtype=np.float64)
+    y = y[int(0.1 * sr):]
+    if y.size < fft_size:
+        y = np.pad(y, (0, fft_size - y.size))
+    window = np.hanning(fft_size)
+    hop = fft_size // 2
+    mags = []
+    for start in range(0, y.size - fft_size + 1, hop):
+        mags.append(np.abs(np.fft.rfft(y[start:start + fft_size] * window)))
+        if len(mags) >= max_windows:
+            break
+    if not mags:
+        mags = [np.abs(np.fft.rfft(y[:fft_size] * window))]
+    return np.mean(mags, axis=0), np.fft.rfftfreq(fft_size, 1.0 / sr)
+
+
+def _spectral_peaks(mag: np.ndarray, freqs: np.ndarray, fmin: float, fmax: float,
+                    top_n: int = 30) -> list[tuple[float, float]]:
+    """Strongest spectral peaks in [fmin, fmax], de-duplicated to ~6 Hz, returned
+    strongest-first. Restricting fundamental candidates to *real* peaks avoids
+    the subharmonic phantoms that plain HPS produces."""
+    band = (freqs >= fmin) & (freqs <= fmax)
+    fb, mb = freqs[band], mag[band]
+    out: list[tuple[float, float]] = []
+    for i in np.argsort(mb)[::-1]:
+        f = float(fb[i])
+        if any(abs(f - pf) < 6.0 for pf, _ in out):
+            continue
+        out.append((f, float(mb[i])))
+        if len(out) >= top_n:
+            break
+    return out
+
+
+def _harmonic_sum_score(mag: np.ndarray, freqs: np.ndarray, f0: float,
+                        n_harmonics: int = 6) -> float:
+    """Sum of magnitude at f0, 2·f0 … n·f0 with 1/h weighting. The 1/h weight
+    rewards energy at the fundamental + low harmonics, so a true fundamental
+    outscores its own subharmonic (whose energy sits in *upper* harmonics)."""
+    df = freqs[1] - freqs[0]
+    score = 0.0
+    for h in range(1, n_harmonics + 1):
+        fh = f0 * h
+        if fh > freqs[-1]:
+            break
+        b = int(round(fh / df))
+        win = mag[max(0, b - 2):b + 3]
+        score += (float(win.max()) if win.size else 0.0) / h
+    return score
+
+
+def _refine_peak(mag: np.ndarray, freqs: np.ndarray, f0: float) -> float:
+    """Snap f0 to the local magnitude maximum within ±6% (sub-bin precision so
+    the cents offset is accurate)."""
+    band = (freqs >= f0 * 0.94) & (freqs <= f0 * 1.06)
+    if not band.any():
+        return f0
+    fb = freqs[band]
+    return float(fb[np.argmax(mag[band])])
+
+
+def spectral_fundamental_midi(mono: np.ndarray, sr: int, target_midi: int) -> float:
+    """Robust fundamental (in MIDI) for a monophonic instrument one-shot.
+
+    Picks the spectral peak whose harmonic series best explains the spectrum
+    (harmonic-sum, 1/h weighted). Octave guard: keep the detected octave when it
+    is within ~1 octave of the requested target; otherwise re-seat the detected
+    pitch CLASS in the requested register. That guards gross octave-ID blunders
+    (e.g. reporting F6 for a C3 request) while still honouring the pipeline's
+    "use the pitch SA3 actually produced" philosophy in the common case.
+    Returns NaN when no clear peak exists.
+    """
+    mag, freqs = _avg_magnitude_spectrum(mono, sr)
+    fmin = max(30.0, midi_to_hz(target_midi - 15))
+    fmax = min(float(freqs[-1]), midi_to_hz(target_midi + 24))
+    candidates = _spectral_peaks(mag, freqs, fmin, fmax)
+    # candidates are strongest-first; a ~zero top peak means silence / no tone.
+    if not candidates or candidates[0][1] <= 1e-9:
+        return float("nan")
+    best_f0 = max(candidates, key=lambda c: _harmonic_sum_score(mag, freqs, c[0]))[0]
+    measured = hz_to_midi(_refine_peak(mag, freqs, best_f0))
+    # Octave placement: keep the detected pitch CLASS (what spectral detection
+    # reliably nails) but seat it in the octave nearest the requested target —
+    # the musically-intended register, and robust to the fundamental-vs-loudest
+    # -partial octave ambiguity (a C2 tone whose loudest partial is C3, etc.).
+    # An octave mislabel is "right note, wrong register"; a pitch-CLASS mislabel
+    # is "out of key" — so we optimise class correctness, not absolute octave.
+    # The sub-semitone offset is preserved so enrich's fine pitch-correction
+    # still lands the sample exactly on a MIDI note.
+    frac = measured - round(measured)
+    pitch_class = int(round(measured)) % 12
+    base = target_midi - (target_midi % 12) + pitch_class
+    nearest = min((base - 12, base, base + 12), key=lambda c: abs(c - target_midi))
+    return float(nearest) + frac
+
+
 def strip_variant_suffix(stem: str) -> tuple[str, int]:
     """`plucks-abc12345_v02` → (`plucks-abc12345`, 2). Single-variant
     files (no `_vNN`) → (stem, 0)."""
@@ -279,68 +395,48 @@ def _detect_vibrato(pitch_hz: np.ndarray, frame_rate: float) -> bool:
 
 def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int,
                pitch_floor_hz: float) -> tuple[Optional[str], float, float, float, np.ndarray]:
-    """Run torchcrepe + sub-bass cross-check. Returns:
+    """Confidence/voicing from torchcrepe; pitch NUMBER from the spectral
+    fundamental. Returns:
 
         (reject_reason, measured_midi, cents_offset, confidence, pitch_envelope_hz)
 
-    Sub-bass branch (target < E2/82Hz): require 2-of-3 agreement among
-    torchcrepe, pyin, and autocorrelation within 50 cents.
+    torchcrepe periodicity still gates voicing/atonality (its strength) and
+    feeds the downstream vibrato detector. The measured pitch, however, comes
+    from `spectral_fundamental_midi`: crepe's per-frame *median* lands on a
+    phantom value between partials for harmonically-rich tones — that is the bug
+    that shipped the synth library a perfect-4th sharp. The old target<82Hz
+    3-way (crepe/pyin/autocorr) branch had the same phantom-median fragility and
+    is no longer needed; the spectral fundamental handles sub-bass too.
     """
     target_hz = midi_to_hz(target_midi)
     pitch_hz, periodicity = _crepe_pitch(mono, sr)
-    # Skip attack region (~50 ms) for median
+    # Skip attack region (~50 ms)
     skip_frames = max(0, int(0.05 / 0.01))
     sustain = pitch_hz[skip_frames:]
     sustain_per = periodicity[skip_frames:]
-    # Voiced-frame periodicity threshold lowered from 0.5 -> 0.3. SA3 audio
-    # has more natural dynamic/timbral variation than studio-clean library
-    # content; 0.5 was rejecting too many otherwise-pitched frames as
-    # unvoiced. 0.3 still excludes truly noisy frames.
+    # Voiced-frame periodicity threshold 0.3 (see git history for the 0.5->0.3
+    # rationale): SA3 output is less clean than studio samples.
     voiced_mask = (sustain > 0) & np.isfinite(sustain) & (sustain_per >= 0.3)
     if not voiced_mask.any():
         return "no_voiced_frames", float("nan"), float("nan"), 0.0, pitch_hz
-    crepe_hz = float(np.median(sustain[voiced_mask]))
     crepe_conf = float(np.median(sustain_per[voiced_mask]))
 
-    is_sub_bass = target_hz < 82.0  # below E2
+    # Voicing/atonality gate stays with crepe — periodicity is what it is good
+    # at. (Confidence threshold 0.3; see git history for the 0.85->0.3 move.)
+    if crepe_conf < 0.3:
+        crepe_hz = float(np.median(sustain[voiced_mask]))
+        return ("unconfident", hz_to_midi(crepe_hz),
+                cents_between(crepe_hz, target_hz), crepe_conf, pitch_hz)
 
-    if not is_sub_bass:
-        # Confidence threshold lowered from 0.85 -> 0.3. 0.85 demanded
-        # near-perfect pitch clarity which clean studio samples have but
-        # SA3 output doesn't. 0.3 keeps clearly-pitched content while still
-        # rejecting noise/atonal output.
-        if crepe_conf < 0.3:
-            return "unconfident", hz_to_midi(crepe_hz), cents_between(crepe_hz, target_hz), crepe_conf, pitch_hz
-        cents = cents_between(crepe_hz, target_hz)
-        if abs(cents) > tolerance_cents:
-            return "wrong_pitch", hz_to_midi(crepe_hz), cents, crepe_conf, pitch_hz
-        return None, hz_to_midi(crepe_hz), cents, crepe_conf, pitch_hz
-
-    # Sub-bass: 3-way agreement
-    pyin_pitch = _pyin_pitch(mono, sr, fmin=max(20.0, pitch_floor_hz * 0.8), fmax=200.0)
-    pyin_voiced = pyin_pitch[np.isfinite(pyin_pitch) & (pyin_pitch > 0)]
-    pyin_hz = float(np.median(pyin_voiced)) if pyin_voiced.size > 0 else float("nan")
-    ac_hz = _autocorr_pitch(mono, sr, fmin=max(20.0, pitch_floor_hz * 0.8), fmax=200.0)
-
-    candidates = [("crepe", crepe_hz), ("pyin", pyin_hz), ("ac", ac_hz)]
-    valid = [(label, hz) for label, hz in candidates if hz > 0 and math.isfinite(hz)]
-    if len(valid) < 2:
-        return "subbass_no_candidates", crepe_hz, cents_between(crepe_hz, target_hz), crepe_conf, pitch_hz
-    # Find the most-agreeing pair: their cents-diff is smallest
-    best_pair_cents = float("inf")
-    best_hz = float("nan")
-    for i in range(len(valid)):
-        for j in range(i + 1, len(valid)):
-            d = abs(cents_between(valid[i][1], valid[j][1]))
-            if d < best_pair_cents:
-                best_pair_cents = d
-                best_hz = (valid[i][1] + valid[j][1]) / 2.0
-    if best_pair_cents > 50.0:
-        return "subbass_disagreement", crepe_hz, cents_between(crepe_hz, target_hz), crepe_conf, pitch_hz
-    cents = cents_between(best_hz, target_hz)
+    # Pitch NUMBER from the spectral fundamental (robust on monophonic one-shots).
+    measured_midi = spectral_fundamental_midi(mono, sr, target_midi)
+    if not math.isfinite(measured_midi):
+        # No clear spectral peak — fall back to the crepe median.
+        measured_midi = hz_to_midi(float(np.median(sustain[voiced_mask])))
+    cents = cents_between(midi_to_hz(measured_midi), target_hz)
     if abs(cents) > tolerance_cents:
-        return "wrong_pitch", hz_to_midi(best_hz), cents, crepe_conf, pitch_hz
-    return None, hz_to_midi(best_hz), cents, crepe_conf, pitch_hz
+        return "wrong_pitch", measured_midi, cents, crepe_conf, pitch_hz
+    return None, measured_midi, cents, crepe_conf, pitch_hz
 
 
 # -----------------------------------------------------------------------------
