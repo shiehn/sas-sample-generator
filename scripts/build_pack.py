@@ -67,6 +67,13 @@ PACK_REGISTRY = {
         "pack_id": "sas-instrument-pack",
         "default_source_subdir": "instruments",
     },
+    "loops": {
+        # The factory loop / sample library, migrated from the legacy
+        # sas-sample-library-v1.dmg to a versioned zip so PackDownloadService
+        # (the new pack system) can install it like the drum/instrument packs.
+        "pack_id": "sas-loop-library",
+        "default_source_subdir": "loops",
+    },
 }
 
 # Fixed epoch for deterministic zip entry timestamps. Year 1980-01-01 is the
