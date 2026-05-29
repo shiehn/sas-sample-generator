@@ -638,7 +638,7 @@ def evaluate_variant(wav_path: Path, cfg: PitchedCategoryConfig, target_pitch: i
     }
 
     try:
-        y, sr = sf.read(wav_path, always_2d=True)
+        y, sr = sf.read(str(wav_path), always_2d=True)
     except Exception as e:
         verdict["rejection_reason"] = f"read_failed:{e}"
         return verdict
