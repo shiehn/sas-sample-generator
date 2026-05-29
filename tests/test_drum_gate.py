@@ -123,6 +123,33 @@ def test_best_of_n_selection_end_to_end():
         assert report["winner"]["variant_index"] == 0, "expected the clean kick (v00) to win"
 
 
+def _kick_long_with_noise_tail(total=1.5, noise_db=-50, sr=SR):
+    """A clean short kick padded to the production 1.5s length with a faint noise
+    floor in the tail — the realistic shape of a generated SA3 kick."""
+    y = _kick()
+    n = int(sr * total)
+    out = np.zeros(n, np.float32)
+    out[: len(y)] = y
+    amp = 10 ** (noise_db / 20.0)
+    out[len(y):] += (np.random.RandomState(0).randn(n - len(y)) * amp).astype(np.float32)
+    return out
+
+
+def test_long_kick_with_noise_tail_not_off_band():
+    """Regression: a 1.5s kick (the production duration) with a low noise-floor
+    tail must pass — it was wrongly rejected 'off_band' when the spectral centroid
+    was taken as the median over the WHOLE file. Tail frames are broadband, so the
+    whole-file median tracked the ~11kHz noise floor instead of the ~60Hz hit,
+    which nuked every low-frequency category (kick/toms). The centroid must be
+    measured over the active region (loud frames) only."""
+    if not _HAVE_LIBROSA:
+        print("(skip: no librosa)"); return
+    with tempfile.TemporaryDirectory() as d:
+        v = _verdict(Path(d), _kick_long_with_noise_tail())
+    assert v["rejection_reason"] != "off_band", f"wrongly off_band: {v['metrics']}"
+    assert v["passed"], f"long kick rejected: {v['rejection_reason']} {v['metrics']}"
+
+
 if __name__ == "__main__":
     tests = [v for k, v in sorted(globals().items()) if k.startswith("test_")]
     failed = 0

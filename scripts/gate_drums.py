@@ -146,13 +146,33 @@ def count_reattacks(mono: np.ndarray, sr: int) -> int:
 
 
 def spectral_centroid_hz(mono: np.ndarray, sr: int) -> float:
+    """Median spectral centroid over the ACTIVE region only — frames at >=15% of
+    peak RMS (the actual hit), not the whole buffer.
+
+    Measuring over the whole file is wrong for a short one-shot in a long file:
+    the decay / noise-floor tail is broadband, so each tail frame's centroid sits
+    near sr/4, and with ~80% of frames being tail the median tracks the noise
+    floor rather than the sound. A faint -60 dBFS tail alone pushes a clean 60 Hz
+    kick's whole-file median from ~60 Hz to ~11 kHz, which then trips `off_band`
+    and nuked every low-frequency category (kick/toms) while high-band categories
+    (shaker/cymbals/hats) coincidentally still matched. Restricting to loud frames
+    makes the centroid reflect the hit, not the silence after it."""
     import librosa
+    hop = 512
     try:
-        sc = librosa.feature.spectral_centroid(y=mono, sr=sr)[0]
+        sc = librosa.feature.spectral_centroid(y=mono, sr=sr, hop_length=hop)[0]
+        rms = librosa.feature.rms(y=mono, hop_length=hop)[0]
     except Exception:
         return float("nan")
-    sc = sc[np.isfinite(sc) & (sc > 0)]
-    return float(np.median(sc)) if sc.size else float("nan")
+    n = min(len(sc), len(rms))
+    sc, rms = sc[:n], rms[:n]
+    valid = np.isfinite(sc) & (sc > 0)
+    if not valid.any():
+        return float("nan")
+    peak = float(np.max(rms))
+    active = valid & (rms >= 0.15 * peak) if peak > 0 else valid
+    sel = sc[active] if np.any(active) else sc[valid]
+    return float(np.median(sel))
 
 
 def crest_factor(mono: np.ndarray) -> float:

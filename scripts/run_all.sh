@@ -15,6 +15,7 @@
 #   STEPS=4 ./scripts/run_all.sh           # even cheaper iteration (SA3 needs few steps)
 #   ONLY="kick clap" LIMIT=10 ./scripts/run_all.sh   # small test slice
 #   GATE=0 ./scripts/run_all.sh            # skip the quality gate (legacy: keep all from raw)
+#   STAGES=gate,postprocess ./scripts/run_all.sh  # re-gate EXISTING raw (no GPU) + postprocess
 #   BATCH_SIZE=32 ./scripts/run_all.sh     # bigger batches on an 80GB GPU
 #   tmux new -s sas; ./scripts/run_all.sh  # survives SSH drops
 
@@ -44,6 +45,10 @@ GATE="${GATE:-1}"                # 1 = quality-gate + best-of-N (raw->gated_drum
 MAX_RETRIES="${MAX_RETRIES:-2}"  # re-roll rounds for failed prompts before topping up
 TARGET="${TARGET:-150}"          # per-category MINIMUM surviving samples (0 = none)
 [[ -n "${LIMIT}" ]] && TARGET=0  # small test slice must not chase the full minimum
+STAGES="${STAGES:-generate,gate,postprocess}"  # comma-subset of stages to run.
+                                 # STAGES=gate,postprocess re-gates EXISTING raw with
+                                 # NO regeneration (reuse everything already generated).
+want_stage() { [[ ",${STAGES}," == *",$1,"* ]]; }
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_all] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -96,9 +101,11 @@ fi
 # ---------- Step 2 (+2b): generate, then quality-gate + best-of-N selection ----------
 mkdir -p "${OUTPUTS_DIR}"
 LOGFILE="${OUTPUTS_DIR}/batch.log"
-if [[ "${GATE}" == "1" ]]; then
+if want_stage generate && want_stage gate && [[ "${GATE}" == "1" ]]; then
   # run_retry drives generate + gate_drums together, regenerating any prompt
   # whose candidates all fail until the gate yields a sample (up to MAX_RETRIES).
+  # batch_generate runs with --skip-existing, so raw already on disk is REUSED
+  # (never regenerated) — only missing / short-of-target prompts hit the GPU.
   echo "[run_all] generate + gate (best-of-N, target=${TARGET}/cat, max_retries=${MAX_RETRIES}); log -> ${LOGFILE}"
   python3 scripts/run_retry.py \
     --pipeline drums \
@@ -108,31 +115,51 @@ if [[ "${GATE}" == "1" ]]; then
     --batch-size "${BATCH_SIZE}" \
     --target "${TARGET}" \
     --max-retries "${MAX_RETRIES}" 2>&1 | tee "${LOGFILE}"
-else
-  echo "[run_all] generating (GATE=0, no quality gate); log -> ${LOGFILE}"
+elif want_stage gate && ! want_stage generate; then
+  # Re-gate EXISTING raw with NO generation: reuse everything already generated
+  # (e.g. after a gate-logic fix). gate_drums re-evaluates every raw variant and
+  # re-selects winners into gated_drums/. Pure CPU — the GPU is never touched.
+  echo "[run_all] re-gating existing raw, no generation (STAGES=${STAGES}); log -> ${LOGFILE}"
+  : > "${LOGFILE}"
+  for cat in "${CATEGORIES[@]}"; do
+    if [[ ! -d "${OUTPUTS_DIR}/raw/${cat}" ]]; then
+      echo "[run_all] skip gate ${cat} (no ${OUTPUTS_DIR}/raw/${cat})" | tee -a "${LOGFILE}"
+      continue
+    fi
+    python3 scripts/gate_drums.py --category "${cat}" --outputs-dir "${OUTPUTS_DIR}" 2>&1 | tee -a "${LOGFILE}"
+  done
+elif want_stage generate; then
+  # Generate only, no gate (GATE=0 keep-all, or STAGES without 'gate').
+  echo "[run_all] generating only, no gate (STAGES=${STAGES}, GATE=${GATE}); log -> ${LOGFILE}"
   python scripts/batch_generate.py \
     --prompts "${JSONL_PATHS[@]}" \
     --out-root "${OUTPUTS_DIR}/raw" \
     --steps "${STEPS}" \
     --batch-size "${BATCH_SIZE}" \
     --skip-existing 2>&1 | tee "${LOGFILE}"
+else
+  echo "[run_all] skipping generate + gate (STAGES=${STAGES})"
 fi
 
 # ---------- Step 3: post-process each category ----------
 # With GATE=1 we post-process the gated winners; otherwise straight from raw.
-for cat in "${CATEGORIES[@]}"; do
-  if [[ "${GATE}" == "1" ]]; then
-    src_dir="${OUTPUTS_DIR}/gated_drums/${cat}"
-  else
-    src_dir="${OUTPUTS_DIR}/raw/${cat}"
-  fi
-  if [[ ! -d "${src_dir}" ]]; then
-    echo "[run_all] skip postprocess ${cat} (no ${src_dir})"
-    continue
-  fi
-  echo "[run_all] post-processing ${cat}"
-  python scripts/postprocess_oneshots.py --category "${cat}" --in-dir "${src_dir}" --mono
-done
+if want_stage postprocess; then
+  for cat in "${CATEGORIES[@]}"; do
+    if [[ "${GATE}" == "1" ]]; then
+      src_dir="${OUTPUTS_DIR}/gated_drums/${cat}"
+    else
+      src_dir="${OUTPUTS_DIR}/raw/${cat}"
+    fi
+    if [[ ! -d "${src_dir}" ]]; then
+      echo "[run_all] skip postprocess ${cat} (no ${src_dir})"
+      continue
+    fi
+    echo "[run_all] post-processing ${cat}"
+    python scripts/postprocess_oneshots.py --category "${cat}" --in-dir "${src_dir}" --mono
+  done
+else
+  echo "[run_all] skipping postprocess (STAGES=${STAGES})"
+fi
 
 echo ""
 echo "[run_all] done."
