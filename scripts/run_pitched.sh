@@ -25,6 +25,8 @@
 #                                                  # (multi-source -> a few playable pianos to
 #                                                  #  check pitch/temperament across the keyboard)
 #   ONLY="basses synths" LIMIT=20 STAGES=generate,gate,report ./scripts/run_pitched.sh  # pitch A/B slice
+#   MAX_RETRIES=3        ./scripts/run_pitched.sh  # more retry rounds to hit the count
+#   MAX_RETRIES=0        ./scripts/run_pitched.sh  # disable retry (one pass, drop failures)
 #   tmux new -s sas-pitched; ./scripts/run_pitched.sh   # survives SSH drops
 
 set -euo pipefail
@@ -49,6 +51,8 @@ BATCH_SIZE="${BATCH_SIZE:-16}"            # generations per model call (32-64 on
 STAGES="${STAGES:-generate,gate,enrich,report}"  # comma-separated subset
 ONLY="${ONLY:-}"                          # space/comma list to override the enabled categories
 LIMIT="${LIMIT:-}"                        # cap prompts/category (small test slice, e.g. LIMIT=5)
+MAX_RETRIES="${MAX_RETRIES:-2}"           # retry rounds for prompts whose variants all fail the gate
+INIT_ANCHOR="${INIT_ANCHOR:-}"            # set to 1 to enable init_audio pitch anchoring (experiment)
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_pitched] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -103,38 +107,37 @@ if [[ ${#JSONL_PATHS[@]} -eq 0 ]]; then
   exit 1
 fi
 
-# ---------- Stage 2: single batch_generate.py call for ALL JSONLs ----------
-if want_stage generate; then
-  mkdir -p "${OUTPUTS_DIR}"
-  LOGFILE="${OUTPUTS_DIR}/batch_pitched.log"
-  echo "[run_pitched] generating ${#JSONL_PATHS[@]} categories (per-category variant counts from config, batch_size=${BATCH_SIZE}); log -> ${LOGFILE}"
-  python scripts/batch_generate.py \
-    --prompts "${JSONL_PATHS[@]}" \
-    --out-root "${OUTPUTS_DIR}/raw" \
+# ---------- Stage 2+3: generate + gate (with retry-to-target) ----------
+# When BOTH are wanted (the normal pod flow) run_retry.py drives them together,
+# regenerating any prompt whose candidates all fail until the gate yields a
+# sample (up to MAX_RETRIES rounds). generate-only / gate-only stay as simple
+# fallbacks (no retry — there's nothing to react to).
+mkdir -p "${OUTPUTS_DIR}"
+LOGFILE="${OUTPUTS_DIR}/batch_pitched.log"
+if want_stage generate && want_stage gate; then
+  echo "[run_pitched] generate+gate with retry-to-target (max_retries=${MAX_RETRIES}); log -> ${LOGFILE}"
+  python3 scripts/run_retry.py \
+    --pipeline pitched \
+    --categories "${CATEGORIES[@]}" \
+    --outputs-dir "${OUTPUTS_DIR}" \
     --steps "${STEPS}" \
     --batch-size "${BATCH_SIZE}" \
-    --skip-existing 2>&1 | tee "${LOGFILE}"
-else
-  echo "[run_pitched] skipping generate (STAGES=${STAGES})"
-fi
-
-# ---------- Stage 3: gate each category ----------
-if want_stage gate; then
+    --max-retries "${MAX_RETRIES}" \
+    ${INIT_ANCHOR:+--init-audio-anchor} 2>&1 | tee "${LOGFILE}"
+elif want_stage generate; then
+  echo "[run_pitched] generate only (no gate -> no retry)"
+  python scripts/batch_generate.py --prompts "${JSONL_PATHS[@]}" \
+    --out-root "${OUTPUTS_DIR}/raw" --steps "${STEPS}" --batch-size "${BATCH_SIZE}" \
+    ${INIT_ANCHOR:+--init-audio-anchor} --skip-existing 2>&1 | tee "${LOGFILE}"
+elif want_stage gate; then
+  echo "[run_pitched] gate only (no retry)"
   for cat in "${CATEGORIES[@]}"; do
-    raw_dir="${OUTPUTS_DIR}/raw/${cat}"
-    jsonl="prompts/pitched/${cat}.jsonl"
-    if [[ ! -d "${raw_dir}" ]]; then
-      echo "[run_pitched] skip gate ${cat} (no raw dir)"
-      continue
-    fi
-    echo "[run_pitched] gating ${cat}"
-    python scripts/gate_pitched.py \
-      --category "${cat}" \
-      --jsonl "${jsonl}" \
-      --outputs-dir "${OUTPUTS_DIR}"
+    [[ -d "${OUTPUTS_DIR}/raw/${cat}" ]] || { echo "[run_pitched] skip gate ${cat} (no raw dir)"; continue; }
+    python scripts/gate_pitched.py --category "${cat}" \
+      --jsonl "prompts/pitched/${cat}.jsonl" --outputs-dir "${OUTPUTS_DIR}"
   done
 else
-  echo "[run_pitched] skipping gate (STAGES=${STAGES})"
+  echo "[run_pitched] skipping generate+gate (STAGES=${STAGES})"
 fi
 
 # ---------- Stage 3b: pitch-accuracy report (cheap, CPU-only) ----------

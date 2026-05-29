@@ -115,8 +115,12 @@ def build_units(jsonl_path: Path, out_root: Path, args) -> tuple[Path, Path, lis
         negative_prompt = job.get("negative_prompt", args.negative_prompt)
         target_pitch = job.get("target_pitch_midi")
         nvar = int(job.get("variants", args.num_waveforms_per_prompt))
-        for variant_index in range(max(1, nvar)):
-            suffix = f"_v{variant_index:02d}" if nvar > 1 else ""
+        offset = args.variant_offset
+        for i in range(max(1, nvar)):
+            variant_index = offset + i
+            # Always suffix when offset>0 so retry rounds (offset>0) never collide
+            # with round-0 files even for single-variant categories.
+            suffix = f"_v{variant_index:02d}" if (nvar > 1 or offset > 0) else ""
             wav_path = out_dir / f"{sid}{suffix}.wav"
             if args.skip_existing and wav_path.exists():
                 continue
@@ -138,6 +142,7 @@ def build_units(jsonl_path: Path, out_root: Path, args) -> tuple[Path, Path, lis
 def generate_all(jsonls, out_root: Path, model, model_config: dict, args) -> None:
     import torch
     from stable_audio_tools.inference.generation import generate_diffusion_cond_inpaint
+    from tqdm import tqdm
 
     sample_rate = model_config["sample_rate"]
     sample_size = model_config["sample_size"]
@@ -276,6 +281,10 @@ def main():
                              "(pitched JSONLs set per-row 'variants' from the category config).")
     parser.add_argument("--batch-size", type=int, default=16,
                         help="Generations per model call. 16 default; 32-64 on an 80GB GPU.")
+    parser.add_argument("--variant-offset", type=int, default=0,
+                        help="Start variant index (and seed offset). Retry rounds pass a "
+                             "stride (e.g. 64, 128) so they generate FRESH candidates for "
+                             "failed prompts without colliding with earlier rounds.")
     parser.add_argument("--init-audio-anchor", action="store_true",
                         help="EXPERIMENT: seed generation with a synth tone at the row's "
                              "target pitch to bias SA3 toward correct pitch. A/B before trusting.")

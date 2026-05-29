@@ -805,6 +805,10 @@ def main() -> None:
         winner_path = Path(winner["path"])
         out_wav = out_dir / f"{base_id}.wav"
         out_json = out_dir / f"{base_id}.gate.json"
+        # Clear any stale failure marker from an earlier round (retry now passes).
+        stale = failures_dir / f"{base_id}.json"
+        if stale.exists():
+            stale.unlink()
         shutil.copy2(winner_path, out_wav)
         out_json.write_text(json.dumps({
             "id": base_id,

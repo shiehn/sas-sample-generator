@@ -36,6 +36,7 @@ from category_config import (
     CATEGORY_NEGATIVES,
     DEFAULT_NEGATIVE_PROMPT,
 )
+from drum_gate_config import get_profile
 
 CATEGORY_RE = re.compile(r"^[a-z0-9-]+$")
 
@@ -81,6 +82,9 @@ def main() -> None:
         args.duration if args.duration is not None
         else CATEGORY_DURATIONS.get(category, 1.5)
     )
+    # Per-category oversampling: batch_generate makes N candidates, gate_drums
+    # keeps the best. Read from the drum gate profile.
+    variants = get_profile(category).variants_per_prompt
 
     seen: set[str] = set()
     rows: list[dict] = []
@@ -104,6 +108,7 @@ def main() -> None:
             "negative_prompt": negative_prompt,
             "seed": seed,
             "duration": duration,
+            "variants": variants,
         })
         if args.limit and len(rows) >= args.limit:
             break

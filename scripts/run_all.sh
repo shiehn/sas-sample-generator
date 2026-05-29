@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Run the full multi-category sample-generation pipeline:
 #   1. Build prompts/<cat>.jsonl from prompts/<cat>.txt for every enabled category
-#   2. Generate WAVs with a SINGLE batch_generate.py invocation (one pipeline load)
-#   3. Post-process each category in turn
+#      (each row carries a per-category "variants" count from drum_gate_config.py)
+#   2. Generate N variants/prompt with a SINGLE batch_generate.py invocation (one model load)
+#   2b. Quality-gate + best-of-N select (gate_drums.py: raw -> gated_drums) when GATE=1
+#   3. Post-process the winners (trim / LUFS / mono / tags) -> processed/
 #
 # Enabled categories come from scripts/categories.txt — comment a line to skip.
 #
@@ -10,8 +12,11 @@
 # /workspace/outputs on a RunPod pod, or ./outputs locally).
 #
 # Tips:
-#   STEPS=4 ./scripts/run_all.sh       # even cheaper iteration (SA3 needs few steps)
-#   tmux new -s sas; ./scripts/run_all.sh   # survives SSH drops
+#   STEPS=4 ./scripts/run_all.sh           # even cheaper iteration (SA3 needs few steps)
+#   ONLY="kick clap" LIMIT=10 ./scripts/run_all.sh   # small test slice
+#   GATE=0 ./scripts/run_all.sh            # skip the quality gate (legacy: keep all from raw)
+#   BATCH_SIZE=32 ./scripts/run_all.sh     # bigger batches on an 80GB GPU
+#   tmux new -s sas; ./scripts/run_all.sh  # survives SSH drops
 
 set -euo pipefail
 
@@ -34,6 +39,9 @@ STEPS="${STEPS:-8}"
 BATCH_SIZE="${BATCH_SIZE:-16}"   # generations per model call (32-64 on a big GPU)
 ONLY="${ONLY:-}"                 # space/comma list to override enabled categories (test slice)
 LIMIT="${LIMIT:-}"               # cap prompts/category (e.g. ONLY=clap LIMIT=10)
+GATE="${GATE:-1}"                # 1 = quality-gate + best-of-N (raw->gated_drums->processed);
+                                 # 0 = legacy (postprocess straight from raw, keep all)
+MAX_RETRIES="${MAX_RETRIES:-2}"  # retry rounds for prompts whose candidates all fail the gate
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_all] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -83,26 +91,44 @@ if [[ ${#JSONL_PATHS[@]} -eq 0 ]]; then
   exit 1
 fi
 
-# ---------- Step 2: single batch_generate.py call for ALL JSONLs ----------
+# ---------- Step 2 (+2b): generate, then quality-gate + best-of-N selection ----------
 mkdir -p "${OUTPUTS_DIR}"
 LOGFILE="${OUTPUTS_DIR}/batch.log"
-echo "[run_all] generating samples for ${#JSONL_PATHS[@]} categories; log -> ${LOGFILE}"
-python scripts/batch_generate.py \
-  --prompts "${JSONL_PATHS[@]}" \
-  --out-root "${OUTPUTS_DIR}/raw" \
-  --steps "${STEPS}" \
-  --batch-size "${BATCH_SIZE}" \
-  --skip-existing 2>&1 | tee "${LOGFILE}"
+if [[ "${GATE}" == "1" ]]; then
+  # run_retry drives generate + gate_drums together, regenerating any prompt
+  # whose candidates all fail until the gate yields a sample (up to MAX_RETRIES).
+  echo "[run_all] generate + gate (best-of-N, retry-to-target max_retries=${MAX_RETRIES}); log -> ${LOGFILE}"
+  python3 scripts/run_retry.py \
+    --pipeline drums \
+    --categories "${CATEGORIES[@]}" \
+    --outputs-dir "${OUTPUTS_DIR}" \
+    --steps "${STEPS}" \
+    --batch-size "${BATCH_SIZE}" \
+    --max-retries "${MAX_RETRIES}" 2>&1 | tee "${LOGFILE}"
+else
+  echo "[run_all] generating (GATE=0, no quality gate); log -> ${LOGFILE}"
+  python scripts/batch_generate.py \
+    --prompts "${JSONL_PATHS[@]}" \
+    --out-root "${OUTPUTS_DIR}/raw" \
+    --steps "${STEPS}" \
+    --batch-size "${BATCH_SIZE}" \
+    --skip-existing 2>&1 | tee "${LOGFILE}"
+fi
 
 # ---------- Step 3: post-process each category ----------
+# With GATE=1 we post-process the gated winners; otherwise straight from raw.
 for cat in "${CATEGORIES[@]}"; do
-  raw_dir="${OUTPUTS_DIR}/raw/${cat}"
-  if [[ ! -d "${raw_dir}" ]]; then
-    echo "[run_all] skip postprocess ${cat} (no raw dir)"
+  if [[ "${GATE}" == "1" ]]; then
+    src_dir="${OUTPUTS_DIR}/gated_drums/${cat}"
+  else
+    src_dir="${OUTPUTS_DIR}/raw/${cat}"
+  fi
+  if [[ ! -d "${src_dir}" ]]; then
+    echo "[run_all] skip postprocess ${cat} (no ${src_dir})"
     continue
   fi
   echo "[run_all] post-processing ${cat}"
-  python scripts/postprocess_oneshots.py --category "${cat}" --mono
+  python scripts/postprocess_oneshots.py --category "${cat}" --in-dir "${src_dir}" --mono
 done
 
 echo ""
