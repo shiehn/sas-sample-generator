@@ -41,7 +41,9 @@ ONLY="${ONLY:-}"                 # space/comma list to override enabled categori
 LIMIT="${LIMIT:-}"               # cap prompts/category (e.g. ONLY=clap LIMIT=10)
 GATE="${GATE:-1}"                # 1 = quality-gate + best-of-N (raw->gated_drums->processed);
                                  # 0 = legacy (postprocess straight from raw, keep all)
-MAX_RETRIES="${MAX_RETRIES:-2}"  # retry rounds for prompts whose candidates all fail the gate
+MAX_RETRIES="${MAX_RETRIES:-2}"  # re-roll rounds for failed prompts before topping up
+TARGET="${TARGET:-150}"          # per-category MINIMUM surviving samples (0 = none)
+[[ -n "${LIMIT}" ]] && TARGET=0  # small test slice must not chase the full minimum
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_all] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -97,13 +99,14 @@ LOGFILE="${OUTPUTS_DIR}/batch.log"
 if [[ "${GATE}" == "1" ]]; then
   # run_retry drives generate + gate_drums together, regenerating any prompt
   # whose candidates all fail until the gate yields a sample (up to MAX_RETRIES).
-  echo "[run_all] generate + gate (best-of-N, retry-to-target max_retries=${MAX_RETRIES}); log -> ${LOGFILE}"
+  echo "[run_all] generate + gate (best-of-N, target=${TARGET}/cat, max_retries=${MAX_RETRIES}); log -> ${LOGFILE}"
   python3 scripts/run_retry.py \
     --pipeline drums \
     --categories "${CATEGORIES[@]}" \
     --outputs-dir "${OUTPUTS_DIR}" \
     --steps "${STEPS}" \
     --batch-size "${BATCH_SIZE}" \
+    --target "${TARGET}" \
     --max-retries "${MAX_RETRIES}" 2>&1 | tee "${LOGFILE}"
 else
   echo "[run_all] generating (GATE=0, no quality gate); log -> ${LOGFILE}"

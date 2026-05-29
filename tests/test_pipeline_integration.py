@@ -105,19 +105,31 @@ def test_both_pipelines_normalize_perceived_loudness():
 
 # -------------------------------------------------------------- retry helpers
 
-def test_retry_failed_ids_and_filter():
+def test_retry_assess_target_logic():
+    """assess() counts distinct surviving PROMPTS (a multi-source pitched prompt
+    survives if ANY of its pitch-ids passed) and returns the failed rows to re-roll."""
     with tempfile.TemporaryDirectory() as d:
-        tmp = Path(d)
-        src = tmp / "s.jsonl"
-        src.write_text("\n".join(json.dumps({"id": f"k-{i}", "prompt": f"p{i}"}) for i in range(5)) + "\n")
-        fdir = tmp / "_failures"; fdir.mkdir()
-        (fdir / "k-1.json").write_text("{}")
-        (fdir / "k-3.json").write_text("{}")
-        ids = RR.failed_ids(tmp)
-        rows = RR.filter_rows(src, ids)
-        assert ids == {"k-1", "k-3"}, ids
-        assert [json.loads(r)["id"] for r in rows] == ["k-1", "k-3"], rows
-        assert RR.filter_rows(src, set()) == []  # no failures -> nothing to retry
+        tmp = Path(d)  # acts as outputs-dir
+        # 2 prompts, each with 2 pitch-ids (multi-source pitched shape).
+        src = tmp / "_src.jsonl"
+        rows = [
+            {"id": "b-p1a", "prompt": "P1"}, {"id": "b-p1b", "prompt": "P1"},
+            {"id": "b-p2a", "prompt": "P2"}, {"id": "b-p2b", "prompt": "P2"},
+        ]
+        src.write_text("\n".join(json.dumps(r) for r in rows) + "\n")
+        gated = tmp / "gated" / "basses"; gated.mkdir(parents=True)
+        (gated / "b-p1a.gate.json").write_text("{}")  # P1 survives via one pitch; P2 none
+
+        surv, failed_rows, failed_ids, pool = RR.assess("pitched", tmp, "basses", src)
+        assert pool == 2, pool                       # 2 distinct prompts
+        assert surv == 1, surv                        # P1 survived (one pitch is enough)
+        assert failed_ids == {"b-p2a", "b-p2b"}, failed_ids   # re-roll BOTH of P2's pitches
+        assert len(failed_rows) == 2
+
+        # rows_with_new_ids: simulate a top-up that adds P3.
+        (src).write_text(src.read_text() + json.dumps({"id": "b-p3a", "prompt": "P3"}) + "\n")
+        new_rows, new_ids = RR.rows_with_new_ids(src, {"b-p1a", "b-p1b", "b-p2a", "b-p2b"})
+        assert new_ids == {"b-p3a"} and len(new_rows) == 1
 
 
 # ------------------------------------------------------ batch_generate work-list

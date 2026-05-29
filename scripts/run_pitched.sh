@@ -51,8 +51,12 @@ BATCH_SIZE="${BATCH_SIZE:-16}"            # generations per model call (32-64 on
 STAGES="${STAGES:-generate,gate,enrich,report}"  # comma-separated subset
 ONLY="${ONLY:-}"                          # space/comma list to override the enabled categories
 LIMIT="${LIMIT:-}"                        # cap prompts/category (small test slice, e.g. LIMIT=5)
-MAX_RETRIES="${MAX_RETRIES:-2}"           # retry rounds for prompts whose variants all fail the gate
+MAX_RETRIES="${MAX_RETRIES:-2}"           # re-roll rounds for failed prompts before topping up
+TARGET="${TARGET:-150}"                   # per-category MINIMUM surviving instruments (0 = none)
 INIT_ANCHOR="${INIT_ANCHOR:-}"            # set to 1 to enable init_audio pitch anchoring (experiment)
+
+# A small test slice (LIMIT) must not chase the full per-category minimum.
+[[ -n "${LIMIT}" ]] && TARGET=0
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_pitched] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -115,13 +119,14 @@ fi
 mkdir -p "${OUTPUTS_DIR}"
 LOGFILE="${OUTPUTS_DIR}/batch_pitched.log"
 if want_stage generate && want_stage gate; then
-  echo "[run_pitched] generate+gate with retry-to-target (max_retries=${MAX_RETRIES}); log -> ${LOGFILE}"
+  echo "[run_pitched] generate+gate, target=${TARGET}/cat, max_retries=${MAX_RETRIES}; log -> ${LOGFILE}"
   python3 scripts/run_retry.py \
     --pipeline pitched \
     --categories "${CATEGORIES[@]}" \
     --outputs-dir "${OUTPUTS_DIR}" \
     --steps "${STEPS}" \
     --batch-size "${BATCH_SIZE}" \
+    --target "${TARGET}" \
     --max-retries "${MAX_RETRIES}" \
     ${INIT_ANCHOR:+--init-audio-anchor} 2>&1 | tee "${LOGFILE}"
 elif want_stage generate; then
