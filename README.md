@@ -843,6 +843,25 @@ python scripts/build_pack.py --pack drums --version 1       # real build → ./d
 python scripts/build_pack.py --pack instruments --version 1
 ```
 
+**Ready-to-consume directories (no zip / download step).** To produce the two
+libraries as folders you can drop straight into the app's install location —
+`<userData>/sample-packs/{drums,instruments}/` — use `--format dir`, or the
+wrapper. Each emits `dist/<subdir>/` with the `_pack-version.json` marker at its
+root: exactly the tree the app expects on disk, ready out of the box.
+
+```bash
+# after gating + enriching (processed/ + instruments/ are populated):
+DRUM_VERSION=3 INSTRUMENT_VERSION=3 ./scripts/build_libraries.sh   # → dist/drums/, dist/instruments/
+# drop into your local app (macOS path shown):
+rsync -a dist/drums/        ~/Library/Application\ Support/signals-and-sorcery/sample-packs/drums/
+rsync -a dist/instruments/  ~/Library/Application\ Support/signals-and-sorcery/sample-packs/instruments/
+```
+
+The marker `version` must equal that pack's `expectedVersion` in
+`sas-app/src/shared/constants/sample-packs.ts` (plain string match) or the app
+treats the folder as a different version. For GCP distribution use `--format zip`
+(default) and follow the publish runbook below.
+
 The build prints `sizeBytes` + `sha256`; paste those into
 `sas-app/src/shared/constants/sample-packs.ts` (bump `expectedVersion` + the
 download URL) so the app detects the new version and prompts a re-download.

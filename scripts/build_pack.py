@@ -38,6 +38,10 @@ Usage:
   python scripts/build_pack.py --pack drums --version dev \\
     --source ./test-fixtures/drums --out /tmp/
 
+  # ready-to-consume DIRECTORY (drop its contents into the app's
+  # <userData>/sample-packs/<subdir>/ — no zip/download step):
+  python scripts/build_pack.py --pack instruments --version 3 --format dir
+
   # smoke test (writes its own fixture, builds + verifies):
   python scripts/build_pack.py --smoke-test
 """
@@ -46,6 +50,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -62,10 +67,15 @@ PACK_REGISTRY = {
         # follow-up — the in-app drum-resolver still expects this folder shape
         # so the zip preserves it for now).
         "default_source_subdir": "processed",
+        # Subdir the app extracts into, under <userData>/sample-packs/ — must
+        # equal DRUM_PACK.installSubdir in sas-app sample-packs.ts. The --format
+        # dir output is named for this so its CONTENTS drop straight in.
+        "install_subdir": "drums",
     },
     "instruments": {
         "pack_id": "sas-instrument-pack",
         "default_source_subdir": "instruments",
+        "install_subdir": "instruments",
     },
     "loops": {
         # The factory loop / sample library, migrated from the legacy
@@ -73,6 +83,7 @@ PACK_REGISTRY = {
         # (the new pack system) can install it like the drum/instrument packs.
         "pack_id": "sas-loop-library",
         "default_source_subdir": "loops",
+        "install_subdir": "loops",
     },
 }
 
@@ -165,6 +176,28 @@ def write_zip(out_path: Path, manifest: dict, files: list[tuple[Path, str]]) -> 
                 zf.writestr(info, src.read())
 
 
+def write_dir(out_path: Path, manifest: dict, files: list[tuple[Path, str]]) -> None:
+    """Write a ready-to-consume library DIRECTORY — the exact tree the zip would
+    extract to: `_pack-version.json` at the root + the payload. Its CONTENTS drop
+    straight into `<userData>/sample-packs/<installSubdir>/`, so the app sees an
+    installed, valid library with no zip/download step (the marker is what
+    getInstalledVersion() reads)."""
+    if out_path.exists():
+        # Only clobber a prior build (has the marker) or an empty dir — never an
+        # unknown folder we didn't create.
+        if not (out_path / "_pack-version.json").exists() and any(out_path.iterdir()):
+            sys.exit(f"refusing to overwrite non-pack directory: {out_path}\n"
+                     f"  (no _pack-version.json and not empty — remove it yourself if intended)")
+        shutil.rmtree(out_path)
+    out_path.mkdir(parents=True)
+    manifest_bytes = (json.dumps(manifest, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    (out_path / "_pack-version.json").write_bytes(manifest_bytes)
+    for abs_path, archive_path in files:
+        dst = out_path / archive_path
+        dst.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(abs_path, dst)
+
+
 def sha256_file(path: Path) -> str:
     h = hashlib.sha256()
     with open(path, "rb") as f:
@@ -173,7 +206,10 @@ def sha256_file(path: Path) -> str:
     return h.hexdigest()
 
 
-def build_pack(pack: str, version: str, source: Path, out_dir: Path) -> Path:
+def build_pack(pack: str, version: str, source: Path, out_dir: Path,
+               fmt: str = "zip") -> dict:
+    """Build the pack as a zip ('zip'), a ready-to-consume directory ('dir'), or
+    both ('both'). Returns {'zip': path_or_None, 'dir': path_or_None}."""
     if pack not in PACK_REGISTRY:
         sys.exit(f"unknown pack {pack!r}; expected one of {sorted(PACK_REGISTRY)}")
     if not source.exists():
@@ -184,7 +220,7 @@ def build_pack(pack: str, version: str, source: Path, out_dir: Path) -> Path:
     reg = PACK_REGISTRY[pack]
     pack_id = reg["pack_id"]
 
-    print(f"[build_pack] pack={pack} pack_id={pack_id} version={version}")
+    print(f"[build_pack] pack={pack} pack_id={pack_id} version={version} format={fmt}")
     print(f"[build_pack] source: {source}")
 
     files = list_payload_files(source)
@@ -196,29 +232,44 @@ def build_pack(pack: str, version: str, source: Path, out_dir: Path) -> Path:
           f"uncompressed: {manifest['sizeBytesUncompressed']:,} bytes")
 
     out_dir.mkdir(parents=True, exist_ok=True)
-    out_path = out_dir / f"{pack_id}-v{version}.zip"
-    if out_path.exists():
-        out_path.unlink()
+    result: dict = {"zip": None, "dir": None}
 
-    t0 = time.time()
-    write_zip(out_path, manifest, files)
-    elapsed = time.time() - t0
+    if fmt in ("zip", "both"):
+        out_path = out_dir / f"{pack_id}-v{version}.zip"
+        if out_path.exists():
+            out_path.unlink()
+        t0 = time.time()
+        write_zip(out_path, manifest, files)
+        elapsed = time.time() - t0
+        zip_size = out_path.stat().st_size
+        sha = sha256_file(out_path)
+        print()
+        print(f"[build_pack] wrote zip:   {out_path}")
+        print(f"[build_pack] zip size:    {zip_size:,} bytes ({zip_size / 1e9:.2f} GB)")
+        print(f"[build_pack] sha256:      {sha}")
+        print(f"[build_pack] build time:  {elapsed:.1f}s")
+        print()
+        print("To publish: gsutil cp the zip to GCP, then update")
+        print("sas-app/src/shared/constants/sample-packs.ts with:")
+        print(f"  expectedVersion: '{version}',")
+        print(f"  sizeBytes: {zip_size},")
+        print(f"  sha256: '{sha}',")
+        result["zip"] = out_path
 
-    zip_size = out_path.stat().st_size
-    sha = sha256_file(out_path)
+    if fmt in ("dir", "both"):
+        dir_path = out_dir / reg["install_subdir"]
+        write_dir(dir_path, manifest, files)
+        print()
+        print(f"[build_pack] wrote dir:   {dir_path}/")
+        print(f"[build_pack]   {manifest['fileCount']} files + _pack-version.json "
+              f"(version={version})")
+        print(f"[build_pack] consume out of the box — its CONTENTS go straight into the app:")
+        print(f"  rsync -a '{dir_path}/' '<userData>/sample-packs/{reg['install_subdir']}/'")
+        print(f"  (the app expects version '{version}' — keep it == "
+              f"sas-app sample-packs.ts {pack_id} expectedVersion)")
+        result["dir"] = dir_path
 
-    print()
-    print(f"[build_pack] wrote: {out_path}")
-    print(f"[build_pack] zip size:     {zip_size:,} bytes ({zip_size / 1e9:.2f} GB)")
-    print(f"[build_pack] uncompressed: {manifest['sizeBytesUncompressed']:,} bytes")
-    print(f"[build_pack] sha256:       {sha}")
-    print(f"[build_pack] build time:   {elapsed:.1f}s")
-    print()
-    print("Update sas-app/src/shared/constants/sample-packs.ts with:")
-    print(f"  expectedVersion: '{version}',")
-    print(f"  sizeBytes: {zip_size},")
-    print(f"  sha256: '{sha}',")
-    return out_path
+    return result
 
 
 def _assert_zone_invariants(zones: list[dict]) -> None:
@@ -298,7 +349,7 @@ def smoke_test() -> None:
             version="smoke",
             source=source,
             out_dir=dist,
-        )
+        )["zip"]
 
         print("[smoke_test] verifying zip contents...")
         with zipfile.ZipFile(out_path) as zf:
@@ -331,6 +382,23 @@ def smoke_test() -> None:
             expected |= {f"basses/basses-aaa/{z['sample']}" for z in zones}
             assert set(names) == expected, f"unexpected names; want {expected}, got {set(names)}"
 
+        # --- ready-to-consume DIRECTORY emission (--format dir) ---
+        print()
+        print("[smoke_test] verifying dir emission (--format dir)...")
+        dres = build_pack(pack="instruments", version="smoke", source=source,
+                          out_dir=dist, fmt="dir")
+        dpath = dres["dir"]
+        assert dpath is not None and dpath.name == "instruments", f"bad dir path: {dpath}"
+        assert (dpath / "_pack-version.json").exists(), "emitted dir missing version marker"
+        dv = json.loads((dpath / "_pack-version.json").read_text())
+        assert dv["packId"] == "sas-instrument-pack" and dv["version"] == "smoke", dv
+        emitted = {str(p.relative_to(dpath)).replace(os.sep, "/")
+                   for p in dpath.rglob("*") if p.is_file()}
+        # The emitted tree (marker + payload) must equal exactly the zip's entries,
+        # i.e. excluded admin paths (_archive/_failures/.DS_Store) are absent too.
+        assert emitted == expected, f"dir payload != zip payload; diff={emitted ^ expected}"
+        print(f"[smoke_test] dir-emit OK ({len(emitted)} files incl. marker)")
+
         # Build twice and confirm sha256 stays identical (determinism check)
         print()
         print("[smoke_test] determinism check: rebuilding...")
@@ -340,7 +408,7 @@ def smoke_test() -> None:
             version="smoke",
             source=source,
             out_dir=dist,
-        )
+        )["zip"]
         sha2 = sha256_file(out_path2)
         assert sha1 == sha2, f"non-deterministic build: {sha1} != {sha2}"
         print(f"[smoke_test] determinism OK: both builds sha256={sha1}")
@@ -360,7 +428,11 @@ def main() -> None:
     parser.add_argument("--source",
                         help="Source directory. Defaults to $SAS_OUTPUTS_DIR/<pack-subdir>")
     parser.add_argument("--out", default="./dist",
-                        help="Output directory for the zip (default: ./dist)")
+                        help="Output directory (default: ./dist)")
+    parser.add_argument("--format", choices=["zip", "dir", "both"], default="zip",
+                        help="zip = distributable .zip (default); dir = ready-to-consume "
+                             "library dir (dist/<subdir>/) to drop into the app's "
+                             "<userData>/sample-packs/<subdir>/; both")
     parser.add_argument("--smoke-test", action="store_true",
                         help="Run a self-contained smoke test against a tiny synthetic fixture")
     args = parser.parse_args()
@@ -382,7 +454,8 @@ def main() -> None:
         source = Path(sas_outputs).resolve() / subdir
 
     out_dir = Path(args.out).resolve()
-    build_pack(pack=args.pack, version=args.version, source=source, out_dir=out_dir)
+    build_pack(pack=args.pack, version=args.version, source=source, out_dir=out_dir,
+               fmt=args.format)
 
 
 if __name__ == "__main__":

@@ -39,7 +39,13 @@ python scripts/build_pack.py --pack instruments --version 1
 
 # Override source path explicitly (e.g. samples already moved to user-data):
 python scripts/build_pack.py --pack instruments --version 1 \
-    --source ~/Library/Application\ Support/signals-and-sorcery/samples/instruments
+    --source ~/Library/Application\ Support/signals-and-sorcery/sample-packs/instruments
+
+# Skip the zip — emit a ready-to-consume DIRECTORY (dist/<subdir>/ + the
+# _pack-version.json marker) to rsync straight into the app's install dir,
+# no download step:
+python scripts/build_pack.py --pack instruments --version 1 --format dir
+# both libraries at once: DRUM_VERSION=N INSTRUMENT_VERSION=N ./scripts/build_libraries.sh
 ```
 
 The script prints, at the end:
@@ -89,7 +95,7 @@ export const DRUM_PACK: PackConfig = {
 
 Commit + push. The next sas-app build will:
 
-1. On launch / plugin activate, read `<userData>/samples/drums/_pack-version.json`
+1. On launch / plugin activate, read `<userData>/sample-packs/drums/_pack-version.json`
 2. If the marker is missing → show "Sample library not installed" CTA
 3. If the marker version differs from `expectedVersion` → show "Update available" CTA
 4. If the user clicks Download → fetch from GCP, verify size, extract,
