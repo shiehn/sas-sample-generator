@@ -175,7 +175,7 @@ def normalize_lufs(y, sr, target_lufs, peak_ceiling_db):
 
 
 def process_file(path, out_dir, rejected_dir, args):
-    y, sr = sf.read(path, always_2d=True)
+    y, sr = sf.read(str(path), always_2d=True)
     sample_id = path.stem
     raw_prompt = read_raw_prompt(path)
 
@@ -219,7 +219,7 @@ def process_file(path, out_dir, rejected_dir, args):
 
     out_path = out_dir / path.name
     with sf.SoundFile(
-        out_path, mode="w",
+        str(out_path), mode="w",
         samplerate=sr, channels=processed.shape[1], subtype="PCM_24",
     ) as f:
         if raw_prompt:
