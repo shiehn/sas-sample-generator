@@ -2,22 +2,29 @@
 # Run the full pitched-instrument pipeline:
 #
 #   1. Build prompts/pitched/<cat>.jsonl from prompts/pitched/<cat>.txt for every enabled category
-#   2. Generate WAVs with a SINGLE batch_generate.py invocation (one pipeline load,
-#      --num-waveforms-per-prompt 5 by default so the gate has variants to choose from)
+#   2. Generate WAVs with a SINGLE batch_generate.py invocation (one model load,
+#      BATCHED; per-category variant counts come from pitched_category_config.py
+#      via each JSONL row's "variants" field, so the gate has candidates to pick)
 #   3. Gate each category (quality + pitch + polyphony + sustain checks; picks the best variant)
+#   3b. Report pitch accuracy (outputs/_reports/pitch_summary.{json,md}) — measured-vs-target
 #   4. Enrich each category (pitch-correct, LUFS-normalize, pre-render zones, write manifest)
 #
 # Enabled categories come from scripts/pitched_categories.txt — comment a line to skip.
 #
 # Outputs land under $SAS_OUTPUTS_DIR:
-#   raw/<cat>/                  — SA3 generations (5 variants per prompt)
+#   raw/<cat>/                  — SA3 generations (per-category variants per prompt)
 #   gated/<cat>/                — gate winners + sidecar gate.json + _failures/
 #   instruments/<cat>/<id>/     — final library: source.wav, zones/<midi>.flac, manifest.json
 #
 # Tips:
-#   STAGES=generate,gate ./scripts/run_pitched.sh   # GPU pod: skip enrich (CPU-bound)
-#   STAGES=enrich         ./scripts/run_pitched.sh  # Local: enrich gated samples rsynced from pod
-#   VARIANTS=3            ./scripts/run_pitched.sh  # cheaper test; gate has fewer to choose from
+#   STAGES=generate,gate,report ./scripts/run_pitched.sh   # GPU pod: skip enrich (CPU-bound)
+#   STAGES=enrich               ./scripts/run_pitched.sh   # Local: enrich gated samples rsynced from pod
+#   STAGES=report               ./scripts/run_pitched.sh   # Re-emit the pitch report from existing gate.json
+#   BATCH_SIZE=32        ./scripts/run_pitched.sh  # bigger batches on a 80GB GPU
+#   ONLY=pianos LIMIT=5  ./scripts/run_pitched.sh  # SMALL test slice: 5 piano prompts
+#                                                  # (multi-source -> a few playable pianos to
+#                                                  #  check pitch/temperament across the keyboard)
+#   ONLY="basses synths" LIMIT=20 STAGES=generate,gate,report ./scripts/run_pitched.sh  # pitch A/B slice
 #   tmux new -s sas-pitched; ./scripts/run_pitched.sh   # survives SSH drops
 
 set -euo pipefail
@@ -38,8 +45,10 @@ fi
 CATEGORIES_FILE="${REPO_ROOT}/scripts/pitched_categories.txt"
 OUTPUTS_DIR="${SAS_OUTPUTS_DIR:-${REPO_ROOT}/outputs}"
 STEPS="${STEPS:-8}"                       # SA3 sweet spot
-VARIANTS="${VARIANTS:-5}"                 # candidates per (prompt × target_pitch)
-STAGES="${STAGES:-generate,gate,enrich}"  # comma-separated subset
+BATCH_SIZE="${BATCH_SIZE:-16}"            # generations per model call (32-64 on 80GB GPU)
+STAGES="${STAGES:-generate,gate,enrich,report}"  # comma-separated subset
+ONLY="${ONLY:-}"                          # space/comma list to override the enabled categories
+LIMIT="${LIMIT:-}"                        # cap prompts/category (small test slice, e.g. LIMIT=5)
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_pitched] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -56,6 +65,12 @@ while IFS= read -r line; do
   CATEGORIES+=("${line}")
 done < "${CATEGORIES_FILE}"
 
+# ONLY overrides the enabled list — for a small test slice on one or a few
+# categories, e.g. `ONLY=pianos LIMIT=5 ./scripts/run_pitched.sh`.
+if [[ -n "${ONLY}" ]]; then
+  IFS=', ' read -r -a CATEGORIES <<< "${ONLY}"
+fi
+
 if [[ ${#CATEGORIES[@]} -eq 0 ]]; then
   echo "[run_pitched] ERROR: no categories enabled in ${CATEGORIES_FILE}" >&2
   exit 1
@@ -63,7 +78,7 @@ fi
 
 echo "[run_pitched] categories (${#CATEGORIES[@]}): ${CATEGORIES[*]}"
 echo "[run_pitched] outputs dir: ${OUTPUTS_DIR}"
-echo "[run_pitched] steps=${STEPS} variants=${VARIANTS} stages=${STAGES}"
+echo "[run_pitched] steps=${STEPS} batch_size=${BATCH_SIZE} stages=${STAGES}${LIMIT:+ limit=${LIMIT}} (per-category variants from config)"
 
 want_stage() { [[ ",${STAGES}," == *",$1,"* ]]; }
 
@@ -78,8 +93,8 @@ for cat in "${CATEGORIES[@]}"; do
     echo "[run_pitched] WARNING: ${txt} missing, skipping ${cat}" >&2
     continue
   fi
-  echo "[run_pitched] building ${jsonl} <- ${txt}"
-  python3 scripts/list_to_jsonl_pitched.py --in "${txt}" --out "${jsonl}"
+  echo "[run_pitched] building ${jsonl} <- ${txt}${LIMIT:+ (limit ${LIMIT})}"
+  python3 scripts/list_to_jsonl_pitched.py --in "${txt}" --out "${jsonl}" ${LIMIT:+--limit "${LIMIT}"}
   JSONL_PATHS+=("${jsonl}")
 done
 
@@ -92,12 +107,12 @@ fi
 if want_stage generate; then
   mkdir -p "${OUTPUTS_DIR}"
   LOGFILE="${OUTPUTS_DIR}/batch_pitched.log"
-  echo "[run_pitched] generating ${VARIANTS} variants per prompt for ${#JSONL_PATHS[@]} categories; log -> ${LOGFILE}"
+  echo "[run_pitched] generating ${#JSONL_PATHS[@]} categories (per-category variant counts from config, batch_size=${BATCH_SIZE}); log -> ${LOGFILE}"
   python scripts/batch_generate.py \
     --prompts "${JSONL_PATHS[@]}" \
     --out-root "${OUTPUTS_DIR}/raw" \
     --steps "${STEPS}" \
-    --num-waveforms-per-prompt "${VARIANTS}" \
+    --batch-size "${BATCH_SIZE}" \
     --skip-existing 2>&1 | tee "${LOGFILE}"
 else
   echo "[run_pitched] skipping generate (STAGES=${STAGES})"
@@ -120,6 +135,19 @@ if want_stage gate; then
   done
 else
   echo "[run_pitched] skipping gate (STAGES=${STAGES})"
+fi
+
+# ---------- Stage 3b: pitch-accuracy report (cheap, CPU-only) ----------
+# Reads the gate sidecars and emits ${OUTPUTS_DIR}/_reports/pitch_summary.{json,md}.
+# Run on the pod right after gate so the measured-vs-target accuracy is visible
+# before spending the rest of the campaign / before transferring for enrich.
+if want_stage report; then
+  echo "[run_pitched] building pitch-accuracy report for ${#CATEGORIES[@]} categories"
+  python3 scripts/pitch_report.py \
+    --outputs-dir "${OUTPUTS_DIR}" \
+    --categories "${CATEGORIES[@]}" || echo "[run_pitched] WARNING: pitch_report failed (non-fatal)" >&2
+else
+  echo "[run_pitched] skipping report (STAGES=${STAGES})"
 fi
 
 # ---------- Stage 4: enrich each category ----------

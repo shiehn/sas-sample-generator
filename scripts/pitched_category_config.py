@@ -1,57 +1,48 @@
-"""Per-category configuration for the pitched-instrument pipeline.
+"""Per-category configuration for the pitched-instrument pipeline (v3).
 
-Sibling to category_config.py (drums). Each pitched category declares:
+Each pitched category declares:
 
-  - target_pitches_midi:  one or more MIDI notes the pipeline asks SA3 to
-    aim for. Single-source categories have one (e.g. Plucks → C4 / 60).
-    Multi-source categories (Phase 1.2) have two (e.g. Pianos → C2 + C4)
-    so the per-zone resolver can pick the closer source at playback time.
+  - target_pitches_midi:  one or more MIDI notes SA3 is asked to aim for. The
+    list_to_jsonl fanout emits one job per (prompt × target_pitch); enrich then
+    MERGES the surviving pitches of one prompt into a single multi-source
+    instrument (each zone rendered from its nearest real source -> small,
+    artifact-free pitch shifts across the keyboard).
 
-  - duration_seconds:     length passed to SA3's seconds_total. Longer for
-    sustaining categories (pads, organs) so we have a steady-state region
-    to trim and loop in enrich. Shorter for plucks/percussion where the
-    decay is the whole sample.
+  - duration_seconds:     SA3 seconds_total. Longer for sustaining categories so
+    enrich has a steady-state region to trim/loop.
 
-  - zone_span_semitones:  how far from each source pitch we render zones.
-    +/- 12 (full octave) is the default; FX uses 0 (no shift at all).
+  - zone_span_semitones:  how far from each source pitch zones are rendered.
+    12 for single-source categories; 7 for multi-source (the real sources cover
+    the rest, and the smaller span drops the worst extreme-shift zones).
 
-  - zone_step_semitones:  pre-render granularity inside the span. 2 for
-    formant-sensitive categories (vocals/pads/strings/pianos), 3 elsewhere.
-    Tracktion does the in-between semitones via SRC at playback time.
+  - zone_step_semitones:  pre-render granularity. 2 for formant-sensitive
+    categories (vocals/choir/pads/strings/pianos/winds), 3 elsewhere. Tracktion
+    SRC-interpolates the in-between semitones at playback.
 
-  - pitch_tolerance_cents: max deviation from target pitch the gate
-    accepts. 50 default; FX uses 9999 to skip the pitch gate entirely
-    (sound design content, pitch is not the point).
+  - pitch_tolerance_cents: 9999 (off) for everything — SA3 can't reliably hit a
+    prompted pitch, so enrich measures the actual pitch and snaps to the nearest
+    semitone. The gate only confirms "this is a clearly-pitched note".
 
-  - min_sustain_seconds:  the sustain-plateau gate threshold. Short for
-    pluck/percussion (0.2-0.6); long for pads (2.5+). Anything below
-    rejects as "short stab" — catches the case where SA3 interprets a
-    'sustained note' prompt as a percussive stab.
+  - min_sustain_seconds:  sustain-plateau gate threshold (rejects percussive
+    stabs where a sustained note was asked for).
 
-  - open_ended:           the manifest's open_ended flag, set on every
-    zone. True for sustaining categories (Pads, Strings, Organs, Brass,
-    Winds) so the Tracktion sampler plays for note-hold-duration; false
-    for plucks/mallets/percussion which play through to end-of-sample.
+  - open_ended:           manifest open_ended flag. True for sustaining
+    categories (pads/strings/organs/brass/winds/choir/accordion).
 
-  - pitch_detection_floor_hz: CREPE's reliable range is ~50 Hz up.
-    Sub-bass categories (Basses target E1) need pyin cross-check below
-    that. The 3-way agreement in gate_pitched takes over when target
-    pitch is below ~82 Hz (E2).
+  - pitch_detection_floor_hz: pyin/autocorr lower bound hint for sub-bass.
 
-  - skip_pitch_shift:     True only for FX. Zones never get pre-rendered;
-    a single zone covers all keys at native pitch.
+  - variants_per_prompt:  SA3 candidates per (prompt × pitch); the gate keeps
+    the best. Higher for hard/weak categories (sub-bass, sustained, vocals).
 
-  - variants_per_prompt:  how many SA3 candidates per (prompt × target)
-    we generate. The gate picks the best by composite score. Bumped to
-    20 for Vocals because SA3's model card says vocals are weak — we
-    need more attempts to find a usable one.
-
-Phase 1.0 ships single-source for all categories except FX. Phase 1.2
-flips Basses (E1+E2), Pianos (C2+C4), Strings (D3+A3), Winds (D3+A4)
-to multi-source — uncomment the second pitch in target_pitches_midi.
+MULTI-SOURCE TOGGLE
+-------------------
+SAS_MULTI_SOURCE=1 (default) flips the wide-range categories to multiple real
+source pitches + a tighter zone_span. SAS_MULTI_SOURCE=0 reproduces the v1
+single-source behaviour (one root, span 12) for an A/B comparison.
 """
 
-from dataclasses import dataclass
+import os
+from dataclasses import dataclass, replace
 
 
 @dataclass(frozen=True)
@@ -66,64 +57,113 @@ class PitchedCategoryConfig:
     open_ended: bool
     pitch_detection_floor_hz: float
     skip_pitch_shift: bool = False
-    # max_correction_semitones: how aggressively enrich is allowed to shift
-    # a sample toward the originally-requested target pitch. SA3 doesn't
-    # reliably hit the prompted pitch, so:
-    #   - if measured pitch is within N semitones of target: shift to target
-    #     (preserves prompt semantics — a "C4 plucks" file really is at C4)
-    #   - else: snap to nearest integer semitone (minimal <50 cent shift,
-    #     no audible artifacts) and use THAT as the sampler's root
-    # 3 semitones is the conventional "still sounds natural" threshold.
-    # Set to 0 to ALWAYS snap to nearest semitone (skip target lock-in).
-    # Set to a large value (24+) to ALWAYS shift to target.
+    # How aggressively enrich shifts toward the prompted target: within N
+    # semitones -> lock to target (preserves prompt semantics); else snap to the
+    # nearest integer semitone (<50c, no artifact) and use THAT as the root.
     max_correction_semitones: int = 3
-    variants_per_prompt: int = 5
+    variants_per_prompt: int = 6
 
 
-# Negative prompts pattern: exclude "loop, melody, multiple notes, chord,
-# reverb wash, vocals, drums" plus other categories that confuse SA3
-# into emitting wrong-shape content. Vocals' negative does NOT exclude
-# "vocals" (would suppress the target) and instead lists drums/melody.
+# Generic negative: suppress phrasing/percussion/loops so SA3 emits a single
+# sustained note. Vocal categories use _VOCAL_NEG so we don't suppress the target.
 _GENERIC_NEG = (
     "low quality, distorted, noisy, clipped, music loop, drum loop, "
     "multiple notes, chord, melody, rhythmic pattern, reverb wash, "
     "long ambience, vocals, drums"
 )
+_VOCAL_NEG = (
+    "low quality, distorted, noisy, clipped, music loop, drum loop, "
+    "multiple notes, chord, melody, rhythmic pattern, reverb wash, "
+    "long ambience, drums, instrumental backing"
+)
 
-# Threshold changes (2026-05-22):
-# - min_sustain_seconds (7th field): halved across the board, plus halved again
-#   for the categories that still hit short_stab after the first pass.
-# - pitch_tolerance_cents (6th field): bumped to 9999 (effectively off) for
-#   all non-FX categories. SA3 doesn't reliably hit a target pitch from a
-#   text prompt — that's a known limitation of text-to-audio models, not a
-#   gate problem. The enrich stage measures the actual pitch and uses THAT
-#   as the sampler's root note, so a sample generated at A#3 instead of C4
-#   just maps to A#3 and plays correctly. We just need the gate to confirm
-#   "this is a clearly-pitched note" — not "this is exactly the requested
-#   pitch." Original values shown in trailing comments.
+
+def _cat(roots, dur, *, span=12, step=3, min_sus=0.2, open_ended=False,
+         floor=80.0, var=6, neg=_GENERIC_NEG, tol=9999, max_corr=3,
+         skip_shift=False) -> PitchedCategoryConfig:
+    """Compact, keyword-driven constructor so the 28-entry table stays readable
+    and position-error-proof."""
+    return PitchedCategoryConfig(
+        target_pitches_midi=tuple(roots),
+        negative_prompt=neg,
+        duration_seconds=dur,
+        zone_span_semitones=span,
+        zone_step_semitones=step,
+        pitch_tolerance_cents=tol,
+        min_sustain_seconds=min_sus,
+        open_ended=open_ended,
+        pitch_detection_floor_hz=floor,
+        skip_pitch_shift=skip_shift,
+        max_correction_semitones=max_corr,
+        variants_per_prompt=var,
+    )
+
+
+# Base table: SINGLE-source roots, span 12 (== SAS_MULTI_SOURCE=0 behaviour).
+# Multi-source categories get expanded below when the toggle is on.
 PITCHED_CATEGORIES: dict[str, PitchedCategoryConfig] = {
-    "plucks":     PitchedCategoryConfig((60,),  _GENERIC_NEG, 3.0,  12, 3, 9999, 0.1,   False, 80.0),   # tol was 50, sust was 0.4
-    "basses":     PitchedCategoryConfig((40,),  _GENERIC_NEG, 6.0,  12, 3, 9999, 0.5,   False, 30.0),   # tol was 50, sust was 1.5
-    "bells":      PitchedCategoryConfig((72,),  _GENERIC_NEG, 4.0,  12, 3, 9999, 0.3,   False, 200.0),  # tol was 50, sust was 0.8
-    "brass":      PitchedCategoryConfig((57,),  _GENERIC_NEG, 6.0,  12, 3, 9999, 0.5,   True,  80.0),   # tol was 50, sust was 1.5
-    "fx":         PitchedCategoryConfig((69,),  _GENERIC_NEG, 4.0,  0,  1, 9999, 0.0, False, 80.0, skip_pitch_shift=True),
-    "guitars":    PitchedCategoryConfig((52,),  _GENERIC_NEG, 4.0,  12, 3, 9999, 0.2,   False, 80.0),   # tol was 50, sust was 0.6
-    "keys":       PitchedCategoryConfig((48,),  _GENERIC_NEG, 5.0,  12, 3, 9999, 0.4,   False, 80.0),   # tol was 50, sust was 1.0
-    "mallets":    PitchedCategoryConfig((60,),  _GENERIC_NEG, 3.0,  12, 3, 9999, 0.1,   False, 200.0),  # tol was 50, sust was 0.3
-    "organs":     PitchedCategoryConfig((48,),  _GENERIC_NEG, 8.0,  12, 3, 9999, 0.75,  True,  80.0),   # tol was 50, sust was 2.0
-    "pads":       PitchedCategoryConfig((48,),  _GENERIC_NEG, 12.0, 12, 2, 9999, 1.0,   True,  80.0),   # tol was 50, sust was 2.5
-    "pianos":     PitchedCategoryConfig((60,),  _GENERIC_NEG, 5.0,  12, 2, 9999, 0.4,   False, 60.0),   # tol was 50, sust was 1.0
-    "percussion": PitchedCategoryConfig((60,),  _GENERIC_NEG, 2.0,  12, 3, 9999, 0.08,  False, 80.0),   # tol was 50, sust was 0.2
-    "strings":    PitchedCategoryConfig((57,),  _GENERIC_NEG, 8.0,  12, 2, 9999, 0.75,  True,  60.0),   # tol was 50, sust was 2.0
-    "synths":     PitchedCategoryConfig((48,),  _GENERIC_NEG, 5.0,  12, 3, 9999, 0.5,   False, 60.0),   # tol was 50, sust was 1.5
-    "vocals":     PitchedCategoryConfig((57,),  _GENERIC_NEG, 5.0,  12, 2, 9999, 0.5,   False, 100.0, variants_per_prompt=20),  # tol was 50, sust was 1.5
-    "winds":      PitchedCategoryConfig((69,),  _GENERIC_NEG, 5.0,  12, 2, 9999, 0.5,   True,  100.0),  # tol was 50, sust was 1.5
+    # --- keys / synths / leads (EDM-forward) ---
+    "synths":        _cat((48,), 5.0, min_sus=0.5, floor=60, var=6),
+    "lead-supersaw": _cat((60,), 5.0, min_sus=0.4, floor=80, var=6),
+    "lead-fm":       _cat((60,), 5.0, min_sus=0.3, floor=80, var=6),
+    "lead-acid":     _cat((48,), 4.0, min_sus=0.3, floor=60, var=6),
+    "pluck-synth":   _cat((60,), 3.0, min_sus=0.1, floor=80, var=6),
+    "plucks":        _cat((60,), 3.0, min_sus=0.1, floor=80, var=6),
+    "keys":          _cat((48,), 5.0, min_sus=0.4, floor=80, var=6),
+    "pianos":        _cat((60,), 5.0, step=2, min_sus=0.4, floor=60, var=6),
+    "organs":        _cat((48,), 8.0, min_sus=0.75, open_ended=True, floor=80, var=8),
+    # --- bass family ---
+    "basses":        _cat((40,), 6.0, min_sus=0.5, floor=30, var=8),
+    "808-bass":      _cat((36,), 6.0, min_sus=0.5, floor=25, var=8),
+    "reese-bass":    _cat((40,), 6.0, min_sus=0.4, floor=35, var=8),
+    # --- pads / strings / brass / winds (sustaining) ---
+    "pads":          _cat((48,), 12.0, step=2, min_sus=1.0, open_ended=True, floor=80, var=8),
+    "strings":       _cat((57,), 8.0, step=2, min_sus=0.75, open_ended=True, floor=60, var=8),
+    "brass":         _cat((57,), 6.0, min_sus=0.5, open_ended=True, floor=80, var=8),
+    "winds":         _cat((69,), 5.0, step=2, min_sus=0.5, open_ended=True, floor=100, var=8),
+    "accordion":     _cat((54,), 6.0, min_sus=0.6, open_ended=True, floor=80, var=8),
+    # --- bells / mallets / tonal percussion ---
+    "bells":         _cat((72,), 4.0, min_sus=0.3, floor=200, var=6),
+    "mallets":       _cat((60,), 3.0, min_sus=0.1, floor=200, var=6),
+    "percussion":    _cat((60,), 2.0, min_sus=0.08, floor=80, var=6),
+    "timpani":       _cat((48,), 4.0, min_sus=0.3, floor=35, var=8),
+    # --- plucked / world / acoustic ---
+    "guitars":       _cat((52,), 4.0, min_sus=0.2, floor=80, var=6),
+    "banjos":        _cat((60,), 3.0, min_sus=0.1, floor=90, var=6),
+    "mandolin":      _cat((69,), 3.0, min_sus=0.12, floor=130, var=6),
+    "harp":          _cat((60,), 4.0, min_sus=0.15, floor=60, var=6),
+    "sitar":         _cat((60,), 4.0, min_sus=0.2, floor=90, var=6),
+    # --- vocal ---
+    "vocals":        _cat((57,), 5.0, step=2, min_sus=0.5, floor=100, var=20, neg=_VOCAL_NEG),
+    "choir":         _cat((57,), 10.0, step=2, min_sus=1.0, open_ended=True, floor=90, var=18, neg=_VOCAL_NEG),
 }
 
 
-# Phase 1.2 multi-source overrides (uncomment to flip on):
-#
-# PITCHED_CATEGORIES["basses"]  = replace(PITCHED_CATEGORIES["basses"],  target_pitches_midi=(28, 40))   # E1 + E2
-# PITCHED_CATEGORIES["pianos"]  = replace(PITCHED_CATEGORIES["pianos"],  target_pitches_midi=(36, 60))   # C2 + C4
-# PITCHED_CATEGORIES["strings"] = replace(PITCHED_CATEGORIES["strings"], target_pitches_midi=(50, 57))   # D3 + A3
-# PITCHED_CATEGORIES["winds"]   = replace(PITCHED_CATEGORIES["winds"],   target_pitches_midi=(50, 69))   # D3 + A4
+# Multi-source expansion (wide-range instruments). Each gets 2-4 REAL source
+# pitches spanning its natural register + a tighter zone_span (7) so no zone is
+# pitch-shifted more than ~half the inter-source gap. zone_step is preserved.
+# Toggle off (SAS_MULTI_SOURCE=0) to A/B against single-source.
+_MULTI_SOURCE_ROOTS: dict[str, tuple[int, ...]] = {
+    "basses":        (28, 40, 52),   # E1, E2, E3
+    "808-bass":      (36, 48),       # C2, C3
+    "reese-bass":    (40, 52),       # E2, E3
+    "pianos":        (36, 48, 60, 72),  # C2..C5 (timbre varies most across registers)
+    "strings":       (45, 57, 69),   # A2, A3, A4
+    "brass":         (45, 57, 69),   # A2, A3, A4 (tuba..trumpet)
+    "winds":         (50, 62, 74),   # D3, D4, D5
+    "guitars":       (40, 52, 64),   # E2, E3, E4
+    "harp":          (48, 60, 72),   # C3, C4, C5
+    "timpani":       (41, 53),       # F2, F3 (tuned drum — low roots matter)
+    "lead-supersaw": (60, 72),       # C4, C5
+    "banjos":        (60, 67),       # C4, G4
+}
+
+MULTI_SOURCE = os.environ.get("SAS_MULTI_SOURCE", "1") == "1"
+if MULTI_SOURCE:
+    for _name, _roots in _MULTI_SOURCE_ROOTS.items():
+        if _name in PITCHED_CATEGORIES:
+            PITCHED_CATEGORIES[_name] = replace(
+                PITCHED_CATEGORIES[_name],
+                target_pitches_midi=_roots,
+                zone_span_semitones=7,
+            )

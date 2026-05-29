@@ -31,6 +31,9 @@ fi
 CATEGORIES_FILE="${REPO_ROOT}/scripts/categories.txt"
 OUTPUTS_DIR="${SAS_OUTPUTS_DIR:-${REPO_ROOT}/outputs}"
 STEPS="${STEPS:-8}"
+BATCH_SIZE="${BATCH_SIZE:-16}"   # generations per model call (32-64 on a big GPU)
+ONLY="${ONLY:-}"                 # space/comma list to override enabled categories (test slice)
+LIMIT="${LIMIT:-}"               # cap prompts/category (e.g. ONLY=clap LIMIT=10)
 
 if [[ ! -f "${CATEGORIES_FILE}" ]]; then
   echo "[run_all] ERROR: ${CATEGORIES_FILE} not found" >&2
@@ -47,6 +50,11 @@ while IFS= read -r line; do
   CATEGORIES+=("${line}")
 done < "${CATEGORIES_FILE}"
 
+# ONLY overrides the enabled list — e.g. `ONLY="kick clap" LIMIT=10 ./scripts/run_all.sh`.
+if [[ -n "${ONLY}" ]]; then
+  IFS=', ' read -r -a CATEGORIES <<< "${ONLY}"
+fi
+
 if [[ ${#CATEGORIES[@]} -eq 0 ]]; then
   echo "[run_all] ERROR: no categories enabled in ${CATEGORIES_FILE}" >&2
   exit 1
@@ -54,7 +62,7 @@ fi
 
 echo "[run_all] categories (${#CATEGORIES[@]}): ${CATEGORIES[*]}"
 echo "[run_all] outputs dir: ${OUTPUTS_DIR}"
-echo "[run_all] steps:       ${STEPS}"
+echo "[run_all] steps:       ${STEPS}${LIMIT:+ limit=${LIMIT}}"
 
 # ---------- Step 1: build JSONLs from .txt files ----------
 JSONL_PATHS=()
@@ -65,8 +73,8 @@ for cat in "${CATEGORIES[@]}"; do
     echo "[run_all] WARNING: ${txt} missing, skipping ${cat}" >&2
     continue
   fi
-  echo "[run_all] building ${jsonl} <- ${txt}"
-  python3 scripts/list_to_jsonl.py --in "${txt}" --out "${jsonl}"
+  echo "[run_all] building ${jsonl} <- ${txt}${LIMIT:+ (limit ${LIMIT})}"
+  python3 scripts/list_to_jsonl.py --in "${txt}" --out "${jsonl}" ${LIMIT:+--limit "${LIMIT}"}
   JSONL_PATHS+=("${jsonl}")
 done
 
@@ -83,6 +91,7 @@ python scripts/batch_generate.py \
   --prompts "${JSONL_PATHS[@]}" \
   --out-root "${OUTPUTS_DIR}/raw" \
   --steps "${STEPS}" \
+  --batch-size "${BATCH_SIZE}" \
   --skip-existing 2>&1 | tee "${LOGFILE}"
 
 # ---------- Step 3: post-process each category ----------

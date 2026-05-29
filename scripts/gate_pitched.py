@@ -374,6 +374,93 @@ def _autocorr_pitch(mono: np.ndarray, sr: int, fmin: float = 25.0, fmax: float =
     return sr / lag if lag > 0 else float("nan")
 
 
+# Targets at or below this MIDI note get the autocorrelation cross-check.
+# Sub-bass (≈ E2 and lower, plus tuned-low percussion like timpani F2) is where
+# spectral harmonic-sum is most prone to locking onto a partial/subharmonic and
+# reporting the wrong pitch CLASS; time-domain autocorrelation tracks the true
+# period of a low monophonic tone more reliably there. Above this, trust spectral.
+#
+# NB: we deliberately do NOT use librosa.pyin here. pyin pulls in numba and can
+# hard-SEGFAULT under some numpy/numba ABI combos (observed on numpy 2.0 / py3.9)
+# — and a segfault is uncatchable, so it would take down the whole gate process.
+# Autocorrelation is pure NumPy: no JIT, no crash, and testable on CPU.
+SUB_BASS_ENSEMBLE_CEIL_MIDI = 43  # G2
+
+
+def _autocorr_pitch_conf(mono: np.ndarray, sr: int, fmin: float,
+                         fmax: float) -> tuple[float, float]:
+    """Autocorrelation pitch on the steady mid-section. Returns (hz, strength)
+    where strength is the normalized autocorrelation at the chosen lag (0..1) —
+    a clear period scores near 1, broadband noise scores low. (nan, 0.0) when no
+    usable lag exists. Pure NumPy."""
+    n = mono.size
+    a, b = int(n * 0.25), int(n * 0.75)
+    seg = mono[a:b]
+    if seg.size < 4096:
+        return float("nan"), 0.0
+    seg = seg.astype(np.float64)
+    seg -= seg.mean()
+    ac = np.correlate(seg, seg, mode="full")[seg.size - 1:]
+    if ac[0] <= 0:
+        return float("nan"), 0.0
+    ac /= ac[0]
+    lag_min = max(1, int(sr / fmax))
+    lag_max = int(sr / fmin)
+    if lag_max >= ac.size or lag_max <= lag_min:
+        return float("nan"), 0.0
+    lag = lag_min + int(np.argmax(ac[lag_min:lag_max]))
+    return (sr / lag if lag > 0 else float("nan")), float(ac[lag])
+
+
+def ensemble_octave_check(mono: np.ndarray, sr: int, spectral_midi: float,
+                          target_midi: int, pitch_floor_hz: float,
+                          info_out: Optional[dict] = None) -> float:
+    """Confirm/repair the spectral fundamental for sub-bass targets using a
+    time-domain autocorrelation cross-check.
+
+    The spectral detector already seats the pitch CLASS in the octave nearest
+    the target; this guards the remaining failure mode for low tones where
+    harmonic-sum locks onto a partial/subharmonic and the CLASS itself is wrong.
+    Overrides spectral only when autocorrelation finds a CLEAR period
+    (strength ≥ 0.5) that disagrees with the spectral reading by ≥ 1.5 semitones.
+    The autocorr pitch is re-seated to the octave nearest the target (same
+    philosophy as spectral_fundamental_midi), preserving its sub-semitone
+    fraction so enrich's fine correction still lands on a MIDI note. Defensive:
+    any failure keeps the spectral value unchanged.
+    """
+    info = info_out if info_out is not None else {}
+    info["spectral_midi"] = round(spectral_midi, 2) if math.isfinite(spectral_midi) else None
+    info["autocorr_midi"] = None
+    info["autocorr_strength"] = None
+    info["ensemble_applied"] = False
+    try:
+        # 30 Hz floor keeps the autocorr lag-range below the octave-below period
+        # for all our targets (lowest fundamental E1 ≈ 41 Hz), which removes
+        # autocorrelation's classic octave-down ambiguity.
+        lo = max(30.0, pitch_floor_hz * 0.5)
+        hi = midi_to_hz(target_midi + 12)
+        ac_hz, ac_strength = _autocorr_pitch_conf(mono, sr, lo, hi)
+        ac_midi = hz_to_midi(ac_hz)
+        info["autocorr_midi"] = round(ac_midi, 2) if math.isfinite(ac_midi) else None
+        info["autocorr_strength"] = round(ac_strength, 3)
+
+        if not math.isfinite(ac_midi) or ac_strength < 0.5:
+            return spectral_midi  # no clear period — trust spectral
+
+        frac = ac_midi - round(ac_midi)
+        pitch_class = int(round(ac_midi)) % 12
+        base = target_midi - (target_midi % 12) + pitch_class
+        nearest = min((base - 12, base, base + 12), key=lambda c: abs(c - target_midi))
+        ac_seated = float(nearest) + frac
+
+        if math.isfinite(spectral_midi) and abs(ac_seated - spectral_midi) >= 1.5:
+            info["ensemble_applied"] = True
+            return ac_seated
+        return spectral_midi
+    except Exception:
+        return spectral_midi
+
+
 def _detect_vibrato(pitch_hz: np.ndarray, frame_rate: float) -> bool:
     """Return True if the pitch envelope shows a periodic LFO at 3-8 Hz
     with depth ≤ 100 cents. That LFO is musical vibrato; without this
@@ -394,7 +481,8 @@ def _detect_vibrato(pitch_hz: np.ndarray, frame_rate: float) -> bool:
 
 
 def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int,
-               pitch_floor_hz: float) -> tuple[Optional[str], float, float, float, np.ndarray]:
+               pitch_floor_hz: float,
+               metrics_out: Optional[dict] = None) -> tuple[Optional[str], float, float, float, np.ndarray]:
     """Confidence/voicing from torchcrepe; pitch NUMBER from the spectral
     fundamental. Returns:
 
@@ -404,9 +492,13 @@ def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int
     feeds the downstream vibrato detector. The measured pitch, however, comes
     from `spectral_fundamental_midi`: crepe's per-frame *median* lands on a
     phantom value between partials for harmonically-rich tones — that is the bug
-    that shipped the synth library a perfect-4th sharp. The old target<82Hz
-    3-way (crepe/pyin/autocorr) branch had the same phantom-median fragility and
-    is no longer needed; the spectral fundamental handles sub-bass too.
+    that shipped the synth library a perfect-4th sharp.
+
+    For SUB-BASS targets (≤ G2) the spectral reading is additionally cross-checked
+    by `ensemble_octave_check` (time-domain autocorrelation), which repairs the
+    rare case where harmonic-sum locks onto a partial/subharmonic and the pitch
+    CLASS itself is wrong. The estimates are written to `metrics_out` (when
+    supplied) under spectral_midi/autocorr_midi/autocorr_strength/ensemble_applied.
     """
     target_hz = midi_to_hz(target_midi)
     pitch_hz, periodicity = _crepe_pitch(mono, sr)
@@ -433,6 +525,17 @@ def gate_pitch(mono: np.ndarray, sr: int, target_midi: int, tolerance_cents: int
     if not math.isfinite(measured_midi):
         # No clear spectral peak — fall back to the crepe median.
         measured_midi = hz_to_midi(float(np.median(sustain[voiced_mask])))
+
+    # Sub-bass octave/class cross-check (pyin + autocorr). Restricted to low
+    # targets so the extra librosa.pyin pass barely moves gate wall-clock.
+    if target_midi <= SUB_BASS_ENSEMBLE_CEIL_MIDI:
+        ens_info: dict = {}
+        measured_midi = ensemble_octave_check(
+            mono, sr, measured_midi, target_midi, pitch_floor_hz, info_out=ens_info
+        )
+        if metrics_out is not None:
+            metrics_out["pitch_ensemble"] = ens_info
+
     cents = cents_between(midi_to_hz(measured_midi), target_hz)
     if abs(cents) > tolerance_cents:
         return "wrong_pitch", measured_midi, cents, crepe_conf, pitch_hz
@@ -582,6 +685,7 @@ def evaluate_variant(wav_path: Path, cfg: PitchedCategoryConfig, target_pitch: i
             target_midi=target_pitch,
             tolerance_cents=cfg.pitch_tolerance_cents,
             pitch_floor_hz=cfg.pitch_detection_floor_hz,
+            metrics_out=verdict["metrics"],
         )
         verdict["metrics"]["measured_pitch_midi"] = (
             round(measured_midi, 2) if math.isfinite(measured_midi) else None

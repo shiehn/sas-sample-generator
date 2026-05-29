@@ -1,17 +1,25 @@
 # Sample pack release runbook
 
 This is the operator handbook for cutting a new versioned sample-pack zip
-and publishing it for the sas-assistant Electron app to pick up.
+and publishing it for the sas-app Electron app to pick up.
 
 There are two independent packs:
 
 | Pack | Source dir | Distributed as | Approx size |
 |------|------------|----------------|-------------|
-| Drums | `${SAS_OUTPUTS_DIR}/processed/` | `sas-drum-pack-v{N}.zip` | ~1.5 GB |
-| Instruments | `${SAS_OUTPUTS_DIR}/instruments/` | `sas-instrument-pack-v{N}.zip` | ~11 GB |
+| Drums | `${SAS_OUTPUTS_DIR}/processed/` | `sas-drum-pack-v{N}.zip` | ~2–3 GB (v3, 24 roles) |
+| Instruments | `${SAS_OUTPUTS_DIR}/instruments/` | `sas-instrument-pack-v{N}.zip` | ~20–24 GB (v3, 28 cats × ~150) |
 
 Both publish to the same GCP bucket. The app downloads each on demand from
 its plugin panel, with a hardcoded expected-version per app build.
+
+> **v3 changes (this run).** Zones are **16-bit WAV**, not 24-bit FLAC: Tracktion's
+> SamplerPlugin CPU-decodes FLAC on the message thread (load stall), but mmaps WAV
+> instantly. Sources stay 24-bit WAV. Multi-source instruments carry 2–4
+> `sources/<root>.wav`. The category set was restructured (28 pitched, 24 drum;
+> pitched `fx` retired → one-shots), so **both packs bump a major version** and
+> the in-app constants must update in lockstep (step 3). Never reuse a published
+> version number.
 
 ---
 
@@ -65,7 +73,7 @@ curl -I https://storage.googleapis.com/docs-assets/sas-drum-pack-v1.zip
 
 ## 3. Wire the version into the app build
 
-Edit `sas-assistant/src/shared/constants/sample-packs.ts`:
+Edit `sas-app/src/shared/constants/sample-packs.ts`:
 
 ```typescript
 export const DRUM_PACK: PackConfig = {
@@ -79,7 +87,7 @@ export const DRUM_PACK: PackConfig = {
 };
 ```
 
-Commit + push. The next sas-assistant build will:
+Commit + push. The next sas-app build will:
 
 1. On launch / plugin activate, read `<userData>/samples/drums/_pack-version.json`
 2. If the marker is missing → show "Sample library not installed" CTA
@@ -101,12 +109,15 @@ sas-instrument-pack-v1.zip
 │   ├── plucks-aaa/
 │   │   ├── manifest.json
 │   │   ├── sources/
-│   │   │   └── 053.wav
+│   │   │   └── 060.wav        <- 24-bit; multi-source instruments have 2–4 here
 │   │   └── zones/
-│   │       └── 060.flac
+│   │       └── 060.wav        <- 16-bit WAV (mmap-able; v3 — was .flac)
 │   └── ...
 ├── basses/
-└── ... (16 categories for instruments; flat role folders for drums)
+│   └── basses-aaa/
+│       ├── sources/{028,040,052}.wav   <- 3 real source pitches (multi-source)
+│       └── zones/...wav
+└── ... (~28 pitched categories; flat role folders for ~24 drum roles)
 ```
 
 `_pack-version.json`:

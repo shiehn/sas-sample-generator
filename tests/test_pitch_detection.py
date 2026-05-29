@@ -17,6 +17,7 @@ import numpy as np
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "scripts"))
 from gate_pitched import (  # noqa: E402
     spectral_fundamental_midi,
+    ensemble_octave_check,
     _harmonic_sum_score,
     _avg_magnitude_spectrum,
     midi_to_hz,
@@ -113,6 +114,42 @@ def test_silence_returns_nan():
     y = np.zeros(SR, dtype=np.float32)
     got = spectral_fundamental_midi(y, SR, target_midi=48)
     assert math.isnan(got), got
+
+
+# --- ensemble_octave_check (sub-bass autocorr cross-check, pure NumPy) -------
+
+def test_ensemble_rescues_wrong_spectral_class():
+    """When spectral mis-reads a clean sub-bass tone by a couple semitones,
+    the autocorrelation cross-check (clear period) overrides it back to truth."""
+    y = _synth(40, {1: 1.0, 2: 0.5, 3: 0.3})  # E1, MIDI 40
+    info: dict = {}
+    got = ensemble_octave_check(y, SR, spectral_midi=42.0, target_midi=40,
+                                pitch_floor_hz=30.0, info_out=info)
+    assert info["ensemble_applied"] is True, info
+    assert abs(got - 40) < 1.0, f"expected rescue to ~40, got {got}"
+
+
+def test_ensemble_keeps_correct_spectral():
+    """A correct spectral reading is never overridden (no false rescue)."""
+    y = _synth(40, {1: 1.0, 2: 0.5, 3: 0.3})
+    info: dict = {}
+    got = ensemble_octave_check(y, SR, spectral_midi=40.0, target_midi=40,
+                                pitch_floor_hz=30.0, info_out=info)
+    assert info["ensemble_applied"] is False, info
+    assert got == 40.0, got
+
+
+def test_ensemble_ignores_noise():
+    """Broadband noise has no clear period (low autocorr strength) → the
+    spectral value is returned unchanged rather than chasing a phantom pitch."""
+    rng = np.random.default_rng(0)
+    noise = (rng.standard_normal(SR) * 0.1).astype(np.float32)
+    info: dict = {}
+    got = ensemble_octave_check(noise, SR, spectral_midi=42.0, target_midi=40,
+                                pitch_floor_hz=30.0, info_out=info)
+    assert info["ensemble_applied"] is False, info
+    assert got == 42.0, got
+    assert info["autocorr_strength"] < 0.5, info
 
 
 if __name__ == "__main__":

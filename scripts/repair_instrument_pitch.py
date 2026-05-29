@@ -89,6 +89,13 @@ def repair_instrument(inst_dir: Path, apply: bool) -> dict:
     sources = manifest.get("sources") or []
     if not sources:
         return {"id": inst_dir.name, "status": "skip", "reason": "no sources"}
+    if len(sources) > 1:
+        # This repairer only knows how to re-derive a single-source instrument
+        # from sources[0]. Multi-source instruments (v3 pipeline) must be
+        # re-enriched from their gated winners instead — repairing only the
+        # first source here would silently corrupt the other zones.
+        return {"id": inst_dir.name, "status": "skip",
+                "reason": "multi-source — re-run enrich_pitched instead"}
     if cfg is not None and cfg.skip_pitch_shift:
         return {"id": inst_dir.name, "status": "skip", "reason": "fx (no pitch)"}
 

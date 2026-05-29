@@ -61,6 +61,9 @@ def main() -> None:
                         help="Starting seed (default: 1001)")
     parser.add_argument("--duration", type=float, default=None,
                         help="Override per-category default duration")
+    parser.add_argument("--limit", type=int, default=0,
+                        help="Cap to the first N prompts (0 = no cap). For quick "
+                             "small-collection test slices.")
     args = parser.parse_args()
 
     in_path = Path(args.in_path)
@@ -102,6 +105,8 @@ def main() -> None:
             "seed": seed,
             "duration": duration,
         })
+        if args.limit and len(rows) >= args.limit:
+            break
 
     if not rows:
         sys.exit(f"no prompts found in {in_path}")

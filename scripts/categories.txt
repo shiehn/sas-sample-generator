@@ -1,7 +1,12 @@
-# Categories to include in run_all.sh.
-# Comment out (#) any line to skip that category for a run.
-# Order is preserved.
+# Drum / unpitched one-shot categories for run_all.sh.
+# Comment out (#) any line to skip that category for a run. Order is preserved.
+# Every name here must have an entry in category_config.py and a prompts/<name>.txt.
+#
+# v3: `plucks` removed (pitched, see pitched_categories.txt). EDM one-shot family
+# (clap, 808, riser, downlifter, impact, sub-drop, sweep, texture, zap, foley-perc)
+# carved out of the old `hit` catch-all + retired pitched `fx`.
 
+# --- core kit ---
 kick
 snare-standard
 snare-rim
@@ -16,4 +21,15 @@ tom-hi
 tom-mid
 tom-low
 hit
-plucks
+
+# --- EDM / electronic one-shots ---
+clap
+808
+riser
+downlifter
+impact
+sub-drop
+sweep
+texture
+zap
+foley-perc

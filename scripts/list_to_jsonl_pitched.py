@@ -23,9 +23,10 @@ JSONL row shape consumed by batch_generate.py:
     "negative_prompt": "<from pitched_category_config>",
     "seed": <int>,
     "duration": <float>,
-    "target_pitch_midi": <int>          # pitched-only extension; ignored
-                                        # by batch_generate but read by
-                                        # gate_pitched + enrich_pitched
+    "target_pitch_midi": <int>,         # pitched-only; read by gate + enrich
+    "variants": <int>                   # per-category oversampling count;
+                                        # batch_generate uses it as the number
+                                        # of SA3 candidates for this row
   }
 """
 
@@ -64,6 +65,10 @@ def main() -> None:
     parser.add_argument("--start-seed", type=int, default=2001,
                         help="Starting seed (default: 2001 — offset from drum's 1001 so the "
                              "two pipelines can't accidentally collide on the same prompt text)")
+    parser.add_argument("--limit", type=int, default=0,
+                        help="Cap to the first N PROMPTS (0 = no cap); each still fans out across "
+                             "all target pitches. For quick small-collection test slices "
+                             "(e.g. --limit 5 on pianos to check temperament).")
     args = parser.parse_args()
 
     in_path = Path(args.in_path)
@@ -86,6 +91,7 @@ def main() -> None:
     seen: set[str] = set()
     rows: list[dict] = []
     seed_offset = 0
+    prompts_added = 0
 
     for line_num, raw in enumerate(in_path.read_text(encoding="utf-8").splitlines(), start=1):
         line = raw.strip()
@@ -97,6 +103,9 @@ def main() -> None:
             print(f"warning: line {line_num} duplicate, skipping: {line[:60]}", file=sys.stderr)
             continue
         seen.add(normalized)
+        if args.limit and prompts_added >= args.limit:
+            break
+        prompts_added += 1
 
         # Fan out across target pitches. Single-source categories produce one
         # row per prompt; multi-source (e.g. Basses E1+E2) produce two,
@@ -111,6 +120,12 @@ def main() -> None:
                 "seed": seed,
                 "duration": cfg.duration_seconds,
                 "target_pitch_midi": target_pitch,
+                # Per-category oversampling: how many SA3 candidates the gate gets
+                # to choose from for this (prompt × pitch). batch_generate reads
+                # this per row so each category can tune its own count (hard /
+                # weak categories generate more). Falls back to the CLI default
+                # when absent.
+                "variants": cfg.variants_per_prompt,
             })
             seed_offset += 1
 

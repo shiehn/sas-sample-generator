@@ -6,11 +6,11 @@ Produces:
 
 The zip contains, at its root:
 
-  _pack-version.json   <- install marker (read by sas-assistant's PackDownloadService)
+  _pack-version.json   <- install marker (read by sas-app's PackDownloadService)
   <payload tree>       <- drums: drum-role folders; instruments: instruments/<cat>/<id>/...
 
 The install marker is the source-of-truth for "what version is installed":
-sas-assistant reads <samples-root>/_pack-version.json after extraction, compares
+sas-app reads <samples-root>/_pack-version.json after extraction, compares
 against the build's expected version constant, and triggers re-download when
 they differ. Putting the marker INSIDE the bundle (rather than in electron-store)
 means a user-deleted samples folder is automatically detected as "not installed."
@@ -214,39 +214,83 @@ def build_pack(pack: str, version: str, source: Path, out_dir: Path) -> Path:
     print(f"[build_pack] sha256:       {sha}")
     print(f"[build_pack] build time:   {elapsed:.1f}s")
     print()
-    print("Update sas-assistant/src/shared/constants/sample-packs.ts with:")
+    print("Update sas-app/src/shared/constants/sample-packs.ts with:")
     print(f"  expectedVersion: '{version}',")
     print(f"  sizeBytes: {zip_size},")
     print(f"  sha256: '{sha}',")
     return out_path
 
 
+def _assert_zone_invariants(zones: list[dict]) -> None:
+    """The instrument plugin / Tracktion sampler require zones to be disjoint,
+    ordered low->high, root inside its range, and contiguous over 0..127
+    (overlaps double-trigger). Mirrors the engine + enrich invariants."""
+    assert zones, "no zones"
+    prev_max = -1
+    for z in zones:
+        assert z["min_midi"] <= z["root_midi"] <= z["max_midi"], f"root outside zone: {z}"
+        assert z["min_midi"] > prev_max, f"zone overlap/out-of-order: {z} (prev_max={prev_max})"
+        assert z["sample"].endswith(".wav"), f"v3 zones must be WAV (mmap-able), got {z['sample']}"
+        prev_max = z["max_midi"]
+    assert zones[0]["min_midi"] == 0 and zones[-1]["max_midi"] == 127, "zones must cover 0..127"
+
+
 def smoke_test() -> None:
     """Build a tiny pack from a synthetic fixture, then verify the zip's
-    contents round-trip correctly. No real samples needed."""
+    contents round-trip correctly. No real samples needed.
+
+    The fixture is a v3 MULTI-SOURCE instrument (2 real source pitches, WAV
+    zones) so this also guards the manifest invariants the instrument-resolver
+    relies on."""
     print("[smoke_test] creating temp fixture...")
     with tempfile.TemporaryDirectory(prefix="build_pack_smoke_") as tmp_str:
         tmp = Path(tmp_str)
         source = tmp / "instruments"
         dist = tmp / "dist"
-        # Synthetic instrument-pack-shaped fixture:
-        #   instruments/plucks/plucks-aaa/{manifest.json, sources/053.wav, zones/060.flac}
-        #   instruments/_archive/should-be-excluded.txt
-        #   instruments/.DS_Store (should be excluded)
-        inst_dir = source / "plucks" / "plucks-aaa"
+        # Synthetic v3 multi-source instrument:
+        #   instruments/basses/basses-aaa/
+        #     manifest.json, sources/{040,052}.wav, zones/{033,040,047,052,059}.wav
+        inst_dir = source / "basses" / "basses-aaa"
         (inst_dir / "sources").mkdir(parents=True)
         (inst_dir / "zones").mkdir(parents=True)
-        (inst_dir / "manifest.json").write_text(
-            json.dumps({"instrument_id": "plucks-aaa", "schema_version": 1}, indent=2)
-        )
-        (inst_dir / "sources" / "053.wav").write_bytes(b"RIFF\x00\x00\x00\x00WAVEfmt fake-wav")
-        (inst_dir / "zones" / "060.flac").write_bytes(b"fLaC\x00\x00\x00\x00fake-flac")
+        zones = [
+            {"sample": "zones/033.wav", "root_midi": 33, "min_midi": 0, "max_midi": 36},
+            {"sample": "zones/040.wav", "root_midi": 40, "min_midi": 37, "max_midi": 43},
+            {"sample": "zones/047.wav", "root_midi": 47, "min_midi": 44, "max_midi": 49},
+            {"sample": "zones/052.wav", "root_midi": 52, "min_midi": 50, "max_midi": 55},
+            {"sample": "zones/059.wav", "root_midi": 59, "min_midi": 56, "max_midi": 127},
+        ]
+        _assert_zone_invariants(zones)  # fixture itself must be valid
+        manifest = {
+            "schema_version": 1,
+            "instrument_id": "basses-aaa",
+            "category_id": "basses",
+            "category_display": "Basses",
+            "prompt": "deep analog sub bass single note",
+            "open_ended": False,
+            "sources": [
+                {"file": "sources/040.wav", "target_pitch_midi": 40, "effective_root_midi": 40},
+                {"file": "sources/052.wav", "target_pitch_midi": 52, "effective_root_midi": 52},
+            ],
+            "loop": None,
+            "zones": zones,
+            "channels": 1,
+            "sample_rate": 44100,
+            "bit_depth": 24,
+        }
+        (inst_dir / "manifest.json").write_text(json.dumps(manifest, indent=2))
+        for s in ("040", "052"):
+            (inst_dir / "sources" / f"{s}.wav").write_bytes(b"RIFF\x00\x00\x00\x00WAVEfmt fake-wav")
+        for z in zones:
+            (inst_dir / z["sample"]).write_bytes(b"RIFF\x00\x00\x00\x00WAVEfmt fake-wav")
         # Admin paths that should NOT appear in the zip:
         (source / "_archive").mkdir()
         (source / "_archive" / "should-be-excluded.txt").write_text("nope")
         (source / ".DS_Store").write_bytes(b"\x00")
         (inst_dir / "_failures").mkdir()
         (inst_dir / "_failures" / "skip-me.json").write_text("{}")
+
+        n_payload = 1 + 2 + len(zones)  # manifest + 2 sources + zones
 
         print(f"[smoke_test] fixture at: {source}")
         out_path = build_pack(
@@ -264,10 +308,11 @@ def smoke_test() -> None:
                 print(f"  {n}")
 
             assert "_pack-version.json" in names, "missing version marker"
-            manifest = json.loads(zf.read("_pack-version.json"))
-            assert manifest["packId"] == "sas-instrument-pack", f"wrong packId: {manifest['packId']}"
-            assert manifest["version"] == "smoke", f"wrong version: {manifest['version']}"
-            assert manifest["fileCount"] == 3, f"wrong fileCount: {manifest['fileCount']} (expected 3 payload files)"
+            vmanifest = json.loads(zf.read("_pack-version.json"))
+            assert vmanifest["packId"] == "sas-instrument-pack", f"wrong packId: {vmanifest['packId']}"
+            assert vmanifest["version"] == "smoke", f"wrong version: {vmanifest['version']}"
+            assert vmanifest["fileCount"] == n_payload, \
+                f"wrong fileCount: {vmanifest['fileCount']} (expected {n_payload})"
 
             # Excluded paths must not appear
             for n in names:
@@ -275,13 +320,15 @@ def smoke_test() -> None:
                 assert "_failures" not in n, f"_failures leaked into zip: {n}"
                 assert ".DS_Store" not in n, f".DS_Store leaked into zip: {n}"
 
-            # Expected payload paths exist
-            expected = {
-                "_pack-version.json",
-                "plucks/plucks-aaa/manifest.json",
-                "plucks/plucks-aaa/sources/053.wav",
-                "plucks/plucks-aaa/zones/060.flac",
-            }
+            # The packed manifest must still satisfy the resolver invariants.
+            packed = json.loads(zf.read("basses/basses-aaa/manifest.json"))
+            assert packed["schema_version"] == 1
+            assert len(packed["sources"]) == 2, f"expected 2 sources, got {len(packed['sources'])}"
+            _assert_zone_invariants(packed["zones"])
+
+            expected = {"_pack-version.json", "basses/basses-aaa/manifest.json"}
+            expected |= {f"basses/basses-aaa/sources/{s}.wav" for s in ("040", "052")}
+            expected |= {f"basses/basses-aaa/{z['sample']}" for z in zones}
             assert set(names) == expected, f"unexpected names; want {expected}, got {set(names)}"
 
         # Build twice and confirm sha256 stays identical (determinism check)
