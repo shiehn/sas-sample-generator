@@ -29,6 +29,20 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 
+
+def _venv_python() -> str:
+    """Prefer the project/pod venv's python for the gate_pitched subprocesses —
+    they need soundfile/librosa/torch from it. Without this, running
+    `python3 scripts/gate_parallel.py` under the SYSTEM python launches workers
+    that can't import soundfile. Falls back to the current interpreter."""
+    for c in (REPO / ".venv" / "bin" / "python", Path("/root/.venv/bin/python")):
+        if c.exists():
+            return str(c)
+    return sys.executable
+
+
+PYTHON = _venv_python()
+
 # Pin each worker's math libs to one thread so N workers == N cores (no thrash).
 _SINGLE_THREAD_ENV = {
     "OMP_NUM_THREADS": "1", "OPENBLAS_NUM_THREADS": "1", "MKL_NUM_THREADS": "1",
@@ -67,7 +81,7 @@ def gate_one(cat: str, outputs_dir: Path):
     jsonl = REPO / "prompts" / "pitched" / f"{cat}.jsonl"
     if not jsonl.exists():
         return cat, 1, f"missing jsonl: {jsonl}"
-    cmd = [sys.executable, str(REPO / "scripts/gate_pitched.py"),
+    cmd = [PYTHON, str(REPO / "scripts/gate_pitched.py"),
            "--category", cat, "--jsonl", str(jsonl), "--outputs-dir", str(outputs_dir)]
     r = subprocess.run(cmd, capture_output=True, text=True,
                        env={**os.environ, **_SINGLE_THREAD_ENV})
