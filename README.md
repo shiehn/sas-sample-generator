@@ -4,6 +4,24 @@
   <img src="docs/img/cauldron.png" alt="sas-sample-generator" width="360" />
 </p>
 
+## ⬇️ Download the pre-built sample packs
+
+The latest **v3** libraries are hosted publicly on GCP (no auth required). The
+[Signals & Sorcery](https://signalsandsorcery.com) app installs these
+automatically, but you can grab them directly here:
+
+| Pack | Contents | Download |
+|------|----------|----------|
+| **Drums** (v3 large) | 24 roles · 10,359 one-shots (+ prompt sidecars) · ~1.4 GB | [sas-drum-pack-v3-large.zip](https://storage.googleapis.com/docs-assets/sas-drum-pack-v3-large.zip) |
+| **Instruments** (v3 large) | 28 categories · 5,475 multi-zone instruments · ~26.6 GB | [sas-instrument-pack-v3-large.zip](https://storage.googleapis.com/docs-assets/sas-instrument-pack-v3-large.zip) |
+
+> Each zip contains a `_pack-version.json` marker plus the payload tree
+> (drums: `<role>/*.wav`; instruments: `<category>/<id>/manifest.json` + `zones/`).
+> The instrument pack is zones-only (the 24-bit generation `sources/` are omitted —
+> they aren't used at playback).
+
+---
+
 Generate large batches of audio samples with
 [Stable Audio 3](https://huggingface.co/stabilityai/stable-audio-3-medium)
 on a rented [RunPod](https://www.runpod.io) GPU. Two pipelines ship side by side:
